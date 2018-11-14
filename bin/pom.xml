@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.jeancoder.root</groupId>
+	<artifactId>jc_parent</artifactId>
+	<version>${jc.root.version}</version>
+	<packaging>pom</packaging>
+
+	<name>jc_parent</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<jc.root.version>0.0.1</jc.root.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.jdk.lsver>1.8</project.jdk.lsver>
+	</properties>
+	
+	<build>  
+        <plugins>  
+            <plugin>  
+                <groupId>org.apache.maven.plugins</groupId>  
+                <artifactId>maven-compiler-plugin</artifactId>  
+                <version>3.1</version>  
+                <configuration>  
+                    <source>${project.jdk.lsver}</source>  
+                    <target>${project.jdk.lsver}</target>  
+                </configuration>  
+            </plugin>  
+        </plugins>  
+    </build>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<modules>
+		<module>jc_server</module>
+	</modules>
+</project>

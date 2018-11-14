@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.jeancoder.root</groupId>
+	<artifactId>jc_parent</artifactId>
+	<version>${jc.root.version}</version>
+	<packaging>pom</packaging>
+
+	<name>jc_parent</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<jc.root.version>0.0.1</jc.root.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jc.jdk.lsver>1.8</jc.jdk.lsver>
+		<jc.netty>4.1.31.Final</jc.netty>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>${jc.jdk.lsver}</source>
+					<target>${jc.jdk.lsver}</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<modules>
+		<module>jc_server</module>
+	</modules>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>${jc.netty}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.5</version>
+		</dependency>
+	</dependencies>
+</project>

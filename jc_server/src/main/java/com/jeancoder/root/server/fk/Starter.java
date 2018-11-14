@@ -1,0 +1,61 @@
+package com.jeancoder.root.server.fk;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import com.google.gson.Gson;
+import com.jeancoder.root.server.inet.JCServer;
+import com.jeancoder.root.server.inet.ServerFactory;
+import com.jeancoder.root.server.proto.conf.FkConf;
+import com.jeancoder.root.server.proto.conf.ServerMod;
+
+public class Starter {
+
+	static String appConf = "ins.server.json";
+	
+	final static List<JCServer> iservers = new ArrayList<JCServer>();
+	
+	final static Object _starter_lock_ = new Object();
+	
+	public static void main(String[] argc) {
+		try {
+			InputStream ins = Starter.class.getClassLoader().getResourceAsStream(appConf);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
+			
+			String lineContent = null;
+			StringBuffer buff = new StringBuffer();
+			while((lineContent = reader.readLine())!=null) {
+				buff.append(lineContent);
+			}
+			Gson gson = new Gson();
+			FkConf fk_con = gson.fromJson(buff.toString(), FkConf.class);
+			
+			int server_count = 0;
+			synchronized (_starter_lock_) {
+				for(ServerMod sm : fk_con.getServers()) {
+					JCServer server = ServerFactory.generate(sm);
+					iservers.add(server);
+					final int tmp = server_count++;
+					new Thread(new Runnable() {
+						
+						@Override
+						public void run() {
+							server.start();
+							System.out.println("server " + tmp + " started");
+						}
+					}).start();
+				}
+			}
+			while(true) {
+				TimeUnit.MILLISECONDS.sleep(10000L);
+				System.out.println(iservers);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
