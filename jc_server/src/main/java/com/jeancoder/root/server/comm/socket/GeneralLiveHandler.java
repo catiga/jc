@@ -50,12 +50,19 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 	 */
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		ctx.close();
 		logger.error("异常信息：\r\n" + cause.getMessage());
+		ctx.close();
 	}
+	
+//	@Override
+//    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+//		logger.info(msg.toString());
+//        ctx.write("ret messages");
+//    }
 	
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, GeneralMsg baseMsg) throws Exception {
+		logger.info("server receive message=" + baseMsg);
 		if (MsgType.LOGIN.equals(baseMsg.getType())) {
 			LoginMsg loginMsg = (LoginMsg) baseMsg;
 			if ("robin".equals(loginMsg.getUserName()) && "yao".equals(loginMsg.getPassword())) {

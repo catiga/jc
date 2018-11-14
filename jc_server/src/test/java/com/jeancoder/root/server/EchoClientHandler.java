@@ -19,7 +19,7 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
         System.out.println("客户端与服务端通道-开启：" + ctx.channel().localAddress() + "channelActive");
 
         String sendInfo = "Hello 这里是客户端  你好啊！";
-        System.out.println("客户端准备发送的数据包：" + sendInfo);
+        System.out.println("客户端准备发送数据：" + sendInfo);
         ctx.writeAndFlush(Unpooled.copiedBuffer(sendInfo, CharsetUtil.UTF_8)); // 必须有flush
 
     }

@@ -59,7 +59,8 @@ public class JCSocketServer extends ServerImpl implements JCServer {
 
 			server.group(accGroup, workerGroup) // 组装NioEventLoopGroup
 					.channel(NioServerSocketChannel.class) // 设置channel类型为NIO类型
-					.option(ChannelOption.SO_BACKLOG, 128) // 连接队列长度
+					.option(ChannelOption.SO_BACKLOG, 1024) // 连接队列长度
+					.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
 					.childOption(ChannelOption.TCP_NODELAY, true).childOption(ChannelOption.SO_KEEPALIVE, true) // 保持长连接
 					.childOption(ChannelOption.SO_REUSEADDR, true)
 					.childHandler(new ChannelInitializer<SocketChannel>() {
@@ -76,7 +77,8 @@ public class JCSocketServer extends ServerImpl implements JCServer {
 							// 配置入站、出站事件channel
 							ChannelPipeline pipeline = ch.pipeline();
 
-							pipeline.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
+							//pipeline.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
+							pipeline.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0,  2));
 							pipeline.addLast(new ObjectEncoder());
 							pipeline.addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
 
@@ -89,18 +91,20 @@ public class JCSocketServer extends ServerImpl implements JCServer {
 				SocketAddress net_address = channelFuture.channel().localAddress();
 				logger.info(defServerCode() + " SERVER STARTED: " + net_address);
 			}
-			// channelFuture.channel().closeFuture().sync();
+			//channelFuture.channel().closeFuture().sync();
 		} catch (Exception e) {
 			logger.error("service start error:", e);
 		} finally {
-			// accGroup.shutdownGracefully();
-			// workerGroup.shutdownGracefully();
+			//accGroup.shutdownGracefully();
+			//workerGroup.shutdownGracefully();
 		}
 	}
 
 	public static void main(String[] argc) throws InterruptedException {
 		JCServer server = new JCSocketServer();
+		System.out.println("服务准备启动");
 		server.start();
+		logger.info("服务启动成功");
 		while (true) {
 			SocketChannel channel = (SocketChannel) NettyChannelMap.get("001");
 			if (channel != null) {
