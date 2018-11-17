@@ -36,9 +36,9 @@ public class JCSocketServer extends ServerImpl implements JCServer {
 		this.modconf = new ServerMod();
 		this.modconf.setProxy_entry("entry");
 		this.modconf.setProxy_path("/");
-		this.modconf.setServer_name("default server");
-		this.modconf.setServer_port(12346);
-		this.modconf.setServer_scheme(ServerCode.SOCKET.toString());
+		this.modconf.setName("default server");
+		this.modconf.setPort(12346);
+		this.modconf.setScheme(ServerCode.SOCKET.toString());
 	}
 	
 	public JCSocketServer(ServerMod mod) {
@@ -85,7 +85,7 @@ public class JCSocketServer extends ServerImpl implements JCServer {
 							pipeline.addLast(new GeneralLiveHandler());
 						}
 					});
-			int port = modconf.getServer_port();
+			int port = modconf.getPort();
 			ChannelFuture channelFuture = server.bind(port).sync();
 			if (channelFuture.isSuccess()) {
 				SocketAddress net_address = channelFuture.channel().localAddress();

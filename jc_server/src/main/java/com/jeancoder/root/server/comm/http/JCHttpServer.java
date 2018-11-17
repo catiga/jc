@@ -1,5 +1,8 @@
 package com.jeancoder.root.server.comm.http;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,34 +16,33 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
-import io.netty.util.CharsetUtil;
+import io.netty.handler.codec.http.HttpContentCompressor;
+import io.netty.handler.codec.http.HttpRequestDecoder;
+import io.netty.handler.codec.http.HttpResponseEncoder;
 
 public class JCHttpServer extends ServerImpl implements JCServer {
 
 	private static Logger logger = LoggerFactory.getLogger(JCSocketServer.class);
+	
+	boolean ssl = false;
 
 	public JCHttpServer() {
 		this.modconf = new ServerMod();
 		this.modconf.setProxy_entry("entry");
 		this.modconf.setProxy_path("/");
-		this.modconf.setServer_name("default server");
-		this.modconf.setServer_port(12345);
-		this.modconf.setServer_scheme(ServerCode.HTTP.toString());
+		this.modconf.setName("default server");
+		this.modconf.setPort(12345);
+		this.modconf.setScheme(ServerCode.HTTP.toString());
 	}
-	
+
 	public JCHttpServer(ServerMod mod) {
 		this.modconf = mod;
 	}
-	
+
 	@Override
 	public ServerCode defServerCode() {
 		return ServerCode.HTTP;
@@ -49,10 +51,9 @@ public class JCHttpServer extends ServerImpl implements JCServer {
 	public void start() {
 		EventLoopGroup accGroup = new NioEventLoopGroup();
 		EventLoopGroup workerGroup = new NioEventLoopGroup();
-
 		try {
+			super.start();
 			final ServerBootstrap server = new ServerBootstrap();
-
 			server.group(accGroup, workerGroup) // 组装NioEventLoopGroup
 					.channel(NioServerSocketChannel.class) // 设置channel类型为NIO类型
 					.option(ChannelOption.SO_BACKLOG, 1024) // 连接队列长度
@@ -61,21 +62,25 @@ public class JCHttpServer extends ServerImpl implements JCServer {
 					.childHandler(new ChannelInitializer<NioSocketChannel>() {
 						@Override
 						protected void initChannel(NioSocketChannel ch) {
-							// 配置入站、出站事件channel
-							ChannelPipeline pipeline = ch.pipeline();
-							// 编解码的处理
-							pipeline.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
-							pipeline.addLast(new LengthFieldPrepender(4));
-							pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
-							pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));
+//							ch.pipeline().addLast("codec", new HttpServerCodec());
+//							ch.pipeline().addLast("aggregator", new HttpObjectAggregator(65536));
+//							ch.pipeline().addLast("handler", new JCHttpHandler()); // 业务handler
+							
+							ch.pipeline().addLast("decoder", new HttpRequestDecoder());
+							ch.pipeline().addLast("encoder", new HttpResponseEncoder());
+							ch.pipeline().addLast("deflater", new HttpContentCompressor());
 
-							// 业务处理器
-							pipeline.addLast(new StringHandler());
+							ch.pipeline().addLast("handler", new JcMultiPartHandler()); // 业务handler
 						}
 					});
+
+			int port = modconf.getPort();
+			ChannelFuture channelFuture = server.bind(new InetSocketAddress(port)).sync();
 			
-			int port = modconf.getServer_port();
-			ChannelFuture channelFuture = server.bind(port).sync();
+			if (channelFuture.isSuccess()) {
+				SocketAddress net_address = channelFuture.channel().localAddress();
+				logger.info("jc server start success:" + net_address);
+			}
 			channelFuture.channel().closeFuture().sync();
 		} catch (Exception e) {
 			logger.error("http server start error:", e);
@@ -83,6 +88,12 @@ public class JCHttpServer extends ServerImpl implements JCServer {
 			accGroup.shutdownGracefully();
 			workerGroup.shutdownGracefully();
 		}
+	}
+
+	public static void main(String[] argc) throws InterruptedException {
+		System.out.println(System.getProperty("java.class.path"));
+		JCServer server = new JCHttpServer();
+		server.start();
 	}
 
 }

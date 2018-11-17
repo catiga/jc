@@ -8,8 +8,6 @@ public class FkConf {
 	
 	List<ServerMod> servers;
 	
-	List<AppMod> apps;
-
 	public Ins getIns() {
 		return ins;
 	}
@@ -26,12 +24,4 @@ public class FkConf {
 		this.servers = servers;
 	}
 
-	public List<AppMod> getApps() {
-		return apps;
-	}
-
-	public void setApps(List<AppMod> apps) {
-		this.apps = apps;
-	}
-	
 }

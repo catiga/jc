@@ -5,33 +5,48 @@
 		"ins_auth_key": "cert key",
 		"ins_ver": "ver number"
 	},
-	"servers":[
+	"servers": [
 		{
-		"server_name":"",
-		"server_scheme":"http",
-		"server_port":9000,
-		"proxy_entry": "entry",
-		"proxy_path": "/",
-		"logs": "~/"
+			"name": "",
+			"scheme": "http",
+			"host": "",
+			"port": 9000,
+			"proxy_entry": "entry",
+			"proxy_path": "/",
+			"logs": "~/",
+			"apps": [
+				{
+					"app_id": "99019928",
+					"app_code": "project",
+					"app_name": "系统管理",
+					"dev_name": "jeancoder",
+					"org_name": "jeancoder",
+					"app_ver": "1.0",
+					"source_type": "source|binary",
+					"lans": "java|groovy"
+				}
+			]
 		},
 		{
-		"server_name":"",
-		"server_scheme":"socket",
-		"server_port":9001,
-		"proxy_entry": "entry",
-		"proxy_path": "/",
-		"logs": "~/"
-		}
-	],
-	"apps":[
-		{
-		"app_code":"",
-		"app_name":"",
-		"dev_name":"",
-		"org_name":"",
-		"app_ver":"",
-		"source_type":"source|binary",
-		"lans":"java|groovy"
+			"name": "",
+			"scheme": "socket",
+			"host": "",
+			"port": 9001,
+			"proxy_entry": "entry",
+			"proxy_path": "/",
+			"logs": "~/",
+			"apps": [
+				{
+					"app_id": "99019928",
+					"app_code": "project",
+					"app_name": "系统管理",
+					"dev_name": "jeancoder",
+					"org_name": "jeancoder",
+					"app_ver": "1.0",
+					"source_type": "source|binary",
+					"lans": "java|groovy"
+				}
+			]
 		}
 	]
 }

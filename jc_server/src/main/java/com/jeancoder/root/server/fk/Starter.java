@@ -15,7 +15,7 @@ import com.jeancoder.root.server.proto.conf.ServerMod;
 
 public class Starter {
 
-	static String appConf = "ins.server.json";
+	final static String appConf = "ins.server.json";
 	
 	final static List<JCServer> iservers = new ArrayList<JCServer>();
 	
@@ -34,18 +34,15 @@ public class Starter {
 			Gson gson = new Gson();
 			FkConf fk_con = gson.fromJson(buff.toString(), FkConf.class);
 			
-			int server_count = 0;
 			synchronized (_starter_lock_) {
 				for(ServerMod sm : fk_con.getServers()) {
 					JCServer server = ServerFactory.generate(sm);
 					iservers.add(server);
-					final int tmp = server_count++;
 					new Thread(new Runnable() {
 						
 						@Override
 						public void run() {
 							server.start();
-							System.out.println("server " + tmp + " started");
 						}
 					}).start();
 				}

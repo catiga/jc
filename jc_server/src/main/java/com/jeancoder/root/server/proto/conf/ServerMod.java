@@ -1,41 +1,55 @@
 package com.jeancoder.root.server.proto.conf;
 
+import java.util.List;
+
 public class ServerMod {
 
-	String server_name;
+	String name;
 	
-	String server_scheme;
+	String scheme;
 	
-	Integer server_port;
+	String host;
+	
+	Integer port;
 	
 	String proxy_entry;
 	
 	String proxy_path;
 	
 	String logs;
+	
+	List<AppMod> apps;
 
-	public String getServer_name() {
-		return server_name;
+	public String getName() {
+		return name;
 	}
 
-	public void setServer_name(String server_name) {
-		this.server_name = server_name;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getServer_scheme() {
-		return server_scheme;
+	public String getScheme() {
+		return scheme;
 	}
 
-	public void setServer_scheme(String server_scheme) {
-		this.server_scheme = server_scheme;
+	public void setScheme(String scheme) {
+		this.scheme = scheme;
 	}
 
-	public Integer getServer_port() {
-		return server_port;
+	public String getHost() {
+		return host;
 	}
 
-	public void setServer_port(Integer server_port) {
-		this.server_port = server_port;
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	public Integer getPort() {
+		return port;
+	}
+
+	public void setPort(Integer port) {
+		this.port = port;
 	}
 
 	public String getProxy_entry() {
@@ -60,6 +74,14 @@ public class ServerMod {
 
 	public void setLogs(String logs) {
 		this.logs = logs;
+	}
+
+	public List<AppMod> getApps() {
+		return apps;
+	}
+
+	public void setApps(List<AppMod> apps) {
+		this.apps = apps;
 	}
 	
 }

@@ -7,9 +7,9 @@ import com.jeancoder.root.server.proto.conf.ServerMod;
 public class ServerFactory {
 
 	public static JCServer generate(ServerMod mod) {
-		if(mod.getServer_scheme().equalsIgnoreCase(ServerCode.SOCKET.toString())) {
+		if(mod.getScheme().equalsIgnoreCase(ServerCode.SOCKET.toString())) {
 			return new JCSocketServer(mod);
-		} else if(mod.getServer_scheme().equalsIgnoreCase(ServerCode.HTTP.toString())) {
+		} else if(mod.getScheme().equalsIgnoreCase(ServerCode.HTTP.toString())) {
 			return new JCHttpServer(mod);
 		}
 		throw new RuntimeException("unsupport server code.");
