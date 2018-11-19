@@ -6,7 +6,6 @@ import java.net.SocketAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jeancoder.root.server.comm.socket.JCSocketServer;
 import com.jeancoder.root.server.inet.JCServer;
 import com.jeancoder.root.server.inet.ServerCode;
 import com.jeancoder.root.server.inet.ServerImpl;
@@ -21,15 +20,17 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.HttpContentCompressor;
+import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.stream.ChunkedWriteHandler;
 
 public class JCHttpServer extends ServerImpl implements JCServer {
 
-	private static Logger logger = LoggerFactory.getLogger(JCSocketServer.class);
+	private static Logger logger = LoggerFactory.getLogger(JCHttpServer.class);
 	
 	boolean ssl = false;
-
+	
 	public JCHttpServer() {
 		this.modconf = new ServerMod();
 		this.modconf.setProxy_entry("entry");
@@ -56,21 +57,23 @@ public class JCHttpServer extends ServerImpl implements JCServer {
 			final ServerBootstrap server = new ServerBootstrap();
 			server.group(accGroup, workerGroup) // 组装NioEventLoopGroup
 					.channel(NioServerSocketChannel.class) // 设置channel类型为NIO类型
+					.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 20 * 1000)// 连接超时，单位毫秒
 					.option(ChannelOption.SO_BACKLOG, 1024) // 连接队列长度
-					.childOption(ChannelOption.SO_KEEPALIVE, true).childOption(ChannelOption.TCP_NODELAY, true)
+					.option(ChannelOption.SO_REUSEADDR, true)
+					.childOption(ChannelOption.SO_KEEPALIVE, true)
+					.childOption(ChannelOption.TCP_NODELAY, true)
 					.childOption(ChannelOption.SO_REUSEADDR, true)
 					.childHandler(new ChannelInitializer<NioSocketChannel>() {
 						@Override
 						protected void initChannel(NioSocketChannel ch) {
-//							ch.pipeline().addLast("codec", new HttpServerCodec());
-//							ch.pipeline().addLast("aggregator", new HttpObjectAggregator(65536));
-//							ch.pipeline().addLast("handler", new JCHttpHandler()); // 业务handler
-							
 							ch.pipeline().addLast("decoder", new HttpRequestDecoder());
 							ch.pipeline().addLast("encoder", new HttpResponseEncoder());
+							ch.pipeline().addLast("aggregator", new HttpObjectAggregator(2147483647));
+							ch.pipeline().addLast("chunkedWriter", new ChunkedWriteHandler());
 							ch.pipeline().addLast("deflater", new HttpContentCompressor());
-
-							ch.pipeline().addLast("handler", new JcMultiPartHandler()); // 业务handler
+							ch.pipeline().addLast("handler", new DispatcherHandler());
+							
+							//ch.pipeline().addLast("handler", new JcMultiPartHandler()); // 业务handler
 						}
 					});
 

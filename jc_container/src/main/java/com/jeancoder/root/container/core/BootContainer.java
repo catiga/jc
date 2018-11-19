@@ -1,5 +1,7 @@
 package com.jeancoder.root.container.core;
 
+import java.lang.reflect.Constructor;
+
 import com.jeancoder.app.sdk.Interceptor.JCInterceptorStack;
 import com.jeancoder.app.sdk.configure.DevConfigureReader;
 import com.jeancoder.app.sdk.configure.DevSysConfigProp;
@@ -7,6 +9,7 @@ import com.jeancoder.app.sdk.configure.DevSystemProp;
 import com.jeancoder.app.sdk.context.ApplicationContextPool;
 import com.jeancoder.app.sdk.context.JCApplicationContext;
 import com.jeancoder.app.sdk.power.DevPowerLoader;
+import com.jeancoder.app.sdk.source.jeancoder.SysSource;
 import com.jeancoder.core.common.Common;
 import com.jeancoder.core.configure.JeancoderConfigurer;
 import com.jeancoder.core.configure.PropType;
@@ -29,6 +32,10 @@ import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.container.loader.BootClassLoader;
 import com.jeancoder.root.container.loader.TypeDefClassLoader;
 import com.jeancoder.root.container.model.JCAPP;
+import com.jeancoder.root.io.http.JCHttpRequest;
+
+import groovy.lang.Binding;
+import groovy.lang.Script;
 
 public class BootContainer extends LifecycleZa implements JCAppContainer {
 
@@ -36,26 +43,55 @@ public class BootContainer extends LifecycleZa implements JCAppContainer {
 
 	static final Object _LOCK_ = new Object();
 
-	private TypeDefClassLoader containClassLoader = null;
+	protected TypeDefClassLoader containClassLoader = null;
+	
+	volatile String state = STATE_READY;
+	
+	@Override
+	public String id() {
+		return appins.getId() + ":" + appins.getCode();
+	}
+
+	protected String state() {
+		return state;
+	}
 
 	JCAPP appins;
 
-	public BootContainer(JCAPP appins) {
+	protected BootContainer(JCAPP appins) {
 		bindBaseEnv();
 		this.appins = appins;
-		this.onLoad();
-		containClassLoader = new TypeDefClassLoader(rootLoader, appins);
+		this.onInit();
 		this.onStart();
 	}
 
 	@Override
-	public void onLoad() {
-
+	public Object execute(JCHttpRequest req) {
+		String app_path = req.getContextPath();
+		try {
+			SysSource.setClassLoader(containClassLoader.getAppClassLoader());
+			Class executor = containClassLoader.getAppClassLoader().findClass("com.jeancoder.project.entry.test");
+			
+			Binding context = new Binding();
+		    Constructor constructor = executor.getConstructor(Binding.class);
+		    Script script = (Script)executor.newInstance();
+	        Object result = script.run();
+	        return result;
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override
 	public void onStart() {
-		super.onStart();
+		synchronized(_LOCK_) {
+			if(!state.equals(STATE_INITED)) {
+				throwCause(null);
+			}
+			state = STATE_STARTING;
+		}
 		String appPath = appins.getApp_base();
 		DevConfigureReader.init(appPath, "appcode");
 		// //初始化系统能力
@@ -108,6 +144,8 @@ public class BootContainer extends LifecycleZa implements JCAppContainer {
 		// 执行初始化文件
 		JCInterceptorStack.setNamerApplication(app1);
 		JCThreadLocal.setCode(app1.getAppCode());
+		
+		state = STATE_RUNNING;
 	}
 
 	@Override
@@ -123,5 +161,35 @@ public class BootContainer extends LifecycleZa implements JCAppContainer {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void onInit() {
+		synchronized (_LOCK_) {
+			if(!state.equals(STATE_READY)) {
+				throwCause(null);
+			}
+			containClassLoader = new TypeDefClassLoader(rootLoader, appins);
+			state = STATE_INITED;
+		}
+	}
+
+	@Override
+	public void onStop() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	protected void throwCause(String msg) {
+		if(msg==null) {
+			msg = "CONTAINER STATUS INVALID";
+		}
+		throw new RuntimeException(msg);
 	}
 }

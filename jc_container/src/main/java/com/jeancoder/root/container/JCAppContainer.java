@@ -1,8 +1,12 @@
 package com.jeancoder.root.container;
 
-public interface JCAppContainer extends Lifecycle {
+import com.jeancoder.root.io.http.JCHttpRequest;
 
-	void onLoad();
+public interface JCAppContainer extends Lifecycle {
 	
 	ClassLoader getManager();
+	
+	String id();
+	
+	Object execute(JCHttpRequest req);
 }

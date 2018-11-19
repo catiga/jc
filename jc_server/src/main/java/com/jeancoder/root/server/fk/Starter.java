@@ -19,8 +19,6 @@ public class Starter {
 	
 	final static List<JCServer> iservers = new ArrayList<JCServer>();
 	
-	final static Object _starter_lock_ = new Object();
-	
 	public static void main(String[] argc) {
 		try {
 			InputStream ins = Starter.class.getClassLoader().getResourceAsStream(appConf);
@@ -34,18 +32,16 @@ public class Starter {
 			Gson gson = new Gson();
 			FkConf fk_con = gson.fromJson(buff.toString(), FkConf.class);
 			
-			synchronized (_starter_lock_) {
-				for(ServerMod sm : fk_con.getServers()) {
-					JCServer server = ServerFactory.generate(sm);
-					iservers.add(server);
-					new Thread(new Runnable() {
-						
-						@Override
-						public void run() {
-							server.start();
-						}
-					}).start();
-				}
+			for(ServerMod sm : fk_con.getServers()) {
+				JCServer server = ServerFactory.generate(sm);
+				iservers.add(server);
+				new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						server.start();
+					}
+				}).start();
 			}
 			while(true) {
 				TimeUnit.MILLISECONDS.sleep(10000L);

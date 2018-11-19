@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.jeancoder.root.container.model.JCAPP;
+import com.jeancoder.root.io.http.JCHttpRequest;
 
 public interface JCVM extends Lifecycle {
 
@@ -13,4 +14,7 @@ public interface JCVM extends Lifecycle {
 	public Map<String, JCAppContainer> getContainers();
 	
 	public void setInitApps(List<JCAPP> appList);
+	
+	public void dispatch(JCHttpRequest req);
+	
 }

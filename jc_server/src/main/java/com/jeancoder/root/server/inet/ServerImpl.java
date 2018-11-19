@@ -13,7 +13,7 @@ public abstract class ServerImpl implements JCServer {
 
 	protected ServerMod modconf;
 	
-	protected JCVM jcvm;
+	public static JCVM jcvm = StandardVM.getVM();
 	
 	private volatile int countRef = 0;
 	
@@ -34,20 +34,23 @@ public abstract class ServerImpl implements JCServer {
 	@Override
 	public void start() {
 		synchronized (this) {
-			jcvm = new StandardVM();
 			List<AppMod> apps = this.modconf.getApps();
 			List<JCAPP> convert_proto = new ArrayList<>();
 			if(apps!=null) {
 				for(AppMod am : apps) {
 					String ampk = am.getApp_id() + am.getApp_code();
-					jcvm.getContainers().forEach((k, v)-> {
+					JCAPP jcapp = null;
+					for(String k : jcvm.getContainers().keySet()) {
 						if(!k.equals(ampk)) {
-							countRef++;
-							JCAPP jcapp = am.to();
-							jcapp.setLogbase(modconf.getLogs());
-							convert_proto.add(jcapp);
+							jcapp = am.to();
 						}
-					});
+					}
+					if(jcapp==null) {
+						jcapp = am.to();
+						jcapp.setLogbase(modconf.getLogs());
+						countRef++;
+						convert_proto.add(jcapp);
+					}
 				}
 			}
 			jcvm.setInitApps(convert_proto);
@@ -58,7 +61,7 @@ public abstract class ServerImpl implements JCServer {
 	@Override
 	public void shutdown() {
 		synchronized (this) {
-			this.jcvm.getContainers().forEach((k,v) -> {
+			jcvm.getContainers().forEach((k,v) -> {
 				if(countRef>0) {
 					countRef--;
 				}

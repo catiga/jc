@@ -13,7 +13,9 @@ import com.jeancoder.core.configure.PropType;
  */
 public class SysSource {
 	public static AppLoader classLoader;
-
+	
+	private static ThreadLocal<AppLoader> APP_CLASS_LOADERS = new ThreadLocal<AppLoader>();
+	
 	/**
 	 * 中央服务器下载地址 appcode sdk 中默认的appcode
 	 * 
@@ -46,11 +48,11 @@ public class SysSource {
 	 * @return
 	 */
 	public static AppLoader getClassLoader() {
-		return classLoader;
+		return APP_CLASS_LOADERS.get();
 	}
 
 	public static void setClassLoader(AppLoader cc) {
-		classLoader = cc;
+		APP_CLASS_LOADERS.set(cc);
 	}
 
 	public static boolean isRootPrject() {

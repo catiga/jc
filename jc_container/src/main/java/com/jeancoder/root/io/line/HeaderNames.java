@@ -1,4 +1,4 @@
-package com.jeancoder.root.server.comm.http;
+package com.jeancoder.root.io.line;
 
 public final class HeaderNames {
     /**

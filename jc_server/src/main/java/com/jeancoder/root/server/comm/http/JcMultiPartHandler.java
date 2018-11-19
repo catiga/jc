@@ -1,10 +1,12 @@
 package com.jeancoder.root.server.comm.http;
 
-import static com.jeancoder.root.server.comm.http.HeaderNames.CONNECTION;
-import static com.jeancoder.root.server.comm.http.HeaderNames.CONTENT_LENGTH;
-import static com.jeancoder.root.server.comm.http.HeaderNames.CONTENT_TYPE;
-import static com.jeancoder.root.server.comm.http.HeaderNames.COOKIE;
-import static com.jeancoder.root.server.comm.http.HeaderNames.SET_COOKIE;
+import static com.jeancoder.root.io.line.HeaderNames.CONNECTION;
+import static com.jeancoder.root.io.line.HeaderNames.CONTENT_LENGTH;
+import static com.jeancoder.root.io.line.HeaderNames.CONTENT_TYPE;
+import static com.jeancoder.root.io.line.HeaderNames.COOKIE;
+import static com.jeancoder.root.io.line.HeaderNames.SET_COOKIE;
+import static com.jeancoder.root.io.line.HeaderValues.CLOSE;
+import static com.jeancoder.root.io.line.HeaderValues.KEEP_ALIVE;
 import static io.netty.buffer.Unpooled.copiedBuffer;
 //import static io.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
 //import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
@@ -294,9 +296,9 @@ public class JcMultiPartHandler extends SimpleChannelInboundHandler<HttpObject> 
 		responseContent.setLength(0);
 
 		// Decide whether to close the connection or not.
-		boolean close = headers.contains(CONNECTION, HeaderValues.CLOSE, true)
+		boolean close = headers.contains(CONNECTION, CLOSE, true)
 				|| request.protocolVersion().equals(HttpVersion.HTTP_1_0)
-						&& !headers.contains(CONNECTION, HeaderValues.KEEP_ALIVE, true);
+						&& !headers.contains(CONNECTION, KEEP_ALIVE, true);
 
 		// Build the response object.
 		FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, buf);
