@@ -1,6 +1,7 @@
 package com.jeancoder.root.container.core;
 
-import java.lang.reflect.Constructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jeancoder.app.sdk.Interceptor.JCInterceptorStack;
 import com.jeancoder.app.sdk.configure.DevConfigureReader;
@@ -13,6 +14,7 @@ import com.jeancoder.app.sdk.source.jeancoder.SysSource;
 import com.jeancoder.core.common.Common;
 import com.jeancoder.core.configure.JeancoderConfigurer;
 import com.jeancoder.core.configure.PropType;
+import com.jeancoder.core.http.JCRequest;
 import com.jeancoder.core.http.JCThreadLocal;
 import com.jeancoder.core.namer.DevLang;
 import com.jeancoder.core.namer.FetchWay;
@@ -37,19 +39,19 @@ import com.jeancoder.root.io.http.JCHttpRequest;
 import groovy.lang.Binding;
 import groovy.lang.Script;
 
-public class BootContainer extends LifecycleZa implements JCAppContainer {
+public class BootContainer extends DefaultContainer implements JCAppContainer {
 
+	private static Logger logger = LoggerFactory.getLogger(BootContainer.class);
+	
 	private static BootClassLoader rootLoader = null;
 
 	static final Object _LOCK_ = new Object();
 
-	protected TypeDefClassLoader containClassLoader = null;
-	
 	volatile String state = STATE_READY;
 	
 	@Override
-	public String id() {
-		return appins.getId() + ":" + appins.getCode();
+	public BCID id() {
+		return BCID.generateKey(appins.getId(), appins.getCode());
 	}
 
 	protected String state() {
@@ -64,24 +66,31 @@ public class BootContainer extends LifecycleZa implements JCAppContainer {
 		this.onInit();
 		this.onStart();
 	}
-
+	
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object execute(JCHttpRequest req) {
-		String app_path = req.getContextPath();
+	public <T> T execute(JCHttpRequest req) {
+		SysSource.setClassLoader(containClassLoader.getAppClassLoader());
+		JCThreadLocal.setRequest(new JCRequest(req));
 		try {
-			SysSource.setClassLoader(containClassLoader.getAppClassLoader());
-			Class executor = containClassLoader.getAppClassLoader().findClass("com.jeancoder.project.entry.test");
-			
+			Class<?> executor = this.transferPathToIns(req);
 			Binding context = new Binding();
-		    Constructor constructor = executor.getConstructor(Binding.class);
+		    //Constructor<?> constructor = executor.getConstructor(Binding.class);
+		    //entry for run must be Script type;
 		    Script script = (Script)executor.newInstance();
+		    script.setBinding(context);
 	        Object result = script.run();
-	        return result;
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	        return (T)result;
+		} catch (InstantiationException | IllegalAccessException e) {
+			logger.error("", e);
+			throw new RuntimeException(e);
+		} catch (ClassNotFoundException nfex) {
+			// TODO SPECIAL 404 NOTFOUND ERROR
+			return null;
+		} catch (Exception ex) {
+			// TODO SPECIAL 500 BIZ ERROR
+			return null;
 		}
-		return null;
 	}
 
 	@Override

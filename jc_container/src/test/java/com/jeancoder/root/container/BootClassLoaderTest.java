@@ -7,6 +7,7 @@ import com.jeancoder.root.container.loader.BootClassLoader;
 
 public class BootClassLoaderTest {
 
+	@SuppressWarnings({ "resource", "rawtypes", "unchecked", "unused" })
 	public static void main(String[] argc) throws Exception {
 		//String s = "file://Users/jackielee/Documents/dev_workspace/92yp_app_project/target/classes";
 		

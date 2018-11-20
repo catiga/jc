@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 import com.jeancoder.root.server.inet.JCServer;
 import com.jeancoder.root.server.inet.ServerFactory;
@@ -15,6 +18,8 @@ import com.jeancoder.root.server.proto.conf.ServerMod;
 
 public class Starter {
 
+	private static Logger logger = LoggerFactory.getLogger(Starter.class);
+	
 	final static String appConf = "ins.server.json";
 	
 	final static List<JCServer> iservers = new ArrayList<JCServer>();
@@ -48,7 +53,7 @@ public class Starter {
 				System.out.println(iservers);
 			}
 		} catch(Exception e) {
-			e.printStackTrace();
+			logger.error("start error:", e);
 		}
 	}
 }

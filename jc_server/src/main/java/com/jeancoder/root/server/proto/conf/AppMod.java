@@ -19,6 +19,8 @@ public class AppMod {
 	String source_type;
 	
 	String lans;
+	
+	String app_base;	//support folder and zip file
 
 	public String getApp_id() {
 		return app_id;
@@ -84,6 +86,14 @@ public class AppMod {
 		this.lans = lans;
 	}
 	
+	protected String getApp_base() {
+		return app_base;
+	}
+
+	protected void setApp_base(String app_base) {
+		this.app_base = app_base;
+	}
+
 	public JCAPP to() {
 		JCAPP jcapp = null;
 		if(this!=null) {
@@ -96,6 +106,7 @@ public class AppMod {
 			jcapp.setOrg(this.getOrg_name());
 			jcapp.setSource_type(this.getSource_type());
 			jcapp.setVer(this.getApp_ver());
+			jcapp.setApp_base(this.getApp_base());
 		}
 		return jcapp;
 	}

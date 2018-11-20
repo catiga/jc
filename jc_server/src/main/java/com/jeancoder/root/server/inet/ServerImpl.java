@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jeancoder.root.container.JCVM;
+import com.jeancoder.root.container.core.BCID;
 import com.jeancoder.root.container.core.StandardVM;
 import com.jeancoder.root.container.model.JCAPP;
 import com.jeancoder.root.server.proto.conf.AppMod;
@@ -38,10 +39,11 @@ public abstract class ServerImpl implements JCServer {
 			List<JCAPP> convert_proto = new ArrayList<>();
 			if(apps!=null) {
 				for(AppMod am : apps) {
-					String ampk = am.getApp_id() + am.getApp_code();
+					//String amid = am.getApp_id();
+					String amcode = am.getApp_code();
 					JCAPP jcapp = null;
-					for(String k : jcvm.getContainers().keySet()) {
-						if(!k.equals(ampk)) {
+					for(BCID k : jcvm.getContainers().keySet()) {
+						if(!k.code().equals(amcode)) {
 							jcapp = am.to();
 						}
 					}

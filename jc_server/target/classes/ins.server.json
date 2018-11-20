@@ -23,7 +23,8 @@
 					"org_name": "jeancoder",
 					"app_ver": "1.0",
 					"source_type": "source|binary",
-					"lans": "java|groovy"
+					"lans": "java|groovy",
+					"app_base":"/Users/jackielee/Documents/dev_workspace/92yp_app_project"
 				}
 			]
 		},
@@ -44,7 +45,8 @@
 					"org_name": "jeancoder",
 					"app_ver": "1.0",
 					"source_type": "source|binary",
-					"lans": "java|groovy"
+					"lans": "java|groovy",
+					"app_base":"/Users/jackielee/Documents/dev_workspace/92yp_app_project"
 				}
 			]
 		}

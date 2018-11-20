@@ -19,6 +19,7 @@ import groovy.lang.Script;
 
 public class AppClassLoaderTest {
 
+	@SuppressWarnings({ "resource", "rawtypes", "unchecked", "unused" })
 	public static void main(String[] argc) throws Exception {
 		BootClassLoader root_class = new BootClassLoader(Thread.currentThread().getContextClassLoader());
 		JCAPP appins = new JCAPP();

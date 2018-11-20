@@ -47,7 +47,6 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 	private static Logger logger = LoggerFactory.getLogger(DispatcherHandler.class);
 	
 	private HttpRequest request;
-	protected FullHttpResponse response;
 	private HttpHeaders headers;
 
 	protected boolean readingChunks;
@@ -102,13 +101,14 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 		InetSocketAddress remote = (InetSocketAddress)ctx.channel().remoteAddress();
 		JCHttpRequest stand_request = new JCHttpRequest((FullHttpRequest)request);
 		stand_request.setRemoteHost(remote);
+		JCHttpResponse stand_response = new JCHttpResponse();
 		
-		JCVMDelegator.delegate().getVM().dispatch(stand_request);
+		Object html = JCVMDelegator.delegate().getVM().dispatch(stand_request, stand_response);
 		
-        JCHttpResponse ret_response = new JCHttpResponse();
-        logger.info(ret_response.toString());
+        logger.info(stand_response.toString());
 		
-        writeResponse(ctx, HttpResponseStatus.OK, "end.", true);
+        //writeResponse(ctx, HttpResponseStatus.OK, "end.", true);
+        writeHtmlResponse(ctx, HttpResponseStatus.OK, html.toString(), true);
     }
 	
 	
@@ -117,6 +117,15 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 		FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, buf);
 
 		response.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
+		response.headers().set(CONTENT_LENGTH, buf.readableBytes());
+		ctx.channel().writeAndFlush(response);
+	}
+	
+	private void writeHtmlResponse(ChannelHandlerContext ctx, HttpResponseStatus status, String msg, boolean forceClose) {
+		ByteBuf buf = copiedBuffer(msg, CharsetUtil.UTF_8);
+		FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, buf);
+
+		response.headers().set(CONTENT_TYPE, "text/html; charset=UTF-8");
 		response.headers().set(CONTENT_LENGTH, buf.readableBytes());
 		ctx.channel().writeAndFlush(response);
 	}

@@ -4,17 +4,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.jeancoder.root.container.core.BCID;
 import com.jeancoder.root.container.model.JCAPP;
 import com.jeancoder.root.io.http.JCHttpRequest;
+import com.jeancoder.root.io.http.JCHttpResponse;
 
 public interface JCVM extends Lifecycle {
 
-	static Map<String, JCAppContainer> VM_CONTAINERS = new ConcurrentHashMap<String, JCAppContainer>();
+	static Map<BCID, JCAppContainer> VM_CONTAINERS = new ConcurrentHashMap<BCID, JCAppContainer>();
 	
-	public Map<String, JCAppContainer> getContainers();
+	public Map<BCID, JCAppContainer> getContainers();
 	
 	public void setInitApps(List<JCAPP> appList);
 	
-	public void dispatch(JCHttpRequest req);
+	public  <T> T dispatch(JCHttpRequest req, JCHttpResponse res);
 	
 }

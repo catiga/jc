@@ -1,8 +1,5 @@
 package com.jeancoder.root.container;
 
-import com.jeancoder.root.container.core.BootContainer;
-import com.jeancoder.root.container.model.JCAPP;
-
 public class AppClassLoaderTest3 {
 
 	public static void main(String[] argc) throws Exception {
@@ -39,9 +36,9 @@ public class AppClassLoaderTest3 {
 //		System.out.println(clsses);
 		
 
-		JCAPP appins = new JCAPP();
-		BootContainer bc = new BootContainer(appins);
-		bc.onStart();
+//		JCAPP appins = new JCAPP();
+//		BootContainer bc = new BootContainer(appins);
+//		bc.onStart();
 	}
 
 }

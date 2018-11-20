@@ -20,7 +20,7 @@ public class JCAPP {
 	
 	String logbase;
 	
-	String app_base = "/Users/jackielee/Documents/dev_workspace/92yp_app_project";
+	String app_base = null;
 	
 	String dyc_base = ".";
 	

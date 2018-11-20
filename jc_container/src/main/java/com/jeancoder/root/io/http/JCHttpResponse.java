@@ -12,9 +12,11 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Created by LG on 2017/12/4.
- */
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpVersion;
+
 public class JCHttpResponse implements HttpServletResponse {
 
     private String contentType;
@@ -28,10 +30,17 @@ public class JCHttpResponse implements HttpServletResponse {
     private StringWriter writer;
 
     private Map<String, String> headers = new HashMap<String, String>();
+    
+    private HttpResponse response;
 
     public JCHttpResponse() {
+    	response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
     }
 
+    public JCHttpResponse(HttpResponse response) {
+    	this.response = response;
+    }
+    
     public Map<String, String> getHeaders() {
         return headers;
     }
