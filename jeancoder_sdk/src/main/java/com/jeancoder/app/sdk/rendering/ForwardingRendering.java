@@ -3,15 +3,24 @@ package com.jeancoder.app.sdk.rendering;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.jeancoder.core.http.JCRequest;
 import com.jeancoder.core.rendering.Rendering;
-import com.jeancoder.core.result.Result;
+import com.jeancoder.root.io.http.JCHttpResponse;
 
-public class ForwardingRendering implements Rendering {
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.HttpResponseStatus;
+
+public class ForwardingRendering extends DefaultRendering implements Rendering {
+
+	public ForwardingRendering(ChannelHandlerContext context) {
+		super(context);
+	}
 
 	@Override
-	public void process(HttpServletRequest request, HttpServletResponse response, Result result) throws Exception {
-		request.getRequestDispatcher(new JCRequest(request).getContextPath() + "/" + result.getResult()).forward(request, response);
+	public Object process(HttpServletRequest request, HttpServletResponse response) {
+		super.process(request, response);
+		//Result result = this.runningResult;
+		this.writeResponse(HttpResponseStatus.OK, (JCHttpResponse)response, true);
+		return null;
 	}
 
 }

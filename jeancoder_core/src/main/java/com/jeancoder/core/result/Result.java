@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Result {
 	
-	private ResultType resultType;
+	private ResultType resultType = ResultType.NULL;
 	
 	private Object data;
 	
@@ -82,8 +82,22 @@ public class Result {
 		return this;
 	}
 	
-
 	public Map<String, Object> getDataMap() {
 		return dataMap;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T extends Result> T convert(Object general) {
+		if(general==null) {
+			return (T)new Result();
+		} else {
+			if(!(general instanceof Result)) {
+				Result result = new Result();
+				result.setData(general);
+				result.resultType = ResultType.DATA_RESOURCE;
+				return (T)result;
+			}
+			return (T)general;
+		}
 	}
 }

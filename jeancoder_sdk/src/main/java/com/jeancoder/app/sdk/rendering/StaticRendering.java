@@ -11,21 +11,37 @@ import javax.servlet.http.HttpServletResponse;
 import com.jeancoder.core.rendering.Rendering;
 import com.jeancoder.core.result.Result;
 import com.jeancoder.core.util.HttpUtil;
+import com.jeancoder.root.io.http.JCHttpResponse;
 
-public class StaticRendering implements Rendering{
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.HttpResponseStatus;
+
+public class StaticRendering extends DefaultRendering implements Rendering {
+
+	public StaticRendering(ChannelHandlerContext context) {
+		super(context);
+	}
 
 	@Override
-	public void process(HttpServletRequest request, HttpServletResponse response, Result result) throws Exception {
-		response.setContentType(HttpUtil.getContentType(result.getResult()));
-		BufferedInputStream fis = new BufferedInputStream(new FileInputStream(new File(result.getResult())));
-		OutputStream os = response.getOutputStream();
-		int len ;
-        byte[] _byte = new byte[128];
-        while ((len = fis.read(_byte)) > 0){
-        	os.write(_byte, 0, len);
-        }
-        os.flush();
-        fis.close();
+	public Object process(HttpServletRequest request, HttpServletResponse response) {
+		super.process(request, response);
+		Result result = this.runningResult.getResult();
+		try {
+			response.setContentType(HttpUtil.getContentType(result.getResult()));
+			BufferedInputStream fis = new BufferedInputStream(new FileInputStream(new File(result.getResult())));
+			OutputStream os = response.getOutputStream();
+			int len;
+			byte[] _byte = new byte[128];
+			while ((len = fis.read(_byte)) > 0) {
+				os.write(_byte, 0, len);
+			}
+			os.flush();
+			fis.close();
+			this.writeResponse(HttpResponseStatus.OK, (JCHttpResponse) response, true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

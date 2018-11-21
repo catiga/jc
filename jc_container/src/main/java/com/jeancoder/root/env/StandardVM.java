@@ -1,10 +1,10 @@
-package com.jeancoder.root.container.core;
+package com.jeancoder.root.env;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jeancoder.root.container.JCVM;
-import com.jeancoder.root.container.model.JCAPP;
+import com.jeancoder.root.vm.DefaultVm;
+import com.jeancoder.root.vm.JCVM;
 
 public class StandardVM extends DefaultVm implements JCVM {
 

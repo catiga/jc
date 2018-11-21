@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 import com.jeancoder.root.container.loader.AppClassLoader;
 import com.jeancoder.root.container.loader.BootClassLoader;
 import com.jeancoder.root.container.loader.TypeDefClassLoader;
-import com.jeancoder.root.container.model.JCAPP;
+import com.jeancoder.root.env.JCAPP;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyObject;

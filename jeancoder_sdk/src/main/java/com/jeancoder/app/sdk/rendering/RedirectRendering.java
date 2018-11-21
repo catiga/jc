@@ -1,8 +1,6 @@
 package com.jeancoder.app.sdk.rendering;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
+import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,9 +12,9 @@ import com.jeancoder.root.io.http.JCHttpResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
-public class StreamRendering extends DefaultRendering implements Rendering {
+public class RedirectRendering extends DefaultRendering implements Rendering {
 
-	public StreamRendering(ChannelHandlerContext context) {
+	public RedirectRendering(ChannelHandlerContext context) {
 		super(context);
 	}
 
@@ -25,19 +23,11 @@ public class StreamRendering extends DefaultRendering implements Rendering {
 		super.process(request, response);
 		Result result = this.runningResult.getResult();
 		try {
-			FileInputStream fis = new FileInputStream(new File(result.getResult()));
-			OutputStream os = response.getOutputStream();
-			int len;
-			byte[] _byte = new byte[1024];
-			while ((len = fis.read(_byte)) > 0) {
-				os.write(_byte, 0, len);
-			}
-			os.flush();
-			fis.close();
-			this.writeResponse(HttpResponseStatus.OK, (JCHttpResponse) response, true);
-		} catch (Exception e) {
+			((JCHttpResponse)response).sendRedirect(result.getResult());
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		this.writeResponse(HttpResponseStatus.OK, (JCHttpResponse)response, true);
 		return null;
 	}
 

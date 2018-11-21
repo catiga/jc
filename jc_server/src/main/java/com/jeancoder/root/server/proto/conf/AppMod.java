@@ -1,6 +1,6 @@
 package com.jeancoder.root.server.proto.conf;
 
-import com.jeancoder.root.container.model.JCAPP;
+import com.jeancoder.root.env.JCAPP;
 
 public class AppMod {
 

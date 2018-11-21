@@ -20,11 +20,22 @@
 					"app_code": "project",
 					"app_name": "系统管理",
 					"dev_name": "jeancoder",
-					"org_name": "jeancoder",
+					"org_name": "com",
 					"app_ver": "1.0",
-					"source_type": "source|binary",
+					"source_type": "binary",
 					"lans": "java|groovy",
 					"app_base":"/Users/jackielee/Documents/dev_workspace/92yp_app_project"
+				},
+				{
+					"app_id": "99011928",
+					"app_code": "scm",
+					"app_name": "商品管理",
+					"dev_name": "jeancoder",
+					"org_name": "com",
+					"app_ver": "1.0",
+					"source_type": "binary",
+					"lans": "java|groovy",
+					"app_base":"/Users/jackielee/Documents/dev_workspace/92yp_app_scm"
 				}
 			]
 		},

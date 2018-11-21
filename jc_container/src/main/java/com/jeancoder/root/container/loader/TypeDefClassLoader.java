@@ -8,8 +8,16 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jeancoder.core.cl.JCLoader;
-import com.jeancoder.root.container.model.JCAPP;
+import com.jeancoder.core.common.Common;
+import com.jeancoder.root.env.JCAPP;
+import com.jeancoder.root.state.JCAPPHolder;
+
+import groovy.lang.Binding;
+import groovy.lang.Script;
 
 /**
  * app lib loader
@@ -18,6 +26,8 @@ import com.jeancoder.root.container.model.JCAPP;
  */
 public class TypeDefClassLoader extends URLClassLoader implements JCLoader {
 
+	private static Logger logger = LoggerFactory.getLogger(TypeDefClassLoader.class);
+	
 	BootClassLoader parent = null;
 	
 	AppClassLoader appClassLoader = null;
@@ -30,6 +40,25 @@ public class TypeDefClassLoader extends URLClassLoader implements JCLoader {
 		this.appins = appins;
 		registerSysJars(appins.getApp_base() + "/" + appins.getLib_base());
 		this.appClassLoader = new AppClassLoader(this);
+		initByRes();
+	}
+	
+	protected void initByRes() {
+		JCAPPHolder.set(appins);	//not goods way, fuck
+		try {
+			Class<?> executor = appClassLoader.findClass(appins.getOrg() + "." + appins.getDever() + "." + appins.getCode() + "." + Common.INITIAL);
+			Binding context = new Binding();
+			Script script = (Script) executor.newInstance();
+			script.setBinding(context);
+			Object result = script.run();
+			logger.info("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") init success. Result=" + result);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") init error.", e);
+		} finally {
+			JCAPPHolder.clear();
+		}
 	}
 	
 	public TypeDefClassLoader(URL[] urls, BootClassLoader parent) {

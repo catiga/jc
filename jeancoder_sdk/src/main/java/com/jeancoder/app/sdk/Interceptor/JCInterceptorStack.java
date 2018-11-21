@@ -8,12 +8,11 @@ import java.util.Map;
 import com.jeancoder.core.Interceptor.Interceptor;
 import com.jeancoder.core.Interceptor.InterceptorStack;
 import com.jeancoder.core.common.Common;
-import com.jeancoder.core.exception.SdkRuntimeException;
-import com.jeancoder.core.namer.NamerApplication;
+import com.jeancoder.root.env.JCAPP;
+import com.jeancoder.root.state.JCAPPHolder;
 
 public class JCInterceptorStack implements InterceptorStack{
 	private static Map<String, List<Interceptor>> interceptorMap = new HashMap<String, List<Interceptor>>();
-	private static List<Interceptor> sysInterceptorList = new ArrayList<Interceptor>();
 	private static JCInterceptorStack jcInterceptorStackSingleton = new JCInterceptorStack();
 	
 	private JCInterceptorStack(){
@@ -22,38 +21,31 @@ public class JCInterceptorStack implements InterceptorStack{
 	/**
 	 * 系统变量加载拦截器时标志哪个APP加载的拦截器
 	 */
-	private static NamerApplication nameApplication = null;
+	//private static NamerApplication nameApplication = null;
 
 	@Override
 	public void addInterceptor(Interceptor interceptor) {
-		if (nameApplication == null && nameApplication.getAppCode() == null || nameApplication.getAppCode().equals("")) {
-			throw new SdkRuntimeException("appCode is null, add Interceptor failure.");
+		if(JCAPPHolder.get()!=null) {
+			JCAPP ins = JCAPPHolder.get();
+			List<Interceptor> interceptorList = interceptorMap.get(ins.getCode());
+			if (interceptorList == null) {
+				interceptorList = new ArrayList<Interceptor>();
+			}
+			String pre_clz = null;
+			if(interceptor.getPreResource()!=null) {
+				pre_clz = ins.getOrg() + "." + ins.getDever() + "." + ins.getCode() + "." + Common.INTERCEPTOR + "." + interceptor.getPreResource().replace("/", ".");
+			}
+			String pos_clz = null;
+			if(interceptor.getPostResource()!=null) {
+				pos_clz = ins.getOrg() + "." + ins.getDever() + "." + ins.getCode() + "." + Common.INTERCEPTOR + "." + interceptor.getPostResource().replace("/", ".");
+			}
+			interceptor.setPostResource(pos_clz);
+			interceptor.setPreResource(pre_clz);
+			interceptorList.add(interceptor);
+			interceptorMap.put(ins.getCode(), interceptorList);
 		}
-		List<Interceptor> interceptorList = interceptorMap.get(nameApplication.getAppCode());
-		if (interceptorList == null) {
-			interceptorList = new ArrayList<Interceptor>();
-		}
-		interceptorList.add(interceptor);
-		interceptorMap.put(nameApplication.getAppCode(), interceptorList);
 	}
 
-//	@Override
-//	public void addSysInterceptor(Interceptor interceptor) {
-//		if (nameApplication == null && nameApplication.getAppCode() == null || nameApplication.getAppCode().equals("")) {
-//			throw new SdkRuntimeException("appCode is null, add Interceptor failure.");
-//		}
-//		JCSystInterceptor jcSystInterceptor = new JCSystInterceptor();
-//		jcSystInterceptor.setPostResource(interceptor.getPostResource());
-//		jcSystInterceptor.setPreResource(interceptor.getPreResource());
-//		jcSystInterceptor.setAppCode(nameApplication.getAppCode());
-//		sysInterceptorList.add(jcSystInterceptor);
-//	}
-//	
-	
-	public static void setNamerApplication(NamerApplication nameApplicationValue){
-		nameApplication = nameApplicationValue;
-	}
-	
 	public static InterceptorStack getInterceptorStack(){
 		return jcInterceptorStackSingleton;
 	}
@@ -72,7 +64,7 @@ public class JCInterceptorStack implements InterceptorStack{
 		} else {
 			appInterceptorList =  new ArrayList<Interceptor>(interceptorMap.get(appCode));
 		}
-		return new JCInterceptorChain(new ArrayList<Interceptor>(sysInterceptorList), appInterceptorList);
+		return new JCInterceptorChain(appInterceptorList);
 	}
 	
 	/**
@@ -81,14 +73,6 @@ public class JCInterceptorStack implements InterceptorStack{
 	 */
 	public static void removeJCInterceptor(String appCode){
 		interceptorMap.remove(appCode);
-		List<Interceptor> list = new ArrayList<Interceptor>();
-		for (Interceptor i: sysInterceptorList) {
-			JCSystInterceptor sysInterceptor = (JCSystInterceptor)i;
-			if (appCode.equals(sysInterceptor.getAppCode())) {
-				continue;
-			}
-			list.add(i);
-		}
-		sysInterceptorList = list;
 	}
 }
+

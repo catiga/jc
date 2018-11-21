@@ -1,5 +1,9 @@
 package com.jeancoder.root.io.http;
 
+import static com.jeancoder.root.io.line.HeaderNames.LOCATION;
+import static com.jeancoder.root.io.line.HeaderNames.SET_COOKIE;
+import static com.jeancoder.root.io.line.HeaderNames.CONTENT_ENCODING;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -13,9 +17,11 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.cookie.DefaultCookie;
+import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 
 public class JCHttpResponse implements HttpServletResponse {
 
@@ -25,23 +31,33 @@ public class JCHttpResponse implements HttpServletResponse {
 
     private int status;
 
-    private String encoding = "ISO-8859-1";
+    private String encoding = "UTF-8";
 
     private StringWriter writer;
 
     private Map<String, String> headers = new HashMap<String, String>();
     
-    private HttpResponse response;
+    private FullHttpResponse response;
 
     public JCHttpResponse() {
     	response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
+    	response.headers().add(CONTENT_ENCODING, encoding);
     }
 
-    public JCHttpResponse(HttpResponse response) {
+    public JCHttpResponse(FullHttpResponse response) {
+    	response.headers().add(CONTENT_ENCODING, encoding);
     	this.response = response;
     }
     
-    public Map<String, String> getHeaders() {
+    public FullHttpResponse delegateObj() {
+		return response;
+	}
+    
+    public void replaceDelegateObj(FullHttpResponse new_res) {
+    	this.response = new_res;
+    }
+
+	public Map<String, String> getHeaders() {
         return headers;
     }
 
@@ -55,12 +71,6 @@ public class JCHttpResponse implements HttpServletResponse {
         setIntHeader("Content-Length", i);
     }
 
-    @Override
-	public void setContentLengthLong(long len) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public String getResult() {
         if (writer == null) {
             return "";
@@ -70,6 +80,26 @@ public class JCHttpResponse implements HttpServletResponse {
 
     @Override
     public void addCookie(Cookie cookie) {
+    	io.netty.handler.codec.http.cookie.Cookie net_coo = new DefaultCookie(cookie.getName(), cookie.getValue());
+    	if(cookie.getDomain()!=null) {
+    		net_coo.setDomain(cookie.getDomain());
+    	}
+    	if(cookie.getMaxAge()>0) {
+    		net_coo.setMaxAge(Long.valueOf(cookie.getMaxAge()));
+    	} else if(cookie.getMaxAge()==0) {
+    		net_coo.setMaxAge(0x0L);
+    	} else {
+    		net_coo.setMaxAge(io.netty.handler.codec.http.cookie.Cookie.UNDEFINED_MAX_AGE);
+    	}
+    	if(cookie.getPath()!=null) {
+    		net_coo.setPath(cookie.getPath());
+    	} else {
+    		net_coo.setPath("/");
+    	}
+    	
+    	String real_cookie = ServerCookieEncoder.STRICT.encode(net_coo);
+    	response.headers().add(SET_COOKIE, real_cookie);
+    	System.out.println(response);
     }
 
     @Override
@@ -118,7 +148,10 @@ public class JCHttpResponse implements HttpServletResponse {
     @Override
     public void sendRedirect(String s) throws IOException {
         setStatus(302);
-        setHeader("Location", s);
+        setHeader(LOCATION, s);
+        response.setStatus(HttpResponseStatus.FOUND);
+        response.headers().add(LOCATION, s);
+        
     }
 
     @Override

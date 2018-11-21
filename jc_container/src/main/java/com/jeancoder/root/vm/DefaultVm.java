@@ -1,4 +1,4 @@
-package com.jeancoder.root.container.core;
+package com.jeancoder.root.vm;
 
 import java.util.List;
 import java.util.Map;
@@ -8,12 +8,19 @@ import javax.servlet.http.Cookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jeancoder.app.sdk.rendering.RenderingFactory;
+import com.jeancoder.core.rendering.Rendering;
 import com.jeancoder.core.result.Result;
 import com.jeancoder.root.container.JCAppContainer;
-import com.jeancoder.root.container.JCVM;
-import com.jeancoder.root.container.model.JCAPP;
+import com.jeancoder.root.container.core.BCID;
+import com.jeancoder.root.container.core.LifecycleZa;
+import com.jeancoder.root.env.JCAPP;
+import com.jeancoder.root.env.RunnerResult;
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
+import com.jeancoder.root.manager.JCVMDelegator;
+
+import io.netty.channel.ChannelHandlerContext;
 
 public abstract class DefaultVm extends LifecycleZa implements JCVM {
 
@@ -35,7 +42,6 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 
 	@Override
 	public Result dispatch(JCHttpRequest req, JCHttpResponse res) {
-		// TODO Auto-generated method stub
 		logger.info("execute ......");
 		Object obj = req.getParameterMap();
 		logger.info(obj.toString());
@@ -55,24 +61,30 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 		System.out.println(req.getRequestURL());
 		System.out.println(query_string);
 		
-		Object exeresult = makeRun(req);
-		if(!(exeresult instanceof Result)) {
-			Result result = new Result();
-			result.setData(exeresult);
-			return result;
+		RunnerResult<Result> exeresult = makeRun(req, res);
+		
+		ChannelHandlerContext ctx = JCVMDelegator.getContext().getContext();
+		Rendering rendering = RenderingFactory.getRendering(ctx, exeresult);
+		try {
+			rendering.process(req, res);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
 		}
-		return (Result)exeresult;
+		return exeresult.getResult();
 	}
 	
-	protected <T> T makeRun(JCHttpRequest request) {
-		String app_context_path = request.getContextPath();
+	protected <T extends Result> RunnerResult<T> makeRun(JCHttpRequest req, JCHttpResponse res) {
+		String app_context_path = req.getContextPath();
 		for(BCID app : getContainers().keySet()) {
 			String app_code = app.code();
 			if(app_context_path.equals("/" + app_code)) {
 				JCAppContainer runner = getContainers().get(app);
-				return runner.execute(request);
+				RunnerResult<T> ret = runner.execute(req, res);
+				return ret;
 			}
 		}
 		return null;
 	}
+	
 }

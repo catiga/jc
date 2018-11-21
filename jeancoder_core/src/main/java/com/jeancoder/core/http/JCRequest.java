@@ -108,13 +108,7 @@ public class JCRequest {
 	}
 	
 	public  String getContextPath() {
-		String rootContextPath = request.getContextPath();
-		String servletPath = request.getPathInfo().replaceFirst("/", "");
-		String[] resource = servletPath.split("/");
-		if (resource.length > 0) {
-			return rootContextPath + "/" + resource[0];
-		}
-		return rootContextPath;
+		return request.getContextPath();
 	}
 	
 	public Object getAttribute(String name) {

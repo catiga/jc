@@ -1,4 +1,4 @@
-package com.jeancoder.root.container.model;
+package com.jeancoder.root.env;
 
 public class JCAPP {
 

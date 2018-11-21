@@ -62,7 +62,7 @@ public class JCHttpServer extends ServerImpl implements JCServer {
 					.option(ChannelOption.SO_REUSEADDR, true)
 					.childOption(ChannelOption.SO_KEEPALIVE, true)
 					.childOption(ChannelOption.TCP_NODELAY, true)
-					.childOption(ChannelOption.SO_REUSEADDR, true)
+					//.childOption(ChannelOption.SO_REUSEADDR, true)
 					.childHandler(new ChannelInitializer<NioSocketChannel>() {
 						@Override
 						protected void initChannel(NioSocketChannel ch) {
@@ -71,7 +71,8 @@ public class JCHttpServer extends ServerImpl implements JCServer {
 							ch.pipeline().addLast("aggregator", new HttpObjectAggregator(2147483647));
 							ch.pipeline().addLast("chunkedWriter", new ChunkedWriteHandler());
 							ch.pipeline().addLast("deflater", new HttpContentCompressor());
-							ch.pipeline().addLast("handler", new DispatcherHandler());
+							ch.pipeline().addLast("jciniter", new JCEnvHandler());
+							ch.pipeline().addLast("jcdispatcher", new DispatcherHandler());
 							
 							//ch.pipeline().addLast("handler", new JcMultiPartHandler()); // 业务handler
 						}

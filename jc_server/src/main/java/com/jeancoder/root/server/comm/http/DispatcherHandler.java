@@ -2,6 +2,8 @@ package com.jeancoder.root.server.comm.http;
 
 import static com.jeancoder.root.io.line.HeaderNames.CONTENT_LENGTH;
 import static com.jeancoder.root.io.line.HeaderNames.CONTENT_TYPE;
+import static com.jeancoder.root.io.line.HeaderNames.CONNECTION;
+import static com.jeancoder.root.io.line.HeaderValues.KEEP_ALIVE;
 import static io.netty.buffer.Unpooled.copiedBuffer;
 
 import java.io.File;
@@ -21,6 +23,7 @@ import com.jeancoder.root.io.http.JCHttpResponse;
 import com.jeancoder.root.manager.JCVMDelegator;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
@@ -30,6 +33,7 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.multipart.Attribute;
 import io.netty.handler.codec.http.multipart.DefaultHttpDataFactory;
@@ -58,6 +62,12 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 	private static final String FAVICON_ICO = "/favicon.ico";
 	private static final String ERROR = "error";
 	private static final String SUCCESS = "success";
+	
+	@Override
+	public void channelReadComplete(ChannelHandlerContext ctx) {
+		JCVMDelegator.releaseContext();
+		ctx.flush();
+	}
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -75,6 +85,7 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 		} else {
 			logger.info(ctx.channel().id().toString() + " is closed");
 		}
+		JCVMDelegator.releaseContext();
 		if (decoder != null) {
 			decoder.cleanFiles();
 		}
@@ -88,44 +99,56 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 	
 	static int i = 0;
 	
-	protected void messageReceived(ChannelHandlerContext ctx, HttpRequest requestObj) throws Exception {
+	protected void messageReceived(ChannelHandlerContext ctx, HttpRequest requestObj) {
 		logger.info(requestObj.hashCode() + "---" + System.identityHashCode(requestObj));
 		String uri_path = request.uri();
 		if (uri_path.equals(FAVICON_ICO)) {
 			return;
 		}
-
-		FullHttpRequest full_request = (FullHttpRequest)request;
-		full_request.headers();
-		
+		boolean keepAlive = HttpUtil.isKeepAlive(requestObj);
+		FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
+		JCHttpResponse stand_response = new JCHttpResponse(response);
 		InetSocketAddress remote = (InetSocketAddress)ctx.channel().remoteAddress();
-		JCHttpRequest stand_request = new JCHttpRequest((FullHttpRequest)request);
-		stand_request.setRemoteHost(remote);
-		JCHttpResponse stand_response = new JCHttpResponse();
+		try {
+			JCHttpRequest stand_request = new JCHttpRequest((FullHttpRequest)request);
+			stand_request.setRemoteHost(remote);
+			
+			JCVMDelegator.delegate().getVM().dispatch(stand_request, stand_response);
+		}catch(Exception e) {
+			logger.error("so should send msg by socket to center server:", e);
+			StringBuffer error_buffer = new StringBuffer();
+			error_buffer.append(e.getMessage() + "\r\n");
+			for(StackTraceElement ste : e.getStackTrace()) {
+				error_buffer.append("	at " + ste.getClassName() + "(" + ste.getFileName() + "" + ste.getLineNumber() + ")\r\n");
+			}
+			ByteBuf buf = copiedBuffer(error_buffer.toString().getBytes());
+			FullHttpResponse new_response = stand_response.delegateObj().replace(buf);
+			new_response.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
+			new_response.headers().set(CONTENT_LENGTH, buf.readableBytes());
+			new_response.setStatus(HttpResponseStatus.BAD_REQUEST);
+			stand_response.replaceDelegateObj(new_response);
+		} finally {
+			if(!keepAlive) {
+				ctx.writeAndFlush(stand_response.delegateObj()).addListener(ChannelFutureListener.CLOSE);
+			} else {
+				stand_response.delegateObj().headers().set(CONNECTION, KEEP_ALIVE);
+                ctx.write(stand_response.delegateObj());
+			}
+		}
 		
-		Object html = JCVMDelegator.delegate().getVM().dispatch(stand_request, stand_response);
-		
-        logger.info(stand_response.toString());
-		
-        //writeResponse(ctx, HttpResponseStatus.OK, "end.", true);
-        writeHtmlResponse(ctx, HttpResponseStatus.OK, html.toString(), true);
+//		if(stand_response.getStatus()==HttpResponseStatus.FOUND.code()) {
+//			sendRedirect(ctx, stand_response.getHeader(LOCATION));
+//		} else {
+//			writeHtmlResponse(ctx, HttpResponseStatus.OK, html.toString(), true);
+//		}
+		//ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
     }
-	
 	
 	private void writeResponse(ChannelHandlerContext ctx, HttpResponseStatus status, String msg, boolean forceClose) {
 		ByteBuf buf = copiedBuffer(msg, CharsetUtil.UTF_8);
 		FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, buf);
 
 		response.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
-		response.headers().set(CONTENT_LENGTH, buf.readableBytes());
-		ctx.channel().writeAndFlush(response);
-	}
-	
-	private void writeHtmlResponse(ChannelHandlerContext ctx, HttpResponseStatus status, String msg, boolean forceClose) {
-		ByteBuf buf = copiedBuffer(msg, CharsetUtil.UTF_8);
-		FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, buf);
-
-		response.headers().set(CONTENT_TYPE, "text/html; charset=UTF-8");
 		response.headers().set(CONTENT_LENGTH, buf.readableBytes());
 		ctx.channel().writeAndFlush(response);
 	}

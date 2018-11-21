@@ -1,11 +1,14 @@
-package com.jeancoder.root.container;
+package com.jeancoder.root.vm;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.jeancoder.core.result.Result;
+import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.container.core.BCID;
-import com.jeancoder.root.container.model.JCAPP;
+import com.jeancoder.root.env.JCAPP;
+import com.jeancoder.root.env.Lifecycle;
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
 
@@ -17,6 +20,6 @@ public interface JCVM extends Lifecycle {
 	
 	public void setInitApps(List<JCAPP> appList);
 	
-	public  <T> T dispatch(JCHttpRequest req, JCHttpResponse res);
+	public  <T extends Result> T dispatch(JCHttpRequest req, JCHttpResponse res);
 	
 }

@@ -76,7 +76,7 @@ public class ApplicationSource extends SysSource {
 		applicationConfigure.setIndex(index);
 		applicationConfigure.setDescribe(describe);
 		
-		JCInterceptorStack.setNamerApplication(applicationConfigure);
+		//JCInterceptorStack.setNamerApplication(applicationConfigure);
 		
 		InstallerFactory.generateInstaller(applicationConfigure).install();
 		Application application = ApplicationHolder.getInstance().getAppByCode(applicationConfigure.getAppCode());

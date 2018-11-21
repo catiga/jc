@@ -23,25 +23,21 @@ import com.jeancoder.core.util.StringUtil;
 public class JCInterceptorChain  implements InterceptorChain {
 	
 	private  List<Interceptor> interceptorChain = new ArrayList<Interceptor>();
-	private  List<Interceptor> sysInterceptorChain = new ArrayList<Interceptor>();
 	
 	public JCInterceptorChain () {
-		
 	}
-	public JCInterceptorChain (List<Interceptor> sysInterceptorChain, List<Interceptor> interceptorChain) {
+	public JCInterceptorChain (List<Interceptor> interceptorChain) {
 		this.interceptorChain = interceptorChain;
-		this.sysInterceptorChain = sysInterceptorChain;
 	}
 	public void setInterceptorChain(List<Interceptor> interceptorChain) {
 		this.interceptorChain = interceptorChain;
 	}
-	public void setSysInterceptorChain(List<Interceptor> sysInterceptorChain) {
-		this.sysInterceptorChain = sysInterceptorChain;
+	
+	public List<Interceptor> getInterceptorChain() {
+		return interceptorChain;
 	}
+	
 	public Interceptor next(){
-		if (sysInterceptorChain != null && sysInterceptorChain.size() != 0) {
-			return sysInterceptorChain.remove(0);
-		}
 		if (interceptorChain != null && interceptorChain.size() != 0) {
 			return interceptorChain.remove(0);
 		}

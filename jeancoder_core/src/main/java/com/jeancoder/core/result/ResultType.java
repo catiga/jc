@@ -21,4 +21,6 @@ public enum ResultType {
 	 * 静态资源 css  js
 	 */
 	STATIC_RESOURCE,
+	
+	NULL,
 }
