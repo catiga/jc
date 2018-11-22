@@ -16,8 +16,6 @@ public abstract class ServerImpl implements JCServer {
 	
 	public static JCVM jcvm = StandardVM.getVM();
 	
-	private volatile int countRef = 0;
-	
 	public ServerImpl() {
 		modconf = new ServerMod();
 		modconf.setProxy_entry("entry");
@@ -50,7 +48,6 @@ public abstract class ServerImpl implements JCServer {
 					if(jcapp==null) {
 						jcapp = am.to();
 						jcapp.setLogbase(modconf.getLogs());
-						countRef++;
 						convert_proto.add(jcapp);
 					}
 				}
@@ -63,12 +60,7 @@ public abstract class ServerImpl implements JCServer {
 	@Override
 	public void shutdown() {
 		synchronized (this) {
-			jcvm.getContainers().forEach((k,v) -> {
-				if(countRef>0) {
-					countRef--;
-				}
-				v.onStop();
-			});
+			jcvm.getContainers().shutdown();
 		}
 	}
 }

@@ -1,7 +1,6 @@
 package com.jeancoder.root.vm;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.Cookie;
 
@@ -12,6 +11,7 @@ import com.jeancoder.core.http.JCThreadLocal;
 import com.jeancoder.core.rendering.Rendering;
 import com.jeancoder.core.rendering.RenderingFactory;
 import com.jeancoder.core.result.Result;
+import com.jeancoder.root.container.ContainerMaps;
 import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.container.core.BCID;
 import com.jeancoder.root.container.core.LifecycleZa;
@@ -32,7 +32,7 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 	protected List<JCAPP> appList;
 	
 	@Override
-	public Map<BCID, JCAppContainer> getContainers() {
+	public ContainerMaps getContainers() {
 		return JCVM.VM_CONTAINERS;
 	}
 
