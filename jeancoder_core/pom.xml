@@ -108,11 +108,11 @@
 		    <version>1.1.10</version>
 		</dependency>
 		
-		<dependency>
+		<!-- <dependency>
 		    <groupId>com.piaodaren</groupId>
 			<artifactId>piaodaren-ssc</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
+		</dependency> -->
 		
 		
 		<dependency>
