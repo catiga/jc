@@ -115,7 +115,7 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 			stand_request.setRemoteHost(remote);
 			
 			JCVMDelegator.delegate().getVM().dispatch(stand_request, stand_response);
-		}catch(Exception e) {
+		} catch(Exception e) {
 			logger.error("so should send msg by socket to center server:", e);
 			StringBuffer error_buffer = new StringBuffer();
 			if(e instanceof RunningException) {

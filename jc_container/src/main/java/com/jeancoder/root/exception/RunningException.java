@@ -1,5 +1,7 @@
 package com.jeancoder.root.exception;
 
+import com.jeancoder.root.env.JCAPP;
+
 @SuppressWarnings("serial")
 public class RunningException extends RuntimeException {
 
@@ -10,6 +12,8 @@ public class RunningException extends RuntimeException {
 	String path;
 	
 	String res;
+	
+	protected JCAPP appins;
 
 	public RunningException(String id, String app, String res, String path, String msg, Throwable cause) {
 		super(msg, cause);

@@ -54,6 +54,10 @@ public class SysSource {
 	public static void setClassLoader(AppLoader cc) {
 		APP_CLASS_LOADERS.set(cc);
 	}
+	
+	public static void clearClassLoader() {
+		APP_CLASS_LOADERS.remove();
+	}
 
 	public static boolean isRootPrject() {
 		return false;

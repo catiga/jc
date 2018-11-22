@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jeancoder.app.sdk.rendering.RenderingFactory;
+import com.jeancoder.app.sdk.source.jeancoder.SysSource;
+import com.jeancoder.core.http.JCThreadLocal;
 import com.jeancoder.core.rendering.Rendering;
 import com.jeancoder.core.result.Result;
 import com.jeancoder.root.container.JCAppContainer;
@@ -75,6 +77,11 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
+		} finally {
+			SysSource.clearClassLoader();
+			JCThreadLocal.clearRequest();
+			JCThreadLocal.clearResponse();
+			JCThreadLocal.clearCode();
 		}
 		return exeresult;
 	}

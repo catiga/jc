@@ -25,11 +25,19 @@ public class JCThreadLocal {
 	public static JCRequest getRequest() {
 		return requestLocal.get();
 	}
+	
+	public static void clearRequest() {
+		requestLocal.remove();
+	}
+	
 	public static void setResponse(JCResponse response) {
 		responseLocal.set(response);
 	}
 	public static JCResponse getResponse() {
 		return responseLocal.get();
+	}
+	public static void clearResponse() {
+		responseLocal.remove();
 	}
 	
 	public static void setCode(String appCode) {
@@ -38,12 +46,18 @@ public class JCThreadLocal {
 	public static String getCode() {
 		return appCodeLocal.get();
 	}
+	public static void clearCode() {
+		appCodeLocal.remove();
+	}
 	
 	public static void setInterceptorChain(InterceptorChain chain) {
 		interceptorChainLocal.set(chain);
 	}
 	public static InterceptorChain getnterceptorChain() {
 		return interceptorChainLocal.get();
+	}
+	public static void removeInterceptorChain() {
+		interceptorChainLocal.remove();
 	}
 	
 	public static void setResult(Result result) {
@@ -52,12 +66,18 @@ public class JCThreadLocal {
 	public static Result getResult() {
 		return resultLocal.get();
 	}
+	public static void removeResult() {
+		resultLocal.remove();
+	}
 	
 	public static void setNativeParameter(Map<String, Object> parameter) {
 		nativeLocal.set(parameter);
 	}
 	public static Map<String, Object> getNativeParameter() {
 		return nativeLocal.get();
+	}
+	public static void removeNativeParameter() {
+		nativeLocal.remove();
 	}
 	
 	public static void remove() {
