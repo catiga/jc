@@ -26,30 +26,19 @@ public class CommunicationSource {
 	 * @return
 	 */
 	public static CommunicationPower getCommunicator(String appcode){
-		DevCommunicationProp prop = (DevCommunicationProp)JeancoderConfigurer.fetch(PropType.COMMUNICATION, appcode, "appcode");
 		CommunicationPowerConfig config = new CommunicationPowerConfig();
-		if(prop == null) {
-			//throw new NamerNotConfigException(appcode);
-			//给出默认
-			JCRequest req = RequestSource.getRequest();
-			String buff = req.getRequestURL().toString();
-			UrlAddress ua = new UrlAddress(buff);
-			
-			config.setDomain(ua.requestDomain());
-			config.setMode(CommunicationWorkMode.NETWORK);
-			config.setId(appcode);
-			config.setDefault(true);
-			config.setDeploy(1);
-		} else {
-			config.setDomain(prop.getDomain());
-			config.setMode(CommunicationWorkMode.NETWORK);
-			config.setId(prop.getId());
-			config.setDefault(prop.getIsDefault());
-			config.setDeploy(prop.getDeploy()>0?1:0);
-		}
+		JCRequest req = RequestSource.getRequest();
+		String buff = req.getRequestURL().toString();
+		UrlAddress ua = new UrlAddress(buff);
+		config.setDomain(ua.requestDomain());
+		config.setMode(CommunicationWorkMode.NETWORK);
+		config.setId(appcode);
+		config.setDefault(true);
+		config.setDeploy(0);
+		
 		CommunicationPower power = null;
 		try {
-			CommunicationPowerHandler handler = (CommunicationPowerHandler)PowerHandlerFactory.generatePowerHandler(PowerName.COMMUNICATION, config,appcode);
+			CommunicationPowerHandler handler = (CommunicationPowerHandler)PowerHandlerFactory.generatePowerHandler(PowerName.COMMUNICATION, config,JCThreadLocal.getCode());
 			power = handler;
 		} catch (JeancoderException e) {
 			throw new CommunicationPowerGenerateFailedException(appcode);
@@ -58,31 +47,15 @@ public class CommunicationSource {
 	}
 	
 	public static CommunicationPower getCommunicatorNative(String appcode){
-		DevCommunicationProp prop = (DevCommunicationProp)JeancoderConfigurer.fetch(PropType.COMMUNICATION, appcode, "appcode");
 		CommunicationPowerConfig config = new CommunicationPowerConfig();
-		if(prop == null) {
-			//throw new NamerNotConfigException(appcode);
-			//给出默认
-			JCRequest req = RequestSource.getRequest();
-			String buff = req.getRequestURL().toString();
-			UrlAddress ua = new UrlAddress(buff);
-			
-			config.setDomain(ua.requestDomain());
-			config.setMode(CommunicationWorkMode.NETWORK);
-			config.setId(appcode);
-			config.setDefault(true);
-			config.setDeploy(1);
-		} else {
-			config.setDomain(prop.getDomain());
-			config.setMode(CommunicationWorkMode.NETWORK);
-			config.setId(prop.getId());
-			config.setDefault(prop.getIsDefault());
-			config.setDeploy(prop.getDeploy()>0?1:0);
-		}
+		config.setMode(CommunicationWorkMode.NATIVE);
+		config.setId(appcode);
+		config.setDefault(true);
+		config.setDeploy(0);
+		
 		CommunicationPower power = null;
 		try {
-			CommunicationPowerHandler handler = (CommunicationPowerHandler)PowerHandlerFactory.generatePowerHandler(PowerName.COMMUNICATION, config,appcode);
-			handler.setRootPath(Common.INTERNAL);
+			CommunicationPowerHandler handler = (CommunicationPowerHandler)PowerHandlerFactory.generatePowerHandler(PowerName.COMMUNICATION, config,JCThreadLocal.getCode());
 			power = handler;
 		} catch (JeancoderException e) {
 			throw new CommunicationPowerGenerateFailedException(appcode);

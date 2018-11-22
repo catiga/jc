@@ -9,6 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,11 @@ import com.jeancoder.core.security.BZX509TrustManager;
 import com.jeancoder.core.util.FileUtil;
 import com.jeancoder.core.util.JackSonBeanMapper;
 import com.jeancoder.core.util.StringUtil;
+import com.jeancoder.root.container.ContainerMaps;
+import com.jeancoder.root.container.JCAppContainer;
+import com.jeancoder.root.env.RunnerResult;
+import com.jeancoder.root.vm.JCVMDelegatorGroup;
+import com.jeancoder.root.vm.VMDelegate;
 
 /**
  * 用于两个应用间互相通信
@@ -221,45 +227,36 @@ public class CommunicationPowerHandler extends PowerHandler implements Communica
 	 * @return
 	 */
 	private String doRequest(String path, List<CommunicationParam> params) {
-		String appCode = JCThreadLocal.getCode();
-		Result result = JCThreadLocal.getResult();
+		Map<String, Object> parameterMap = JCThreadLocal.getNativeParameter();
 		JCRequest reqeust = JCThreadLocal.getRequest();
 		JCResponse response = JCThreadLocal.getResponse();
-		Map<String, Object> parameterMap = JCThreadLocal.getNativeParameter();
+		Result  result =  JCThreadLocal.getResult();
 		
-		JCThreadLocal.setNativeParameter(getParameterMap(params));
-		JCThreadLocal.setCode(this.getId());
-		JCThreadLocal.setRequest(null);
 		JCThreadLocal.setRequest(null);
 		JCThreadLocal.setResponse(null);
+		JCThreadLocal.setNativeParameter(getParameterMap(params));
+		JCThreadLocal.setResponse(null);
+		JCThreadLocal.setCode(this.getId());
+		
+		VMDelegate wd = JCVMDelegatorGroup.instance().getDelegator();	
+		ContainerMaps cm = wd.getVM().getContainers();
 		try {
-			Application application = ApplicationHolder.getInstance().getAppByCode(this.getId());
-			if (application == null) {
-				throw new AppRunnerException("Communication power "+this.getId()+" generate failed.");
-			}
-			Resource resource = application.getResource(Common.INTERNAL, path);
-			if (resource == null) {
-				throw new AppRunnerException("Communication appCode " + this.getId() + " resource "+path+" generate failed.");
-			}
-			Object nativeResult = resource.getResult();
-			if (nativeResult == null){
-				return  null;
-			}
-			if (nativeResult instanceof String ) {
-				return nativeResult.toString();
-			}
-			return JackSonBeanMapper.toJson(nativeResult);
+			Enumeration<JCAppContainer> container  = cm.getByCode(this.getId());
+			JCAppContainer jcAppContainer = container.nextElement();
+			RunnerResult<Result> runnerResult = jcAppContainer.execute(path);
+			return JackSonBeanMapper.toJson(runnerResult.getResult().getData());
 		} catch (Exception e) {
 			Logger.error("",e);
 			throw e;
 		} finally {
-			JCThreadLocal.setCode(appCode);
 			JCThreadLocal.setResult(result);
 			JCThreadLocal.setNativeParameter(parameterMap);
 			JCThreadLocal.setRequest(reqeust);
 			JCThreadLocal.setResponse(response);
 		} 
 	}
+	
+
 	
 	
 	
