@@ -1,4 +1,4 @@
-package com.jeancoder.app.sdk.rendering;
+package com.jeancoder.core.rendering;
 
 
 import static com.jeancoder.root.io.line.HeaderNames.CONTENT_LENGTH;

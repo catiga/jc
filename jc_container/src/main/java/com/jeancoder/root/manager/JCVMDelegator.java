@@ -1,10 +1,14 @@
 package com.jeancoder.root.manager;
 
+import java.lang.reflect.Method;
+
 import com.jeancoder.root.env.ChannelContextWrapper;
 import com.jeancoder.root.env.StandardVM;
 import com.jeancoder.root.vm.JCVM;
+import com.jeancoder.root.vm.JCVMDelegatorGroup;
+import com.jeancoder.root.vm.VMDelegate;
 
-public class JCVMDelegator {
+public class JCVMDelegator implements VMDelegate {
 
 	private final static JCVMDelegator instance = new JCVMDelegator();
 	
@@ -23,6 +27,24 @@ public class JCVMDelegator {
 	}
 	
 	public static final JCVMDelegator delegate() {
+		JCVMDelegatorGroup group = JCVMDelegatorGroup.instance();
+		if(group!=null) {
+			Method method = null;
+		    try {
+		        method = JCVMDelegatorGroup.class.getDeclaredMethod("setDelegator", VMDelegate.class);
+		    } catch (NoSuchMethodException | SecurityException e1) {
+		        e1.printStackTrace();
+		    }
+		    boolean accessible = method.isAccessible();
+		    try {
+		        method.setAccessible(true);
+		        method.invoke(group, instance);
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    } finally {
+		        method.setAccessible(accessible);
+		    }
+		}
 		return instance;
 	}
 	

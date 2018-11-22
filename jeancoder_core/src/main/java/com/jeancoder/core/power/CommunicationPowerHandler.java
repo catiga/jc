@@ -35,6 +35,9 @@ import com.jeancoder.core.security.BZX509TrustManager;
 import com.jeancoder.core.util.FileUtil;
 import com.jeancoder.core.util.JackSonBeanMapper;
 import com.jeancoder.core.util.StringUtil;
+import com.jeancoder.root.container.JCAppContainer;
+import com.jeancoder.root.container.core.BCID;
+import com.jeancoder.root.vm.JCVMDelegatorGroup;
 
 /**
  * 用于两个应用间互相通信

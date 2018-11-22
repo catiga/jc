@@ -1,4 +1,4 @@
-package com.jeancoder.app.sdk.rendering;
+package com.jeancoder.core.rendering;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;

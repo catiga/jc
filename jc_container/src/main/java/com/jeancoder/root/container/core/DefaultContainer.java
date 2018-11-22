@@ -3,7 +3,6 @@ package com.jeancoder.root.container.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jeancoder.app.sdk.source.jeancoder.SysSource;
 import com.jeancoder.core.common.Common;
 import com.jeancoder.core.http.JCRequest;
 import com.jeancoder.core.http.JCResponse;
@@ -42,7 +41,7 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 	
 	@Override
 	public final <T extends Result> RunnerResult<T> execute(JCHttpRequest req, JCHttpResponse res) {
-		SysSource.setClassLoader(containClassLoader.getAppClassLoader());
+		JCThreadLocal.setClassLoader(containClassLoader.getAppClassLoader());
 		JCThreadLocal.setRequest(new JCRequest(req));
 		JCThreadLocal.setResponse(new JCResponse(res));
 		JCThreadLocal.setCode(appins.getCode());

@@ -15,7 +15,7 @@ import com.jeancoder.root.io.http.JCHttpResponse;
 
 public interface JCVM extends Lifecycle {
 
-	static Map<BCID, JCAppContainer> VM_CONTAINERS = new ConcurrentHashMap<BCID, JCAppContainer>();
+	public final static Map<BCID, JCAppContainer> VM_CONTAINERS = new ConcurrentHashMap<BCID, JCAppContainer>();
 	
 	public Map<BCID, JCAppContainer> getContainers();
 	

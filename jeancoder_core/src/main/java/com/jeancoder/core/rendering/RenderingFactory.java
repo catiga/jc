@@ -1,4 +1,4 @@
-package com.jeancoder.app.sdk.rendering;
+package com.jeancoder.core.rendering;
 
 import com.jeancoder.core.rendering.Rendering;
 import com.jeancoder.core.result.Result;

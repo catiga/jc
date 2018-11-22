@@ -3,6 +3,7 @@ package com.jeancoder.core.http;
 import java.util.Map;
 
 import com.jeancoder.core.Interceptor.InterceptorChain;
+import com.jeancoder.core.cl.AppLoader;
 import com.jeancoder.core.result.Result;
 
 /**
@@ -18,6 +19,20 @@ public class JCThreadLocal {
 	private static  final  ThreadLocal<Result> resultLocal = new InheritableThreadLocal<Result>();
 	private static  final  ThreadLocal<Map<String, Object>> nativeLocal = new InheritableThreadLocal<Map<String, Object>>();
 	private static  final  ThreadLocal<String> appCodeLocal = new InheritableThreadLocal<String>();
+	
+	private static ThreadLocal<AppLoader> APP_CLASS_LOADERS = new ThreadLocal<AppLoader>();
+	
+	public static AppLoader getClassLoader() {
+		return APP_CLASS_LOADERS.get();
+	}
+
+	public static void setClassLoader(AppLoader cc) {
+		APP_CLASS_LOADERS.set(cc);
+	}
+	
+	public static void clearClassLoader() {
+		APP_CLASS_LOADERS.remove();
+	}
 	
 	public static void setRequest(JCRequest request) {
 		requestLocal.set(request);

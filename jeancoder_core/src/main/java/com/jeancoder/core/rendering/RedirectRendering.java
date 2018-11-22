@@ -1,4 +1,4 @@
-package com.jeancoder.app.sdk.rendering;
+package com.jeancoder.core.rendering;
 
 import java.io.IOException;
 

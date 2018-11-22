@@ -8,10 +8,9 @@ import javax.servlet.http.Cookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jeancoder.app.sdk.rendering.RenderingFactory;
-import com.jeancoder.app.sdk.source.jeancoder.SysSource;
 import com.jeancoder.core.http.JCThreadLocal;
 import com.jeancoder.core.rendering.Rendering;
+import com.jeancoder.core.rendering.RenderingFactory;
 import com.jeancoder.core.result.Result;
 import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.container.core.BCID;
@@ -78,7 +77,7 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			SysSource.clearClassLoader();
+			JCThreadLocal.clearClassLoader();
 			JCThreadLocal.clearRequest();
 			JCThreadLocal.clearResponse();
 			JCThreadLocal.clearCode();
