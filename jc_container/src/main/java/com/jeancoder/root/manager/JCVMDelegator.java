@@ -28,22 +28,24 @@ public class JCVMDelegator implements VMDelegate {
 	
 	public static final JCVMDelegator delegate() {
 		JCVMDelegatorGroup group = JCVMDelegatorGroup.instance();
-		if(group!=null) {
-			Method method = null;
-		    try {
-		        method = JCVMDelegatorGroup.class.getDeclaredMethod("setDelegator", VMDelegate.class);
-		    } catch (NoSuchMethodException | SecurityException e1) {
-		        e1.printStackTrace();
-		    }
-		    boolean accessible = method.isAccessible();
-		    try {
-		        method.setAccessible(true);
-		        method.invoke(group, instance);
-		    } catch (Exception e) {
-		        e.printStackTrace();
-		    } finally {
-		        method.setAccessible(accessible);
-		    }
+		if(group!=null&&group.getDelegator()==null) {
+			synchronized(group) {
+				Method method = null;
+			    try {
+			        method = JCVMDelegatorGroup.class.getDeclaredMethod("setDelegator", VMDelegate.class);
+			    } catch (NoSuchMethodException | SecurityException e1) {
+			        e1.printStackTrace();
+			    }
+			    boolean accessible = method.isAccessible();
+			    try {
+			        method.setAccessible(true);
+			        method.invoke(group, instance);
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			    } finally {
+			        method.setAccessible(accessible);
+			    }
+			}
 		}
 		return instance;
 	}

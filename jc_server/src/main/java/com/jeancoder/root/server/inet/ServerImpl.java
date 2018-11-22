@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.jeancoder.root.container.core.BCID;
 import com.jeancoder.root.env.JCAPP;
-import com.jeancoder.root.env.StandardVM;
+import com.jeancoder.root.manager.JCVMDelegator;
 import com.jeancoder.root.server.proto.conf.AppMod;
 import com.jeancoder.root.server.proto.conf.ServerMod;
 import com.jeancoder.root.vm.JCVM;
@@ -14,7 +14,7 @@ public abstract class ServerImpl implements JCServer {
 
 	protected ServerMod modconf;
 	
-	public static JCVM jcvm = StandardVM.getVM();
+	public static JCVM jcvm = JCVMDelegator.delegate().getVM();
 	
 	public ServerImpl() {
 		modconf = new ServerMod();
