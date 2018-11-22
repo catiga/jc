@@ -51,11 +51,11 @@ public class TypeDefClassLoader extends URLClassLoader implements JCLoader {
 			Script script = (Script) executor.newInstance();
 			script.setBinding(context);
 			Object result = script.run();
-			logger.info("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") init success. Result=" + result);
+			logger.info("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") INIT SUCCESS. Result=" + result);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
-			logger.error("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") init error.", e);
+			logger.error("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") INIT ERROR.", e);
 		} finally {
 			JCAPPHolder.clear();
 		}

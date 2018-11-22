@@ -41,10 +41,7 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 	}
 
 	@Override
-	public Result dispatch(JCHttpRequest req, JCHttpResponse res) {
-		logger.info("execute ......");
-		Object obj = req.getParameterMap();
-		logger.info(obj.toString());
+	public <T extends Result> RunnerResult<T> dispatch(JCHttpRequest req, JCHttpResponse res) {
 		Cookie[] cookies = req.getCookies();
 		String path_info = req.getPathInfo();
 		String query_string = req.getQueryString();
@@ -58,10 +55,18 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 		String vis_host_name = req.getRemoteHost();
 		String vis_host_ip = req.getRemoteAddr();
 		
-		System.out.println(req.getRequestURL());
-		System.out.println(query_string);
+		if(logger.isDebugEnabled()) {
+			logger.debug("COOKIES=" + cookies.toString());
+			logger.debug("REQUEST URI=" + request_uri);
+			logger.debug("CONTEXT PATH=" + context_path);
+			logger.debug("PATH INFO=" + path_info);
+			logger.debug("QUERY STRING=" + query_string);
+		}
+		logger.info("SERVER DOMAIN=" + host + ":" + port);
+		logger.info("REMOTE HOST AND IP=" + vis_host_name + "(" + vis_host_ip + ")");
+		logger.info("CONTEXT TYPE=" + context_type);
 		
-		RunnerResult<Result> exeresult = makeRun(req, res);
+		RunnerResult<T> exeresult = makeRun(req, res);
 		
 		ChannelHandlerContext ctx = JCVMDelegator.getContext().getContext();
 		Rendering rendering = RenderingFactory.getRendering(ctx, exeresult);
@@ -71,7 +76,7 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 			e.printStackTrace();
 			throw e;
 		}
-		return exeresult.getResult();
+		return exeresult;
 	}
 	
 	protected <T extends Result> RunnerResult<T> makeRun(JCHttpRequest req, JCHttpResponse res) {

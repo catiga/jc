@@ -9,11 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
-import com.jeancoder.app.sdk.util.FileSysUtil;
 import com.jeancoder.core.http.JCThreadLocal;
 import com.jeancoder.core.rendering.Rendering;
 import com.jeancoder.core.result.Result;
@@ -22,7 +20,7 @@ import com.jeancoder.root.io.http.JCServletContext;
 
 import io.netty.channel.ChannelHandlerContext;
 
-public class WelcomeApplicationRendering extends DefaultRendering implements Rendering {
+public class WelcomeApplicationRendering<T extends Result> extends DefaultRendering<T> implements Rendering {
 
 	public WelcomeApplicationRendering(ChannelHandlerContext context) {
 		super(context);
@@ -31,8 +29,6 @@ public class WelcomeApplicationRendering extends DefaultRendering implements Ren
 	public Object process(HttpServletRequest request, HttpServletResponse response) {
 		super.process(request, response);
 		Result result = this.runningResult.getResult();
-		// 构造上下文(Model)
-		Context web_ctx = new Context();
 		WebContext ctx = new WebContext(request, response, new JCServletContext());
 		Iterator<Entry<String, Object>> dataMap = result.getDataMap().entrySet().iterator();
 		while (dataMap.hasNext()) {

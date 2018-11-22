@@ -9,7 +9,7 @@ import com.jeancoder.core.util.JackSonBeanMapper;
 
 import io.netty.channel.ChannelHandlerContext;
 
-public class DataRendering extends DefaultRendering implements Rendering{
+public class DataRendering<T extends Result> extends DefaultRendering<T> implements Rendering{
 
 	public DataRendering(ChannelHandlerContext context) {
 		super(context);

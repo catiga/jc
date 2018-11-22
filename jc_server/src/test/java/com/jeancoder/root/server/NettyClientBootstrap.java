@@ -20,17 +20,12 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
-import io.netty.util.concurrent.DefaultEventExecutorGroup;
-import io.netty.util.concurrent.EventExecutorGroup;
 
-/**
- * Created by yaozb on 15-4-11.
- */
 public class NettyClientBootstrap {
     private int port;
     private String host;
     private SocketChannel socketChannel;
-    private static final EventExecutorGroup group = new DefaultEventExecutorGroup(20);
+    //private static final EventExecutorGroup group = new DefaultEventExecutorGroup(20);
     public NettyClientBootstrap(int port, String host) throws InterruptedException {
         this.port = port;
         this.host = host;

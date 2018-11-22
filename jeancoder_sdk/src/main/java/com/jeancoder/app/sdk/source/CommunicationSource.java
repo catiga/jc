@@ -58,7 +58,7 @@ public class CommunicationSource {
 	}
 	
 	public static CommunicationPower getCommunicatorNative(String appcode){
-		DevCommunicationProp prop = (DevCommunicationProp)JeancoderConfigurer.fetch(PropType.COMMUNICATION, appcode, "appcode");
+		DevCommunicationProp prop = (DevCommunicationProp)JeancoderConfigurer.fetch(PropType.COMMUNICATION, appcode, appcode);
 		CommunicationPowerConfig config = new CommunicationPowerConfig();
 		if(prop == null) {
 			//throw new NamerNotConfigException(appcode);

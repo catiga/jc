@@ -16,7 +16,7 @@ import com.jeancoder.root.io.http.JCHttpResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
-public class StaticRendering extends DefaultRendering implements Rendering {
+public class StaticRendering<T extends Result> extends DefaultRendering<T> implements Rendering {
 
 	public StaticRendering(ChannelHandlerContext context) {
 		super(context);

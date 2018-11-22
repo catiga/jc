@@ -14,7 +14,7 @@ import com.jeancoder.root.io.http.JCHttpResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
-public class StreamRendering extends DefaultRendering implements Rendering {
+public class StreamRendering<T extends Result> extends DefaultRendering<T> implements Rendering {
 
 	public StreamRendering(ChannelHandlerContext context) {
 		super(context);

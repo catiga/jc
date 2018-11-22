@@ -24,11 +24,11 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.util.CharsetUtil;
 
-public class DefaultRendering implements Rendering {
+public class DefaultRendering<T extends Result> implements Rendering {
 
 	protected ChannelHandlerContext context;
 	
-	protected RunnerResult<Result> runningResult;
+	protected RunnerResult<T> runningResult;
 	
 	protected JCHttpRequest request;
 	

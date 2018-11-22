@@ -9,20 +9,20 @@ import io.netty.channel.ChannelHandlerContext;
 
 public class RenderingFactory {
 
-	public static Rendering getRendering(ChannelHandlerContext context, RunnerResult<Result> resultWrapper) {
-		DefaultRendering rend = new DefaultRendering(context);
+	public static <T extends Result> Rendering getRendering(ChannelHandlerContext context, RunnerResult<T> resultWrapper) {
+		DefaultRendering<T> rend = new DefaultRendering<T>(context);
 		Result result = resultWrapper.getResult();
 		if(result!=null) {
 			if (ResultType.VIEW_RESOURCE.equals(result.getResultType())) {
-				rend = new WelcomeApplicationRendering(context);
+				rend = new WelcomeApplicationRendering<T>(context);
 			} else if (ResultType.DATA_RESOURCE.equals(result.getResultType())) {
-				rend = new DataRendering(context);
+				rend = new DataRendering<T>(context);
 			} else if (ResultType.STATIC_RESOURCE.equals(result.getResultType())) {
-				rend = new StaticRendering(context);
+				rend = new StaticRendering<T>(context);
 			} else if (ResultType.REDIRECT_CONTROLLER_RESOURCE.equals(result.getResultType())) {
-				rend = new RedirectRendering(context);
+				rend = new RedirectRendering<T>(context);
 			} else if (ResultType.CONTROLLER_RESOURCE.equals(result.getResultType())) {
-				rend = new ForwardingRendering(context);
+				rend = new ForwardingRendering<T>(context);
 			}
 		}
 		rend.runningResult = resultWrapper;

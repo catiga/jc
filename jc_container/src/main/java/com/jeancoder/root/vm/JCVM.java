@@ -9,6 +9,7 @@ import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.container.core.BCID;
 import com.jeancoder.root.env.JCAPP;
 import com.jeancoder.root.env.Lifecycle;
+import com.jeancoder.root.env.RunnerResult;
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
 
@@ -20,6 +21,6 @@ public interface JCVM extends Lifecycle {
 	
 	public void setInitApps(List<JCAPP> appList);
 	
-	public  <T extends Result> T dispatch(JCHttpRequest req, JCHttpResponse res);
+	public  <T extends Result> RunnerResult<T> dispatch(JCHttpRequest req, JCHttpResponse res);
 	
 }

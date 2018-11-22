@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.jeancoder.root.exception.RunningException;
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
 import com.jeancoder.root.manager.JCVMDelegator;
@@ -117,9 +118,18 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 		}catch(Exception e) {
 			logger.error("so should send msg by socket to center server:", e);
 			StringBuffer error_buffer = new StringBuffer();
-			error_buffer.append(e.getMessage() + "\r\n");
-			for(StackTraceElement ste : e.getStackTrace()) {
-				error_buffer.append("	at " + ste.getClassName() + "(" + ste.getFileName() + "" + ste.getLineNumber() + ")\r\n");
+			if(e instanceof RunningException) {
+				RunningException rex = (RunningException)e;
+				error_buffer.append("JCAPP CODE:" + rex.getApp() + "\r\n\r\n");
+				error_buffer.append("JCAPP PATH:" + rex.getPath() + "\r\n\r\n");
+				error_buffer.append("JCAPP RES:" + rex.getRes() + "\r\n\r\n");
+			}
+			error_buffer.append(e.getMessage() + "\r\n\r\n");
+			for(StackTraceElement ste : e.getCause()==null?e.getStackTrace():e.getCause().getStackTrace()) {
+				if(ste.getClassName().indexOf("io.netty.")>-1) {
+					break;
+				}
+				error_buffer.append("	at " + ste.getClassName() + "(" + ste.getFileName() + ":" + ste.getLineNumber() + ")\r\n\r\n");
 			}
 			ByteBuf buf = copiedBuffer(error_buffer.toString().getBytes());
 			FullHttpResponse new_response = stand_response.delegateObj().replace(buf);

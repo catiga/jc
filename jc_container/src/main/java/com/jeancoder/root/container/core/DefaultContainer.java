@@ -1,10 +1,17 @@
 package com.jeancoder.root.container.core;
 
+import com.jeancoder.app.sdk.source.jeancoder.SysSource;
 import com.jeancoder.core.common.Common;
+import com.jeancoder.core.http.JCRequest;
+import com.jeancoder.core.http.JCResponse;
+import com.jeancoder.core.http.JCThreadLocal;
+import com.jeancoder.core.result.Result;
 import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.container.loader.TypeDefClassLoader;
 import com.jeancoder.root.env.JCAPP;
+import com.jeancoder.root.env.RunnerResult;
 import com.jeancoder.root.io.http.JCHttpRequest;
+import com.jeancoder.root.io.http.JCHttpResponse;
 
 public abstract class DefaultContainer extends LifecycleZa implements JCAppContainer {
 
@@ -26,6 +33,16 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 	
 	protected TypeDefClassLoader containClassLoader = null;
 	
+	@Override
+	public final <T extends Result> RunnerResult<T> execute(JCHttpRequest req, JCHttpResponse res) {
+		SysSource.setClassLoader(containClassLoader.getAppClassLoader());
+		JCThreadLocal.setRequest(new JCRequest(req));
+		JCThreadLocal.setResponse(new JCResponse(res));
+		JCThreadLocal.setCode(appins.getCode());
+		RunnerResult<T> result = this.run(req, res);
+		return result;
+	}
+
 	private String cutTailDotChar(String kelxz) {
 		if(!kelxz.endsWith(".")) {
 			return kelxz;
