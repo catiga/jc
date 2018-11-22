@@ -16,4 +16,6 @@ public interface JCAppContainer extends Lifecycle {
 	<T extends Result> RunnerResult<T> execute(JCHttpRequest req, JCHttpResponse res);
 	
 	<T extends Result> RunnerResult<T> run(JCHttpRequest req, JCHttpResponse res);
+	
+	<T extends Result> RunnerResult<T> execute(String path);
 }

@@ -12,10 +12,16 @@ import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.container.loader.TypeDefClassLoader;
 import com.jeancoder.root.env.JCAPP;
 import com.jeancoder.root.env.RunnerResult;
+import com.jeancoder.root.exception.Code404Exception;
 import com.jeancoder.root.exception.Code500Exception;
+import com.jeancoder.root.exception.CompileException;
+import com.jeancoder.root.exception.PrivilegeException;
 import com.jeancoder.root.exception.RunningException;
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
+
+import groovy.lang.Binding;
+import groovy.lang.Script;
 
 public abstract class DefaultContainer extends LifecycleZa implements JCAppContainer {
 
@@ -35,6 +41,50 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 		String class_name = transferPathToClz(req);
 		Class<?> executor = containClassLoader.getAppClassLoader().findClass(class_name);
 		return executor;
+	}
+	
+	protected String transferPathToClz(String path) {
+		String prefix = appins.getOrg() + "." + appins.getDever() + ".";
+		if(!path.startsWith("/")) {
+			path += "/";
+		}
+		prefix = prefix + path.substring(1) + "." + Common.INTERNAL + "." + path.replace('/', '.');
+		return cutTailDotChar(prefix);
+	}
+	
+	protected Class<?>  transferPathToIns(String path) throws ClassNotFoundException {
+		String class_name = transferPathToClz(path);
+		Class<?> executor = containClassLoader.getAppClassLoader().findClass(class_name);
+		return executor;
+	}
+	
+	public <T extends Result> RunnerResult<T> execute(String path) {
+		JCThreadLocal.setClassLoader(containClassLoader.getAppClassLoader());
+		JCThreadLocal.setCode(appins.getCode());
+		Class<?> executor = null;
+		try {
+			executor = this.transferPathToIns(path);
+			Binding context = new Binding();
+			Script script = (Script) executor.newInstance();
+			script.setBinding(context);
+			Object result = script.run();
+			RunnerResult<T> ret_result = new RunnerResult<>();
+			ret_result.setResult(Result.convert(result));
+			ret_result.setId(id().id());
+			ret_result.setCode(id().code());
+			ret_result.setPath(this.transferPathToClz(path));
+			ret_result.setAppins(this.appins);
+			return ret_result;
+		} catch (IllegalAccessException e) {
+			throw new PrivilegeException(id().id(), id().code(), executor==null?null:executor.getName(), this.transferPathToClz(path), "SCRIPT_PRIVILEGE_ERROR", e);
+		} catch (InstantiationException nfex) {
+			throw new CompileException(id().id(), id().code(), executor==null?null:executor.getName(), this.transferPathToClz(path), "PROGRAM_COMPILE_ERROR", nfex);
+		} catch (ClassNotFoundException nfex) {
+			throw new Code404Exception(id().id(), id().code(), executor==null?null:executor.getName(), this.transferPathToClz(path), "CLASS_NOT_FOUND", nfex);
+		} catch (Exception ex) {
+			logger.error("", ex);
+			throw new Code500Exception(id().id(), id().code(), executor==null?null:executor.getName(), this.transferPathToClz(path), "RUNNING_ERROR:" + ex.getCause(), ex);
+		}
 	}
 	
 	protected TypeDefClassLoader containClassLoader = null;
