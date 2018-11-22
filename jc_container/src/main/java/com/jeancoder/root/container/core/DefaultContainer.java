@@ -44,11 +44,11 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 	}
 	
 	protected String transferPathToClz(String path) {
-		String prefix = appins.getOrg() + "." + appins.getDever() + ".";
+		String prefix = appins.getOrg() + "." + appins.getDever() + "." + appins.getCode() + "." + Common.INTERNAL + ".";
 		if(!path.startsWith("/")) {
 			path += "/";
 		}
-		prefix = prefix + path.substring(1) + "." + Common.INTERNAL + "." + path.replace('/', '.');
+		prefix = prefix + path.substring(1).replace('/', '.');
 		return cutTailDotChar(prefix);
 	}
 	
