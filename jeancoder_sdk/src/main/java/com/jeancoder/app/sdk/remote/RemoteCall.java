@@ -1,6 +1,6 @@
 package com.jeancoder.app.sdk.remote;
 
-import com.milepai.core.utils.web.JackSonBeanMapper;
+import com.jeancoder.core.util.JackSonBeanMapper;
 
 public class RemoteCall {
 	
@@ -12,7 +12,6 @@ public class RemoteCall {
 		return http_call(url, param, null);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static <T> T http_call(final Class<T> claz, String url, String param, RequestCert cert) {
 		String ret = http_call(url, param, cert);
 		T obj = (T)JackSonBeanMapper.fromJson(ret, claz);
