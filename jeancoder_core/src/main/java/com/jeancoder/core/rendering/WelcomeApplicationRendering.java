@@ -12,8 +12,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
-import com.jeancoder.core.http.JCThreadLocal;
-import com.jeancoder.core.rendering.Rendering;
+import com.jeancoder.core.http.JCRequest;
 import com.jeancoder.core.result.Result;
 import com.jeancoder.root.env.JCAPP;
 import com.jeancoder.root.io.http.JCServletContext;
@@ -42,14 +41,14 @@ public class WelcomeApplicationRendering<T extends Result> extends DefaultRender
 				ctx.setVariable(next_ele, request.getAttribute(next_ele));
 			}
 		}
-
-		ctx.setVariable("static", "/" + JCThreadLocal.getCode() + "/static");
-		ctx.setVariable("contextPath", JCThreadLocal.getRequest().getContextPath());
-		ctx.setVariable("JCrequest", JCThreadLocal.getRequest());
+		JCAPP apps = this.runningResult.getAppins();
+		ctx.setVariable("static", "/" + apps.getCode() + "/static");
+		ctx.setVariable("contextPath", apps.getCode());
+		//ctx.setVariable("JCrequest", JCThreadLocal.getRequest());
+		ctx.setVariable("JCrequest", new JCRequest(request));
 		ctx.setVariable("pub_bucket", "https://cdn.iplaysky.com/static/");
 
-		JCAPP apps = this.runningResult.getAppins();
-		String path = apps.getApp_base() + "/template/";
+		String path = apps.getApp_base() + "/" + apps.getTpl_base() + "/";
 		String name = result.getResult();
 		if (result.getResult().indexOf("/") > -1) {
 			path = path + name.substring(0, name.lastIndexOf("/")) + "/";
