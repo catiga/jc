@@ -1,6 +1,7 @@
 package com.jeancoder.root.server.proto.conf;
 
 import com.jeancoder.root.env.JCAPP;
+import com.jeancoder.root.env.JCAppConfig;
 
 public class AppMod {
 
@@ -21,6 +22,8 @@ public class AppMod {
 	String lans;
 	
 	String app_base;	//support folder and zip file
+	
+	APPConf config;
 
 	public String getApp_id() {
 		return app_id;
@@ -94,6 +97,14 @@ public class AppMod {
 		this.app_base = app_base;
 	}
 
+	protected APPConf getConfig() {
+		return config;
+	}
+
+	protected void setConfig(APPConf config) {
+		this.config = config;
+	}
+
 	public JCAPP to() {
 		JCAPP jcapp = null;
 		if(this!=null) {
@@ -107,7 +118,18 @@ public class AppMod {
 			jcapp.setSource_type(this.getSource_type());
 			jcapp.setVer(this.getApp_ver());
 			jcapp.setApp_base(this.getApp_base());
+			jcapp.setConfig(this.to(this.config));
 		}
 		return jcapp;
+	}
+	
+	public JCAppConfig to(APPConf confinfo) {
+		JCAppConfig config = null;
+		if(confinfo!=null) {
+			config = new JCAppConfig();
+			config.setDescription(confinfo.description);
+			config.setIndex(confinfo.index);
+		}
+		return config;
 	}
 }

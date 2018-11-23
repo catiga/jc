@@ -30,6 +30,8 @@ public class JCAPP {
 	
 	String lib_base = "lib";
 	
+	JCAppConfig config;
+	
 	public String getId() {
 		return id;
 	}
@@ -140,6 +142,14 @@ public class JCAPP {
 
 	public void setLib_base(String lib_base) {
 		this.lib_base = lib_base;
+	}
+
+	public JCAppConfig getConfig() {
+		return config;
+	}
+
+	public void setConfig(JCAppConfig config) {
+		this.config = config;
 	}
 
 }

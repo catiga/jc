@@ -43,7 +43,7 @@ public class WelcomeApplicationRendering<T extends Result> extends DefaultRender
 		}
 		JCAPP apps = this.runningResult.getAppins();
 		ctx.setVariable("static", "/" + apps.getCode() + "/static");
-		ctx.setVariable("contextPath", apps.getCode());
+		ctx.setVariable("contextPath", "/" + apps.getCode());
 		//ctx.setVariable("JCrequest", JCThreadLocal.getRequest());
 		ctx.setVariable("JCrequest", new JCRequest(request));
 		ctx.setVariable("pub_bucket", "https://cdn.iplaysky.com/static/");

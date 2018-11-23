@@ -135,8 +135,16 @@ public class ApplicationSource extends SysSource {
 			NamerApplicationDto dto = new NamerApplicationDto();
 			dto.setAppCode(app.getCode());
 			dto.setAppName(app.getName());
-			dto.setDescribe(app.getName());
-			dto.setIndex(app.getCode());
+			if(app.getConfig()!=null) {
+				dto.setDescribe(app.getConfig().getDescription());
+				if(app.getConfig().getIndex()!=null) {
+					dto.setIndex(app.getConfig().getIndex());
+				} else {
+					dto.setIndex("welcome");
+				}
+			} else {
+				dto.setIndex("welcome");
+			}
 			dtoList.add(dto);
 		}
 		return dtoList;
