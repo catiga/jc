@@ -12,8 +12,8 @@ import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.jeancoder.core.rendering.Rendering;
 import com.jeancoder.core.result.Result;
+import com.jeancoder.core.util.JackSonBeanMapper;
 import com.jeancoder.root.env.RunnerResult;
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
@@ -47,6 +47,18 @@ public class DefaultRendering<T extends Result> implements Rendering {
 	public Object process(HttpServletRequest request, HttpServletResponse response) {
 		this.request = (JCHttpRequest)request;
 		this.response = (JCHttpResponse)response;
+		Result result = null;
+		if(runningResult!=null&&runningResult.getResult()!=null) {
+			result = runningResult.getResult();
+		}
+		String defaultobj = "{}";
+		
+		if(result!=null) {
+			try {
+				defaultobj = JackSonBeanMapper.toJson(result);
+			}catch(Exception e) {}
+		}
+		this.writeJsonResponse(defaultobj, true);
 		return null;
 	}
 

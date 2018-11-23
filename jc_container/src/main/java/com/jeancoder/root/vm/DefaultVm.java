@@ -68,19 +68,18 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 		logger.info("CONTEXT TYPE=" + context_type);
 		
 		RunnerResult<T> exeresult = makeRun(req, res);
-		
 		ChannelHandlerContext ctx = JCVMDelegator.getContext().getContext();
-		Rendering rendering = RenderingFactory.getRendering(ctx, exeresult);
 		try {
+			Rendering rendering = RenderingFactory.getRendering(ctx, exeresult);
 			rendering.process(req, res);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			JCThreadLocal.clearClassLoader();
+//			JCThreadLocal.clearClassLoader();
 			JCThreadLocal.clearRequest();
 			JCThreadLocal.clearResponse();
-			JCThreadLocal.clearCode();
+//			JCThreadLocal.clearCode();
 		}
 		return exeresult;
 	}

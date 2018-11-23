@@ -9,6 +9,7 @@ import com.jeancoder.core.http.JCResponse;
 import com.jeancoder.core.http.JCThreadLocal;
 import com.jeancoder.core.result.Result;
 import com.jeancoder.root.container.JCAppContainer;
+import com.jeancoder.root.container.PowerCaps;
 import com.jeancoder.root.container.loader.TypeDefClassLoader;
 import com.jeancoder.root.env.JCAPP;
 import com.jeancoder.root.env.RunnerResult;
@@ -19,6 +20,7 @@ import com.jeancoder.root.exception.PrivilegeException;
 import com.jeancoder.root.exception.RunningException;
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
+import com.jeancoder.root.state.JCAPPHolder;
 
 import groovy.lang.Binding;
 import groovy.lang.Script;
@@ -29,6 +31,18 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 	
 	protected JCAPP appins;
 	
+	protected final PowerCaps BC_CAPS = new PowerCaps();
+	
+	@Override
+	public JCAPP getApp() {
+		return appins;
+	}
+
+	@Override
+	public PowerCaps getCaps() {
+		return BC_CAPS;
+	}
+
 	protected String transferPathToClz(JCHttpRequest req) {
 		String app_context_path = req.getContextPath();
 		String app_action_path = req.getRequestURI().substring(app_context_path.length() + 1);
@@ -59,9 +73,11 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 	}
 	
 	public <T extends Result> RunnerResult<T> execute(String path) {
-		JCThreadLocal.setClassLoader(containClassLoader.getAppClassLoader());
-		JCThreadLocal.setCode(appins.getCode());
+//		JCThreadLocal.setClassLoader(containClassLoader.getAppClassLoader());
+//		JCThreadLocal.setCode(appins.getCode());
 		Class<?> executor = null;
+		JCAppContainer original_container = JCAPPHolder.getContainer();
+		JCAPPHolder.setContainer(this);
 		try {
 			executor = this.transferPathToIns(path);
 			Binding context = new Binding();
@@ -84,6 +100,12 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 		} catch (Exception ex) {
 			logger.error("", ex);
 			throw new Code500Exception(id().id(), id().code(), executor==null?null:executor.getName(), this.transferPathToClz(path), "RUNNING_ERROR:" + ex.getCause(), ex);
+		} finally {
+			if(original_container!=null) {
+				JCAPPHolder.setContainer(original_container);
+			} else {
+				JCAPPHolder.clearContainer();
+			}
 		}
 	}
 	
@@ -91,10 +113,12 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 	
 	@Override
 	public final <T extends Result> RunnerResult<T> execute(JCHttpRequest req, JCHttpResponse res) {
-		JCThreadLocal.setClassLoader(containClassLoader.getAppClassLoader());
+//		JCThreadLocal.setClassLoader(containClassLoader.getAppClassLoader());
 		JCThreadLocal.setRequest(new JCRequest(req));
 		JCThreadLocal.setResponse(new JCResponse(res));
-		JCThreadLocal.setCode(appins.getCode());
+//		JCThreadLocal.setCode(appins.getCode());
+		
+		JCAPPHolder.setContainer(this);
 		try {
 			RunnerResult<T> result = this.run(req, res);
 			return result;
@@ -120,5 +144,5 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 		return cutTailDotChar(kelxz.substring(0, kelxz.length() - 1));
 	}
 	
-	public abstract <T extends Result> RunnerResult<T> run(JCHttpRequest req, JCHttpResponse res);
+	protected abstract <T extends Result> RunnerResult<T> run(JCHttpRequest req, JCHttpResponse res);
 }

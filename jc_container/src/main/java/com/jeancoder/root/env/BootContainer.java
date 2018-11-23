@@ -5,30 +5,17 @@ import org.slf4j.LoggerFactory;
 
 import com.jeancoder.app.sdk.Interceptor.JCInterceptorChain;
 import com.jeancoder.app.sdk.Interceptor.JCInterceptorStack;
-import com.jeancoder.app.sdk.configure.DevConfigureReader;
-import com.jeancoder.app.sdk.configure.DevSysConfigProp;
-import com.jeancoder.app.sdk.configure.DevSystemProp;
-import com.jeancoder.app.sdk.context.ApplicationContextPool;
-import com.jeancoder.app.sdk.context.JCApplicationContext;
-import com.jeancoder.app.sdk.power.DevPowerLoader;
+import com.jeancoder.cap.config.DevConfigureReader;
+import com.jeancoder.cap.power.DevPowerLoader;
 import com.jeancoder.core.Interceptor.Interceptor;
+import com.jeancoder.core.cl.DefLoader;
+import com.jeancoder.core.cl.JCLoader;
 import com.jeancoder.core.common.Common;
-import com.jeancoder.core.configure.JeancoderConfigurer;
-import com.jeancoder.core.configure.PropType;
-import com.jeancoder.core.namer.DevLang;
-import com.jeancoder.core.namer.FetchWay;
-import com.jeancoder.core.namer.InstallWay;
-import com.jeancoder.core.namer.NamerApplication;
-import com.jeancoder.core.power.DatabasePower;
 import com.jeancoder.core.power.DatabasePowerHandler;
-import com.jeancoder.core.power.MemPower;
 import com.jeancoder.core.power.MemPowerHandler;
 import com.jeancoder.core.power.PowerHandlerFactory;
 import com.jeancoder.core.power.PowerName;
-import com.jeancoder.core.power.QiniuPower;
 import com.jeancoder.core.power.QiniuPowerHandler;
-import com.jeancoder.core.resource.proc.Application;
-import com.jeancoder.core.resource.runtime.ApplicationHolder;
 import com.jeancoder.core.result.Result;
 import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.container.core.BCID;
@@ -54,7 +41,7 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 	static final Object _LOCK_ = new Object();
 
 	volatile String state = STATE_READY;
-
+	
 	@Override
 	public BCID id() {
 		return BCID.generateKey(appins.getId(), appins.getCode());
@@ -71,6 +58,11 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 		this.onStart();
 	}
 	
+	@Override
+	public DefLoader getSignedClassLoader() {
+		return this.containClassLoader;
+	}
+
 	protected Object singleRun(JCHttpRequest req, JCHttpResponse res, String classname) {
 		try {
 			Class<?> executor = containClassLoader.getAppClassLoader().findClass(classname);
@@ -91,7 +83,7 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 	}
 
 	@Override
-	public <T extends Result> RunnerResult<T> run(JCHttpRequest req, JCHttpResponse res) {
+	protected <T extends Result> RunnerResult<T> run(JCHttpRequest req, JCHttpResponse res) {
 		String resourceId = this.transferPathToClz(req);
 		JCInterceptorChain chain = JCInterceptorStack.getJCInterceptorChain(this.appins.getCode(), resourceId);
 		// 进入拦截器 直接循环执行
@@ -135,13 +127,13 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 				throwCause(null);
 			}
 			state = STATE_STARTING;
-			containClassLoader = new TypeDefClassLoader(rootLoader, appins);
+			containClassLoader = new TypeDefClassLoader(rootLoader, this);
 			state = STATE_RUNNING;
 		}
 	}
 
 	@Override
-	public ClassLoader getManager() {
+	public JCLoader getManagerClassLoader() {
 		return rootLoader;
 	}
 
@@ -161,50 +153,65 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 			if (!state.equals(STATE_READY)) {
 				throwCause(null);
 			}
+			logger.info(this.toString());
 			String appPath = appins.getApp_base();
 			DevConfigureReader.init(appPath, appins.code);
 			// //初始化系统能力
 			DevPowerLoader.init(appins.code);
-			DevSystemProp appcnf = (DevSystemProp) JeancoderConfigurer.fetchDefault(PropType.APPLICATION, appins.code);
-			DevSysConfigProp sysConfig = (DevSysConfigProp) JeancoderConfigurer.fetchDefault(PropType.SYS, appins.code);
-
-			NamerApplication app1 = new NamerApplication();
-			app1.setAppCode(appcnf.getCode());
-			app1.setDeveloperCode(appcnf.getDevelopercode());
-			app1.setDevLang(DevLang.SDK_GROOVY);
-			app1.setFetchWay(FetchWay.SDK);
-			app1.setFetchAddress(appPath);
-			app1.setInstallAddress(appPath);
-			app1.setInstallWay(InstallWay.DISK);
-			app1.setDescribe(appcnf.getDescribe());
-			app1.setIndex(appcnf.getIndex());
-			app1.setAppName(appcnf.getName());
-
-			// InstallerFactory.generateInstaller(app1).install();
-			Application app = new Application();
-			app.setApp(app1);
-			ApplicationHolder.getInstance().addApp(app);
-			if (sysConfig != null) {
-				app1.setInstallAddress(sysConfig.getLoadUri());
+//			DevSystemProp appcnf = (DevSystemProp) JeancoderConfigurer.fetchDefault(PropType.APPLICATION, appins.code);
+//			DevSysConfigProp sysConfig = (DevSysConfigProp) JeancoderConfigurer.fetchDefault(PropType.SYS, appins.code);
+			
+			DatabasePowerHandler jcDatabasePower = (DatabasePowerHandler) PowerHandlerFactory.getPowerHandler(PowerName.DATABASE, appins.code);
+			MemPowerHandler memPowerHandler = (MemPowerHandler) PowerHandlerFactory.getPowerHandler(PowerName.MEM, appins.code);
+			QiniuPowerHandler qiniuPowerHandler = (QiniuPowerHandler) PowerHandlerFactory.getPowerHandler(PowerName.QINIU, appins.code);
+			
+			if(jcDatabasePower!=null) {
+				BC_CAPS.add(Common.DATABASE, jcDatabasePower);
 			}
-			Application application = ApplicationHolder.getInstance().getAppByCode(app1.getAppCode());
+			if(memPowerHandler!=null) {
+				BC_CAPS.add(Common.MEM_POWER, memPowerHandler);
+			}
+			if(qiniuPowerHandler!=null) {
+				BC_CAPS.add(Common.QINIU_POWER, qiniuPowerHandler);
+			}
+
+//			NamerApplication app1 = new NamerApplication();
+//			app1.setAppCode(appcnf.getCode());
+//			app1.setDeveloperCode(appcnf.getDevelopercode());
+//			app1.setDevLang(DevLang.SDK_GROOVY);
+//			app1.setFetchWay(FetchWay.SDK);
+//			app1.setFetchAddress(appPath);
+//			app1.setInstallAddress(appPath);
+//			app1.setInstallWay(InstallWay.DISK);
+//			app1.setDescribe(appcnf.getDescribe());
+//			app1.setIndex(appcnf.getIndex());
+//			app1.setAppName(appcnf.getName());
+//
+//			// InstallerFactory.generateInstaller(app1).install();
+//			Application app = new Application();
+//			app.setApp(app1);
+//			ApplicationHolder.getInstance().addApp(app);
+//			if (sysConfig != null) {
+//				app1.setInstallAddress(sysConfig.getLoadUri());
+//			}
+//			Application application = ApplicationHolder.getInstance().getAppByCode(app1.getAppCode());
 
 			// //打印资源树
 			// ApplicationHolder.getInstance().prinAll();
 			// //初始应用相关的上下文
-			JCApplicationContext jcApplicationContext = new JCApplicationContext();
-			jcApplicationContext.setApplication(application);
+//			JCApplicationContext jcApplicationContext = new JCApplicationContext();
+//			jcApplicationContext.setApplication(application);
 			// db
-			DatabasePowerHandler jcDatabasePower = (DatabasePowerHandler) PowerHandlerFactory.getPowerHandler(PowerName.DATABASE, appins.code);
-			jcApplicationContext.add(Common.DATABASE, (DatabasePower) jcDatabasePower);
-			// men
-			MemPowerHandler memPowerHandler = (MemPowerHandler) PowerHandlerFactory.getPowerHandler(PowerName.MEM, appins.code);
-			jcApplicationContext.add(Common.MEM_POWER, (MemPower) memPowerHandler);
-
-			// 青牛
-			QiniuPowerHandler qiniuPowerHandler = (QiniuPowerHandler) PowerHandlerFactory.getPowerHandler(PowerName.QINIU, appins.code);
-			jcApplicationContext.add(Common.QINIU_POWER, (QiniuPower) qiniuPowerHandler);
-			ApplicationContextPool.addApplicationContext(app1.getAppCode(), jcApplicationContext);
+//			DatabasePowerHandler jcDatabasePower = (DatabasePowerHandler) PowerHandlerFactory.getPowerHandler(PowerName.DATABASE, appins.code);
+//			jcApplicationContext.add(Common.DATABASE, (DatabasePower) jcDatabasePower);
+//			// men
+//			MemPowerHandler memPowerHandler = (MemPowerHandler) PowerHandlerFactory.getPowerHandler(PowerName.MEM, appins.code);
+//			jcApplicationContext.add(Common.MEM_POWER, (MemPower) memPowerHandler);
+//
+//			// 青牛
+//			QiniuPowerHandler qiniuPowerHandler = (QiniuPowerHandler) PowerHandlerFactory.getPowerHandler(PowerName.QINIU, appins.code);
+//			jcApplicationContext.add(Common.QINIU_POWER, (QiniuPower) qiniuPowerHandler);
+//			ApplicationContextPool.addApplicationContext(app1.getAppCode(), jcApplicationContext);
 
 			// 注册拦截器
 			// 执行初始化文件

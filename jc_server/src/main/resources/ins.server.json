@@ -36,6 +36,17 @@
 					"source_type": "binary",
 					"lans": "java|groovy",
 					"app_base":"/Users/jackielee/Documents/dev_workspace/92yp_app_scm"
+				},
+				{
+					"app_id": "99043026",
+					"app_code": "trade",
+					"app_name": "交易管理",
+					"dev_name": "jeancoder",
+					"org_name": "com",
+					"app_ver": "1.0",
+					"source_type": "binary",
+					"lans": "java|groovy",
+					"app_base":"/Users/jackielee/Documents/dev_workspace/92yp_app_trade"
 				}
 			]
 		},

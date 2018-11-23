@@ -16,8 +16,8 @@ import java.util.jar.JarFile;
 
 import com.jeancoder.core.cl.AppLoader;
 import com.jeancoder.core.cl.CLHandler;
-import com.jeancoder.core.http.JCThreadLocal;
 import com.jeancoder.jdbc.bean.JCBean;
+import com.jeancoder.root.state.JCAPPHolder;
 
 public class JCEEMapper {
 	
@@ -54,7 +54,7 @@ public class JCEEMapper {
 	private Set<Class<?>> getClasses() {
 		Set<Class<?>> classes = new HashSet<Class<?>>();
 		try {
-			AppLoader gcl = (AppLoader) JCThreadLocal.getClassLoader();
+			AppLoader gcl = JCAPPHolder.getContainer().getSignedClassLoader().getManaged();
 	    	for (CLHandler c : gcl.getAppClasses()) {
 	    		classes.add(c.getBindClass());
 	    	}

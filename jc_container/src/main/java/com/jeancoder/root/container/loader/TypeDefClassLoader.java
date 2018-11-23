@@ -11,8 +11,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jeancoder.core.cl.AppLoader;
+import com.jeancoder.core.cl.DefLoader;
 import com.jeancoder.core.cl.JCLoader;
 import com.jeancoder.core.common.Common;
+import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.env.JCAPP;
 import com.jeancoder.root.state.JCAPPHolder;
 
@@ -24,7 +27,7 @@ import groovy.lang.Script;
  * @author jackielee
  *
  */
-public class TypeDefClassLoader extends URLClassLoader implements JCLoader {
+public class TypeDefClassLoader extends URLClassLoader implements DefLoader, JCLoader {
 
 	private static Logger logger = LoggerFactory.getLogger(TypeDefClassLoader.class);
 	
@@ -34,17 +37,26 @@ public class TypeDefClassLoader extends URLClassLoader implements JCLoader {
 	
 	JCAPP appins;
 	
-	public TypeDefClassLoader(BootClassLoader parent, JCAPP appins) {
+	@Override
+	public AppLoader getManaged() {
+		return appClassLoader;
+	}
+
+	private JCAppContainer container;
+	
+	public TypeDefClassLoader(BootClassLoader parent, JCAppContainer container) {
 		super(EMPTY_URL_ARRAY, parent);
 		this.parent = parent;
-		this.appins = appins;
+//		this.appins = appins;
+		this.container = container;
+		this.appins = container.getApp();
 		registerSysJars(appins.getApp_base() + "/" + appins.getLib_base());
 		this.appClassLoader = new AppClassLoader(this);
 		initByRes();
 	}
 	
 	protected void initByRes() {
-		JCAPPHolder.set(appins);	//not goods way, fuck
+		JCAPPHolder.setContainer(container);	//not goods way, fuck
 		try {
 			Class<?> executor = appClassLoader.findClass(appins.getOrg() + "." + appins.getDever() + "." + appins.getCode() + "." + Common.INITIAL);
 			Binding context = new Binding();
@@ -57,7 +69,7 @@ public class TypeDefClassLoader extends URLClassLoader implements JCLoader {
 		} catch (Exception e) {
 			logger.error("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") INIT ERROR.", e);
 		} finally {
-			JCAPPHolder.clear();
+			JCAPPHolder.clearContainer();
 		}
 	}
 	

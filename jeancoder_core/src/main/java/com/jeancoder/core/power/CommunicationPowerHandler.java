@@ -17,20 +17,14 @@ import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
-import com.jeancoder.core.common.Common;
-import com.jeancoder.core.exception.AppRunnerException;
 import com.jeancoder.core.exception.JeancoderException;
 import com.jeancoder.core.exception.SdkRuntimeException;
 import com.jeancoder.core.http.JCCookie;
 import com.jeancoder.core.http.JCRequest;
-import com.jeancoder.core.http.JCResponse;
 import com.jeancoder.core.http.JCThreadLocal;
 import com.jeancoder.core.log.JCLogger;
 import com.jeancoder.core.log.JCLoggerFactory;
 import com.jeancoder.core.power.localdns.UrlAddress;
-import com.jeancoder.core.resource.proc.Application;
-import com.jeancoder.core.resource.proc.Resource;
-import com.jeancoder.core.resource.runtime.ApplicationHolder;
 import com.jeancoder.core.result.Result;
 import com.jeancoder.core.security.BZX509TrustManager;
 import com.jeancoder.core.util.FileUtil;
@@ -228,15 +222,15 @@ public class CommunicationPowerHandler extends PowerHandler implements Communica
 	 */
 	private String doRequest(String path, List<CommunicationParam> params) {
 		Map<String, Object> parameterMap = JCThreadLocal.getNativeParameter();
-		JCRequest reqeust = JCThreadLocal.getRequest();
-		JCResponse response = JCThreadLocal.getResponse();
-		Result  result =  JCThreadLocal.getResult();
-		
-		JCThreadLocal.setRequest(null);
-		JCThreadLocal.setResponse(null);
+//		JCRequest reqeust = JCThreadLocal.getRequest();
+//		JCResponse response = JCThreadLocal.getResponse();
+//		Result  result =  JCThreadLocal.getResult();
+//		
+//		JCThreadLocal.setRequest(null);
+//		JCThreadLocal.setResponse(null);
 		JCThreadLocal.setNativeParameter(getParameterMap(params));
-		JCThreadLocal.setResponse(null);
-		JCThreadLocal.setCode(this.getId());
+//		JCThreadLocal.setResponse(null);
+//		JCThreadLocal.setCode(this.getId());
 		
 		VMDelegate wd = JCVMDelegatorGroup.instance().getDelegator();	
 		ContainerMaps cm = wd.getVM().getContainers();
@@ -249,10 +243,10 @@ public class CommunicationPowerHandler extends PowerHandler implements Communica
 			Logger.error("",e);
 			throw e;
 		} finally {
-			JCThreadLocal.setResult(result);
+//			JCThreadLocal.setResult(result);
 			JCThreadLocal.setNativeParameter(parameterMap);
-			JCThreadLocal.setRequest(reqeust);
-			JCThreadLocal.setResponse(response);
+//			JCThreadLocal.setRequest(reqeust);
+//			JCThreadLocal.setResponse(response);
 		} 
 	}
 	

@@ -11,7 +11,7 @@ public class RenderingFactory {
 
 	public static <T extends Result> Rendering getRendering(ChannelHandlerContext context, RunnerResult<T> resultWrapper) {
 		DefaultRendering<T> rend = new DefaultRendering<T>(context);
-		Result result = resultWrapper.getResult();
+		Result result = resultWrapper==null?null:resultWrapper.getResult();
 		if(result!=null) {
 			if (ResultType.VIEW_RESOURCE.equals(result.getResultType())) {
 				rend = new WelcomeApplicationRendering<T>(context);

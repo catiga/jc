@@ -27,6 +27,12 @@ import com.jeancoder.core.resource.proc.Application;
 import com.jeancoder.core.resource.proc.Resource;
 import com.jeancoder.core.resource.runtime.ApplicationHolder;
 import com.jeancoder.core.util.InputStreamUtil;
+import com.jeancoder.root.container.ContainerMaps;
+import com.jeancoder.root.container.JCAppContainer;
+import com.jeancoder.root.container.core.BCID;
+import com.jeancoder.root.env.JCAPP;
+import com.jeancoder.root.vm.JCVMDelegatorGroup;
+import com.jeancoder.root.vm.VMDelegate;
 
 /**
  * ApplicationSource 只有指定的jeancoder 开发应用才能使用
@@ -104,15 +110,33 @@ public class ApplicationSource extends SysSource {
 		LOGGER.info("spp:" + appCode + " uninstalled security success.");
 	}
 	
+//	public static List<NamerApplicationDto> getApplicationAll() {
+//		List<NamerApplication>  list = ApplicationHolder.getInstance().getAll();
+//		List<NamerApplicationDto> dtoList = new ArrayList<NamerApplicationDto>();
+//		for (NamerApplication item: list) {
+//			NamerApplicationDto dto = new NamerApplicationDto();
+//			dto.setAppCode(item.getAppCode());
+//			dto.setAppName(item.getAppName());
+//			dto.setDescribe(item.getDescribe());
+//			dto.setIndex(item.getIndex());
+//			dtoList.add(dto);
+//		}
+//		return dtoList;
+//	}
+	
 	public static List<NamerApplicationDto> getApplicationAll() {
-		List<NamerApplication>  list = ApplicationHolder.getInstance().getAll();
+		VMDelegate wd = JCVMDelegatorGroup.instance().getDelegator();	
+		ContainerMaps cm = wd.getVM().getContainers();
+		
 		List<NamerApplicationDto> dtoList = new ArrayList<NamerApplicationDto>();
-		for (NamerApplication item: list) {
+		for (BCID item: cm.keySet()) {
+			JCAppContainer container = cm.get(item);
+			JCAPP app = container.getApp();
 			NamerApplicationDto dto = new NamerApplicationDto();
-			dto.setAppCode(item.getAppCode());
-			dto.setAppName(item.getAppName());
-			dto.setDescribe(item.getDescribe());
-			dto.setIndex(item.getIndex());
+			dto.setAppCode(app.getCode());
+			dto.setAppName(app.getName());
+			dto.setDescribe(app.getName());
+			dto.setIndex(app.getCode());
 			dtoList.add(dto);
 		}
 		return dtoList;

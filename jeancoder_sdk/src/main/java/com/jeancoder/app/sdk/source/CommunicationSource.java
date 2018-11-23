@@ -2,11 +2,7 @@ package com.jeancoder.app.sdk.source;
 
 import java.util.Map;
 
-import com.jeancoder.app.sdk.configure.DevCommunicationProp;
 import com.jeancoder.app.sdk.exception.CommunicationPowerGenerateFailedException;
-import com.jeancoder.core.common.Common;
-import com.jeancoder.core.configure.JeancoderConfigurer;
-import com.jeancoder.core.configure.PropType;
 import com.jeancoder.core.exception.JeancoderException;
 import com.jeancoder.core.http.JCRequest;
 import com.jeancoder.core.http.JCThreadLocal;

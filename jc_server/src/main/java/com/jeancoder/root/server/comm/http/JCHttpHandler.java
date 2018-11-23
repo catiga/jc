@@ -1,5 +1,7 @@
 package com.jeancoder.root.server.comm.http;
 
+import static com.jeancoder.root.io.line.HeaderNames.CONNECTION;
+
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -242,9 +244,9 @@ public class JCHttpHandler extends ChannelInboundHandlerAdapter {
 	}
 
 	private boolean isClose() {
-		if (request.headers().contains(org.apache.http.HttpHeaders.CONNECTION, CONNECTION_CLOSE, true) || (request
+		if (request.headers().contains(CONNECTION, CONNECTION_CLOSE, true) || (request
 				.protocolVersion().equals(HttpVersion.HTTP_1_0)
-				&& !request.headers().contains(org.apache.http.HttpHeaders.CONNECTION, CONNECTION_KEEP_ALIVE, true)))
+				&& !request.headers().contains(CONNECTION, CONNECTION_KEEP_ALIVE, true)))
 			return true;
 		return false;
 	}

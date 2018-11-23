@@ -234,7 +234,8 @@ public class JCHttpRequest implements HttpServletRequest {
 
 	@Override
 	public StringBuffer getRequestURL() {
-		return new StringBuffer(uri);
+		String domain = request.headers().get(HOST);
+		return new StringBuffer("http://" + domain + uri);
 	}
 
 	@Override
