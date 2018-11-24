@@ -19,6 +19,6 @@ public interface JCVM extends Lifecycle {
 	
 	public void setInitApps(List<JCAPP> appList);
 	
-	public  <T extends Result> RunnerResult<T> dispatch(JCHttpRequest req, JCHttpResponse res);
+	public <T extends Result> RunnerResult<T> dispatch(JCHttpRequest req, JCHttpResponse res);
 	
 }
