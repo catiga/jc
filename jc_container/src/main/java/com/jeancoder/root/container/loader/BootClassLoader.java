@@ -53,7 +53,9 @@ public class BootClassLoader extends URLClassLoader implements JCLoader {
 		    	}
 	    	} else {
 		    	try {
-	    			waiting.add(basePath.toURI().toURL());
+		    		if(basePath.getName().substring(basePath.getName().lastIndexOf(".") + 1).equals("jar")) {
+		    			waiting.add(basePath.toURI().toURL());
+		    		}
 	    		} catch(IOException ioex) {
 	    		}
 		    }
