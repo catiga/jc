@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.jeancoder.root</groupId>
 	<artifactId>jc_server</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>${jc.root.version}</version>
 	<name>jc_server</name>
 	<url>http://maven.apache.org</url>
 
