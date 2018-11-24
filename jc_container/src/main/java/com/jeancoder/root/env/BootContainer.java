@@ -36,7 +36,7 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 
 	private static Logger logger = LoggerFactory.getLogger(BootContainer.class);
 
-	private static BootClassLoader rootLoader = null;
+	private BootClassLoader rootLoader = null;
 
 	static final Object _LOCK_ = new Object();
 
@@ -52,10 +52,10 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 	}
 
 	protected BootContainer(JCAPP appins) {
-		bindBaseEnv();
+		//bindBaseEnv();
 		this.appins = appins;
-		this.onInit();
-		this.onStart();
+//		this.onInit();
+//		this.onStart();
 	}
 	
 	@Override
@@ -137,12 +137,10 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 		return rootLoader;
 	}
 
-	private static void bindBaseEnv() {
+	public void bindBaseEnv(BootClassLoader envloader) {
 		if (rootLoader == null) {
 			synchronized (_LOCK_) {
-				if (rootLoader == null) {
-					rootLoader = new BootClassLoader(Thread.currentThread().getContextClassLoader());
-				}
+				this.rootLoader = envloader;
 			}
 		}
 	}
