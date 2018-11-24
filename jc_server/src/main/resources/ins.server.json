@@ -44,21 +44,6 @@
 						"description": "管理商品数据",
 						"index":null
 					}
-				},
-				{
-					"app_id": "99043026",
-					"app_code": "trade",
-					"app_name": "交易管理",
-					"dev_name": "jeancoder",
-					"org_name": "com",
-					"app_ver": "1.0",
-					"source_type": "binary",
-					"lans": "java|groovy",
-					"app_base":"/Users/jackielee/Documents/dev_workspace/92yp_app_trade",
-					"config": {
-						"description": "管理交易数据",
-						"index":"mgr/index"
-					}
 				}
 			]
 		},
