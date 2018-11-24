@@ -73,8 +73,6 @@ public class JCHttpServer extends ServerImpl implements JCServer {
 							ch.pipeline().addLast("deflater", new HttpContentCompressor());
 							ch.pipeline().addLast("jciniter", new JCEnvHandler());
 							ch.pipeline().addLast("jcdispatcher", new DispatcherHandler());
-							
-							//ch.pipeline().addLast("handler", new JcMultiPartHandler()); // 业务handler
 						}
 					});
 
