@@ -12,7 +12,6 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.Attribute;
-import io.netty.handler.codec.http.multipart.DiskFileUpload;
 import io.netty.handler.codec.http.multipart.FileUpload;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
@@ -47,9 +46,9 @@ public class RequestParser {
 				if (data_type == HttpDataType.FileUpload) {
 					FileUpload fileUpload = (FileUpload) parm;
 					String fileName = fileUpload.getFilename();
-					String fileType = fileUpload.getContentType();
-					String formFile = fileUpload.getName();
-					Long file_size = fileUpload.getFile().length();
+//					String fileType = fileUpload.getContentType();
+//					String formFile = fileUpload.getName();
+//					Long file_size = fileUpload.getFile().length();
 					if (fileUpload.isCompleted()) {
 						// 暂存到磁盘
 						String tmp_dir = System.getProperty("java.io.tmpdir");
