@@ -11,6 +11,7 @@ import java.net.InetSocketAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jeancoder.root.env.ChannelContextWrapper;
 import com.jeancoder.root.exception.RunningException;
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
@@ -51,8 +52,7 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 	private static final String SUCCESS = "success";
 	
 	@Override
-	public void channelReadComplete(ChannelHandlerContext ctx) {
-		JCVMDelegator.releaseContext();
+	public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
 		ctx.flush();
 	}
 
@@ -60,8 +60,6 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		if (logger.isDebugEnabled()) {
 			logger.debug(ctx.channel().id().toString() + " is actived");
-		} else {
-			logger.info(ctx.channel().id().toString() + " is actived");
 		}
 	}
 
@@ -69,8 +67,6 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		if (logger.isDebugEnabled()) {
 			logger.debug(ctx.channel().id().toString() + " is closed");
-		} else {
-			logger.info(ctx.channel().id().toString() + " is closed");
 		}
 		JCVMDelegator.releaseContext();
 		if (decoder != null) {
@@ -106,8 +102,9 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 			StringBuffer error_buffer = new StringBuffer();
 			if(e instanceof RunningException) {
 				RunningException rex = (RunningException)e;
-				error_buffer.append("JCAPP CODE:" + rex.getApp() + "\r\n\r\n");
-				error_buffer.append("JCAPP PATH:" + rex.getPath() + "\r\n\r\n");
+				error_buffer.append("VM ID:" + JCVMDelegator.delegate().delegatedId() + "\r\n\r\n");
+				error_buffer.append("JCAPP CODE:" + rex.getApp() + "\r\n");
+				error_buffer.append("JCAPP PATH:" + rex.getPath() + "\r\n");
 				error_buffer.append("JCAPP RES:" + rex.getRes() + "\r\n\r\n");
 			}
 			error_buffer.append(e.getMessage() + "\r\n\r\n");
@@ -130,14 +127,8 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 				stand_response.delegateObj().headers().set(CONNECTION, KEEP_ALIVE);
                 ctx.write(stand_response.delegateObj());
 			}
+			JCVMDelegator.releaseContext();
 		}
-		
-//		if(stand_response.getStatus()==HttpResponseStatus.FOUND.code()) {
-//			sendRedirect(ctx, stand_response.getHeader(LOCATION));
-//		} else {
-//			writeHtmlResponse(ctx, HttpResponseStatus.OK, html.toString(), true);
-//		}
-		//ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
     }
 	
 	private void writeResponse(ChannelHandlerContext ctx, HttpResponseStatus status, String msg, boolean forceClose) {
@@ -223,6 +214,7 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 			writeResponse(ctx, HttpResponseStatus.OK, result, true);
 			return;
 		}
+		JCVMDelegator.bindContext(ChannelContextWrapper.newone(ctx));
 		headers = request.headers();
 		messageReceived(ctx, request);
 	}
