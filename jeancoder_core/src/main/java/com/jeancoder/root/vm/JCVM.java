@@ -21,4 +21,5 @@ public interface JCVM extends Lifecycle {
 	
 	public <T extends Result> RunnerResult<T> dispatch(JCHttpRequest req, JCHttpResponse res);
 	
+	public String meId();
 }

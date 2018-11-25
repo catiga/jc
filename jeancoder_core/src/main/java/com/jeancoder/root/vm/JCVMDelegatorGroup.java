@@ -3,7 +3,7 @@ package com.jeancoder.root.vm;
 public class JCVMDelegatorGroup {
 
 	private VMDelegate delegator;
-
+	
 	public VMDelegate getDelegator() {
 		return delegator;
 	}

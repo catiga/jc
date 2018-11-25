@@ -46,13 +46,15 @@ public class RequestParser {
 				HttpDataType data_type = parm.getHttpDataType();
 				if (data_type == HttpDataType.FileUpload) {
 					FileUpload fileUpload = (FileUpload) parm;
-					fileUpload.get();
 					String fileName = fileUpload.getFilename();
+					String fileType = fileUpload.getContentType();
+					String formFile = fileUpload.getName();
+					Long file_size = fileUpload.getFile().length();
 					if (fileUpload.isCompleted()) {
-						// 保存到磁盘
-						StringBuffer fileNameBuf = new StringBuffer();
-						fileNameBuf.append(DiskFileUpload.baseDirectory).append(fileName);
-						fileUpload.renameTo(new File(fileNameBuf.toString()));
+						// 暂存到磁盘
+						String tmp_dir = System.getProperty("java.io.tmpdir");
+						tmp_dir = "/Users/jackielee/Desktop/test";
+						fileUpload.renameTo(new File(tmp_dir + "/" + fileName));
 					}
 					//TODO build file object
 				} else {
