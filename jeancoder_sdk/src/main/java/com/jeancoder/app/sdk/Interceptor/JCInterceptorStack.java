@@ -9,7 +9,6 @@ import com.jeancoder.core.Interceptor.Interceptor;
 import com.jeancoder.core.Interceptor.InterceptorStack;
 import com.jeancoder.core.common.Common;
 import com.jeancoder.root.container.JCAppContainer;
-import com.jeancoder.root.env.JCAPP;
 import com.jeancoder.root.state.JCAPPHolder;
 
 public class JCInterceptorStack implements InterceptorStack{
@@ -28,23 +27,25 @@ public class JCInterceptorStack implements InterceptorStack{
 	public void addInterceptor(Interceptor interceptor) {
 		if(JCAPPHolder.getContainer()!=null) {
 			JCAppContainer container = JCAPPHolder.getContainer();
-			JCAPP ins = container.getApp();
-			List<Interceptor> interceptorList = interceptorMap.get(ins.getCode());
-			if (interceptorList == null) {
-				interceptorList = new ArrayList<Interceptor>();
-			}
-			String pre_clz = null;
-			if(interceptor.getPreResource()!=null) {
-				pre_clz = ins.getOrg() + "." + ins.getDever() + "." + ins.getCode() + "." + Common.INTERCEPTOR + "." + interceptor.getPreResource().replace("/", ".");
-			}
-			String pos_clz = null;
-			if(interceptor.getPostResource()!=null) {
-				pos_clz = ins.getOrg() + "." + ins.getDever() + "." + ins.getCode() + "." + Common.INTERCEPTOR + "." + interceptor.getPostResource().replace("/", ".");
-			}
-			interceptor.setPostResource(pos_clz);
-			interceptor.setPreResource(pre_clz);
-			interceptorList.add(interceptor);
-			interceptorMap.put(ins.getCode(), interceptorList);
+//			JCAPP ins = container.getApp();
+//			List<Interceptor> interceptorList = interceptorMap.get(ins.getCode());
+//			if (interceptorList == null) {
+//				interceptorList = new ArrayList<Interceptor>();
+//			}
+//			String pre_clz = null;
+//			if(interceptor.getPreResource()!=null) {
+//				pre_clz = ins.getOrg() + "." + ins.getDever() + "." + ins.getCode() + "." + Common.INTERCEPTOR + "." + interceptor.getPreResource().replace("/", ".");
+//			}
+//			String pos_clz = null;
+//			if(interceptor.getPostResource()!=null) {
+//				pos_clz = ins.getOrg() + "." + ins.getDever() + "." + ins.getCode() + "." + Common.INTERCEPTOR + "." + interceptor.getPostResource().replace("/", ".");
+//			}
+//			interceptor.setPostResource(pos_clz);
+//			interceptor.setPreResource(pre_clz);
+//			interceptorList.add(interceptor);
+//			interceptorMap.put(ins.getCode(), interceptorList);
+			
+			container.addInterceptor(interceptor);
 		}
 	}
 

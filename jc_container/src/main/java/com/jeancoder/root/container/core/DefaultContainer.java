@@ -1,8 +1,14 @@
 package com.jeancoder.root.container.core;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Vector;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jeancoder.core.Interceptor.Interceptor;
 import com.jeancoder.core.common.Common;
 import com.jeancoder.core.http.JCRequest;
 import com.jeancoder.core.http.JCResponse;
@@ -33,6 +39,8 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 	
 	protected final PowerCaps BC_CAPS = new PowerCaps();
 	
+	protected List<Interceptor> interceptorMap = new ArrayList<>();
+	
 	@Override
 	public JCAPP getApp() {
 		return appins;
@@ -43,6 +51,31 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 		return BC_CAPS;
 	}
 
+	@Override
+	public void addInterceptor(Interceptor interceptor) {
+		String pre_clz = null;
+		if(interceptor.getPreResource()!=null) {
+			pre_clz = appins.getOrg() + "." + appins.getDever() + "." + appins.getCode() + "." + Common.INTERCEPTOR + "." + interceptor.getPreResource().replace("/", ".");
+		}
+		String pos_clz = null;
+		if(interceptor.getPostResource()!=null) {
+			pos_clz = appins.getOrg() + "." + appins.getDever() + "." + appins.getCode() + "." + Common.INTERCEPTOR + "." + interceptor.getPostResource().replace("/", ".");
+		}
+		interceptor.setPostResource(pos_clz);
+		interceptor.setPreResource(pre_clz);
+		interceptorMap.add(interceptor);
+	}
+	
+	public Enumeration<Interceptor> interceptors() {
+		Vector<Interceptor> vec = new Vector<>();
+		if(!interceptorMap.isEmpty()) {
+			interceptorMap.forEach(k -> {
+				vec.add(k);
+			});
+		}
+		return vec.elements();
+	}
+	
 	protected String transferPathToClz(JCHttpRequest req) {
 		String app_context_path = req.getContextPath();
 		String req_uri = req.getRequestURI();

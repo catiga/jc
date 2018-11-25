@@ -1,5 +1,8 @@
 package com.jeancoder.root.container;
 
+import java.util.Enumeration;
+
+import com.jeancoder.core.Interceptor.Interceptor;
 import com.jeancoder.core.cl.DefLoader;
 import com.jeancoder.core.cl.JCLoader;
 import com.jeancoder.core.result.Result;
@@ -27,4 +30,8 @@ public interface JCAppContainer extends Lifecycle {
 	JCAPP getApp();
 	
 	PowerCaps getCaps();
+	
+	public void addInterceptor(Interceptor interceptor);
+	
+	public Enumeration<Interceptor> interceptors();
 }

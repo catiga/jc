@@ -1,10 +1,10 @@
 package com.jeancoder.root.env;
 
+import java.util.Enumeration;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jeancoder.app.sdk.Interceptor.JCInterceptorChain;
-import com.jeancoder.app.sdk.Interceptor.JCInterceptorStack;
 import com.jeancoder.cap.config.DevConfigureReader;
 import com.jeancoder.cap.power.DevPowerLoader;
 import com.jeancoder.core.Interceptor.Interceptor;
@@ -84,7 +84,7 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 
 	@Override
 	protected <T extends Result> RunnerResult<T> run(JCHttpRequest req, JCHttpResponse res) {
-		String resourceId = this.transferPathToClz(req);
+//		String resourceId = this.transferPathToClz(req);
 //		try {
 //			Class clz = this.rootLoader.findClass("com.jeancoder.app.sdk.Interceptor.JCInterceptorStack");
 //			Class old = JCInterceptorStack.class;
@@ -93,11 +93,21 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 //			// TODO Auto-generated catch block
 //			e1.printStackTrace();
 //		}
-		JCInterceptorChain chain = JCInterceptorStack.getJCInterceptorChain(this.appins.getCode(), resourceId);
-		// 进入拦截器 直接循环执行
-		for(Interceptor i : chain.getInterceptorChain()) {
-			Object sing_run_result = singleRun(req, res, i.getPreResource());
-			System.out.println(sing_run_result);
+//		JCInterceptorChain chain = JCInterceptorStack.getJCInterceptorChain(this.appins.getCode(), resourceId);
+//		// 进入拦截器 直接循环执行
+//		for(Interceptor i : chain.getInterceptorChain()) {
+//			Object sing_run_result = singleRun(req, res, i.getPreResource());
+//			System.out.println(sing_run_result);
+//		}
+		
+		Enumeration<Interceptor> inters = this.interceptors();
+		// TODO 这里下午处理
+		if(inters!=null) {
+			while(inters.hasMoreElements()) {
+				Interceptor its = inters.nextElement();
+				Object sing_run_result = this.singleRun(req, res, its.getPreResource());
+				System.out.println(sing_run_result);
+			}
 		}
 		Class<?> executor = null;
 		try {

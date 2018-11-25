@@ -42,7 +42,7 @@ public class TypeDefClassLoader extends URLClassLoader implements DefLoader, JCL
 		return appClassLoader;
 	}
 
-	private JCAppContainer container;
+	protected JCAppContainer container;
 	
 	public TypeDefClassLoader(BootClassLoader parent, JCAppContainer container) {
 		super(EMPTY_URL_ARRAY, parent);
@@ -56,16 +56,19 @@ public class TypeDefClassLoader extends URLClassLoader implements DefLoader, JCL
 	}
 	
 	protected void initByRes() {
+		//启动时执行
 		JCAPPHolder.setContainer(container);	//not goods way, fuck
+		String init_script = appins.getOrg() + "." + appins.getDever() + "." + appins.getCode() + "." + Common.INITIAL;
 		try {
-			Class<?> executor = appClassLoader.findClass(appins.getOrg() + "." + appins.getDever() + "." + appins.getCode() + "." + Common.INITIAL);
+			Class<?> executor = appClassLoader.findClass(init_script);
 			Binding context = new Binding();
 			Script script = (Script) executor.newInstance();
 			script.setBinding(context);
 			Object result = script.run();
 			logger.info("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") INIT SUCCESS. Result=" + result);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			logger.info("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") DOES NOT NEED TO INIT. FOR NOT SET INIT PROGRAM: " + init_script);
 		} catch (Exception e) {
 			logger.error("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") INIT ERROR.", e);
 		} finally {
@@ -82,12 +85,13 @@ public class TypeDefClassLoader extends URLClassLoader implements DefLoader, JCL
 	public Class<?> findClass(String name) throws ClassNotFoundException {
 		Class<?> claz = findLoadedClass(name);
 		if(claz==null) {
+			// optialized find index
+			claz = parent.findClass(name);
+		}
+		if(claz==null) {
 			try {
 				claz = super.findClass(name);
 			}catch(ClassNotFoundException not) {}
-		}
-		if(claz==null) {
-			claz = parent.findClass(name);
 		}
 		return claz;
 	}

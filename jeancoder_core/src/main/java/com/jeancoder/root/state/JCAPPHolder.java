@@ -1,11 +1,10 @@
 package com.jeancoder.root.state;
 
 import com.jeancoder.root.container.JCAppContainer;
-import com.jeancoder.root.env.JCAPP;
 
 public class JCAPPHolder {
 
-	private static ThreadLocal<JCAPP> CURRENT_APPS = new ThreadLocal<>();
+//	private static ThreadLocal<JCAPP> CURRENT_APPS = new ThreadLocal<>();
 	
 	private static ThreadLocal<JCAppContainer> CURRENT_CONTAINERS = new ThreadLocal<>();
 	
