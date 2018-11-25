@@ -85,13 +85,13 @@ public class TypeDefClassLoader extends URLClassLoader implements DefLoader, JCL
 	public Class<?> findClass(String name) throws ClassNotFoundException {
 		Class<?> claz = findLoadedClass(name);
 		if(claz==null) {
-			// optialized find index
-			claz = parent.findClass(name);
-		}
-		if(claz==null) {
 			try {
 				claz = super.findClass(name);
 			}catch(ClassNotFoundException not) {}
+		}
+		if(claz==null) {
+			// optialized find index
+			claz = parent.findClass(name);
 		}
 		return claz;
 	}
@@ -128,25 +128,25 @@ public class TypeDefClassLoader extends URLClassLoader implements DefLoader, JCL
 	final public List<URL> registerSysJars(String jarPath) {
 		List<URL> waiting = new ArrayList<>();
 		countPathUrls(jarPath, waiting);
-	    
-	    Method method = null;
-	    try {
-	        method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-	    } catch (NoSuchMethodException | SecurityException e1) {
-	        e1.printStackTrace();
+	    if(!waiting.isEmpty()) {
+	    	Method method = null;
+		    try {
+		        method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+		    } catch (NoSuchMethodException | SecurityException e1) {
+		        e1.printStackTrace();
+		    }
+		    boolean accessible = method.isAccessible();
+		    try {
+		        method.setAccessible(true);
+		        for(URL jarFile : waiting) {
+			        method.invoke(this, jarFile);
+		        }
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    } finally {
+		        method.setAccessible(accessible);
+		    }
 	    }
-	    boolean accessible = method.isAccessible();
-	    try {
-	        method.setAccessible(true);
-	        for(URL jarFile : waiting) {
-		        method.invoke(this, jarFile);
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        method.setAccessible(accessible);
-	    }
-	    
 	    return waiting;
 	}
 

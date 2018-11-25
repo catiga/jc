@@ -96,13 +96,13 @@ public class AppClassLoader extends GroovyClassLoader implements JCLoader, AppLo
 		Class<?> claz = findLoadedClass(name);
 		if (claz == null) {
 			try {
-				claz = super.findClass(name);
+				claz = parent.findClass(name);
 			}catch(ClassNotFoundException clzex) {
 				
 			}
 		}
 		if (claz == null) {
-			claz = parent.findClass(name);
+			claz = super.findClass(name);
 		}
 		return claz;
 	}
@@ -140,6 +140,9 @@ public class AppClassLoader extends GroovyClassLoader implements JCLoader, AppLo
 				if (pathFile.getPath().endsWith(".class")) {
 //					i++;
 //					System.out.println("当前序号=" + i + ", " + pathFile.getPath());
+					if(pathFile.getPath().indexOf("SscOp")>-1) {
+						System.out.println("here");
+					}
 					try {
 						ioClass(root_path, pathFile);
 					} catch (IOException e) {
