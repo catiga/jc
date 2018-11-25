@@ -42,6 +42,13 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 	}
 
 	@Override
+	public String meId() {
+		String vmid = JCVMDelegator.delegate().getVM().toString();
+		vmid = vmid.substring(vmid.lastIndexOf(".") + 1);
+		return vmid;
+	}
+
+	@Override
 	public <T extends Result> RunnerResult<T> dispatch(JCHttpRequest req, JCHttpResponse res) {
 		Cookie[] cookies = req.getCookies();
 		String path_info = req.getPathInfo();

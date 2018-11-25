@@ -45,7 +45,13 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 
 	protected String transferPathToClz(JCHttpRequest req) {
 		String app_context_path = req.getContextPath();
-		String app_action_path = req.getRequestURI().substring(app_context_path.length() + 1);
+		String req_uri = req.getRequestURI();
+		if(req_uri.equals(app_context_path)) {
+			//req_uri = req_uri + "/welcome";		//set default index page
+			//做一次rewrite 
+			
+		}
+		String app_action_path = req_uri.substring(app_context_path.length() + 1);
 		String prefix = appins.getOrg() + "." + appins.getDever() + ".";
 		prefix = prefix + app_context_path.substring(1) + "." + Common.ENTRY + "." + app_action_path.replace('/', '.');
 		return cutTailDotChar(prefix);

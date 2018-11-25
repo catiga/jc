@@ -50,6 +50,10 @@ public class JCVMDelegator implements VMDelegate {
 		return instance;
 	}
 	
+	public String delegatedId() {
+		return getVM().meId();
+	}
+	
 	public final JCVM getVM() {
 		return StandardVM.getVM();
 	}

@@ -85,6 +85,14 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 	@Override
 	protected <T extends Result> RunnerResult<T> run(JCHttpRequest req, JCHttpResponse res) {
 		String resourceId = this.transferPathToClz(req);
+//		try {
+//			Class clz = this.rootLoader.findClass("com.jeancoder.app.sdk.Interceptor.JCInterceptorStack");
+//			Class old = JCInterceptorStack.class;
+//			System.out.println(clz==JCInterceptorStack.class);
+//		} catch (ClassNotFoundException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 		JCInterceptorChain chain = JCInterceptorStack.getJCInterceptorChain(this.appins.getCode(), resourceId);
 		// 进入拦截器 直接循环执行
 		for(Interceptor i : chain.getInterceptorChain()) {
