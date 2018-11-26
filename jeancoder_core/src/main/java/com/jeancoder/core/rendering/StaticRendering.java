@@ -34,7 +34,6 @@ public class StaticRendering<T extends Result> extends DefaultRendering<T> imple
 		String path = apps.getApp_base() + "/" + apps.getSta_base() + "/";
 		String name = result.getResult();
 		name = path + name;
-		logger.info("static_name=" + name);
 		String content_key = name.substring(name.lastIndexOf("."));
 		String content_type = ContentTypes.get(content_key);
 		try {
@@ -52,7 +51,7 @@ public class StaticRendering<T extends Result> extends DefaultRendering<T> imple
             
 			this.writeStreamResponse(buffer, content_type, true);
 		} catch (Exception e) {
-			logger.error("name not found", e);
+			logger.error(name + " rendering error:", e);
 		}
 		return null;
 	}

@@ -8,6 +8,9 @@ import java.io.FileInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jeancoder.core.result.Result;
 import com.jeancoder.root.io.http.ContentTypes;
 
@@ -15,6 +18,8 @@ import io.netty.channel.ChannelHandlerContext;
 
 public class StreamRendering<T extends Result> extends DefaultRendering<T> implements Rendering {
 
+	private static Logger logger = LoggerFactory.getLogger(StreamRendering.class);
+	
 	public StreamRendering(ChannelHandlerContext context) {
 		super(context);
 	}
@@ -41,7 +46,7 @@ public class StreamRendering<T extends Result> extends DefaultRendering<T> imple
             
 			this.writeStreamResponse(buffer, content_type, true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(name + " render error:", e);
 		}
 		return null;
 	}
