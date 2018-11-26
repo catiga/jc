@@ -8,9 +8,12 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.jeancoder.core.rendering.Rendering;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jeancoder.core.result.Result;
 import com.jeancoder.core.util.HttpUtil;
+import com.jeancoder.root.env.JCAPP;
 import com.jeancoder.root.io.http.JCHttpResponse;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -18,6 +21,8 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 public class StaticRendering<T extends Result> extends DefaultRendering<T> implements Rendering {
 
+	private static Logger logger = LoggerFactory.getLogger(StaticRendering.class);
+	
 	public StaticRendering(ChannelHandlerContext context) {
 		super(context);
 	}
@@ -26,9 +31,15 @@ public class StaticRendering<T extends Result> extends DefaultRendering<T> imple
 	public Object process(HttpServletRequest request, HttpServletResponse response) {
 		super.process(request, response);
 		Result result = this.runningResult.getResult();
+		
+		JCAPP apps = this.runningResult.getAppins();
+		String path = apps.getApp_base() + "/" + apps.getSta_base() + "/";
+		String name = result.getResult();
+		name = path + name;
+		logger.info("static_name=" + name);
 		try {
 			response.setContentType(HttpUtil.getContentType(result.getResult()));
-			BufferedInputStream fis = new BufferedInputStream(new FileInputStream(new File(result.getResult())));
+			BufferedInputStream fis = new BufferedInputStream(new FileInputStream(new File(name)));
 			OutputStream os = response.getOutputStream();
 			int len;
 			byte[] _byte = new byte[128];
@@ -39,7 +50,7 @@ public class StaticRendering<T extends Result> extends DefaultRendering<T> imple
 			fis.close();
 			this.writeResponse(HttpResponseStatus.OK, (JCHttpResponse) response, true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("name not found", e);
 		}
 		return null;
 	}

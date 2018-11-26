@@ -17,7 +17,7 @@
     	      
       	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       		<!-- daily rollover -->
-      		<fileNamePattern>/Users/jackielee/Desktop/logs/jc_info.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+      		<fileNamePattern>~/Desktop/logs/jc_info.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
       		<!-- keep 10 days' worth of history -->
       		<maxHistory>10</maxHistory>
     	</rollingPolicy>
@@ -37,7 +37,7 @@
       
       	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       		<!-- daily rollover -->
-      		<fileNamePattern>/Users/jackielee/Desktop/logs/jc_error.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+      		<fileNamePattern>~/Desktop/logs/jc_error.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
       		<!-- keep 10 days' worth of history -->
       		<maxHistory>10</maxHistory>
     	</rollingPolicy>
