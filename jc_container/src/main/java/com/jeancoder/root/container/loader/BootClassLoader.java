@@ -22,6 +22,7 @@ public class BootClassLoader extends URLClassLoader implements JCLoader {
 	
 	protected static Logger logger = LoggerFactory.getLogger(BootClassLoader.class);
 	
+	//final public static String SYS_LIBS = "/home/idreamsky-ent/JCServer/libs";
 	final public static String SYS_LIBS = "/Users/jackielee/Desktop/logs";
 	
 	static {

@@ -246,17 +246,25 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 	
 	@Override
 	public final <T extends Result> RunnerResult<T> callEntry(JCHttpRequest req, JCHttpResponse res) {
-//		JCThreadLocal.setClassLoader(containClassLoader.getAppClassLoader());
+		String servlet_path = req.getRequestURI().substring(("/" + appins.getCode()).length());
+		if(servlet_path.startsWith("/" + appins.getSta_base())) {
+			//说明是静态资源
+			Result result = new Result().setStaticName(servlet_path.substring(("/" + appins.getSta_base()).length() + 1));
+			RunnerResult<T> ret_result = new RunnerResult<>();
+			ret_result.setResult(Result.convert(result));
+			ret_result.setId(id().id());
+			ret_result.setCode(id().code());
+			ret_result.setPath(this.transferPathToClz(req));
+			ret_result.setAppins(this.appins);
+			return ret_result;
+		}
 		JCThreadLocal.setRequest(new JCRequest(req));
 		JCThreadLocal.setResponse(new JCResponse(res));
-//		JCThreadLocal.setCode(appins.getCode());
 		
 		JCAPPHolder.setContainer(this);
 		
 		try {
 			InnerExchange incsr = this.callInterceptor(req, res);
-			System.out.println(incsr.entry);
-			System.out.println(incsr.intercep);
 			if(incsr.isSuccess()) {
 				RunnerResult<T> result = this.run(req, res);
 				return result;
