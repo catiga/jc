@@ -33,6 +33,13 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 	
 	protected List<JCAPP> appList;
 	
+	protected String sysLibs = null;
+	
+	@Override
+	public void bindLibrary(String lib_path) {
+		this.sysLibs = lib_path;
+	}
+
 	@Override
 	public ContainerMaps getContainers() {
 		return VM_CONTAINERS;

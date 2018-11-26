@@ -118,4 +118,13 @@ public class DefaultRendering<T extends Result> implements Rendering {
 		//HttpResponse deleg_obj = response.delegateObj();
 		//getContext().channel().writeAndFlush(deleg_obj).addListener(ChannelFutureListener.CLOSE);
 	}
+	
+	protected void writeStreamResponse(byte[] bytes, boolean forceClose) {
+		ByteBuf buf = copiedBuffer(bytes);
+		FullHttpResponse new_response = response.delegateObj().replace(buf);
+		new_response.headers().set(CONTENT_TYPE, "text/json; charset=UTF-8");
+		new_response.headers().set(CONTENT_LENGTH, buf.readableBytes());
+		new_response.setStatus(HttpResponseStatus.OK);
+		this.response.replaceDelegateObj(new_response);
+	}
 }

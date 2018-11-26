@@ -23,7 +23,7 @@ public class BootClassLoader extends URLClassLoader implements JCLoader {
 	protected static Logger logger = LoggerFactory.getLogger(BootClassLoader.class);
 	
 	//final public static String SYS_LIBS = "/home/idreamsky-ent/JCServer/libs";
-	final public static String SYS_LIBS = "/Users/jackielee/Desktop/logs";
+	//final public static String SYS_LIBS = "/Users/jackielee/Desktop/logs";
 	
 	static {
 		ClassLoader.registerAsParallelCapable();
@@ -31,7 +31,6 @@ public class BootClassLoader extends URLClassLoader implements JCLoader {
 	
 	public BootClassLoader(ClassLoader parent) {
 		super(EMPTY_URL_ARRAY, parent);
-		registerSysJars(SYS_LIBS);
 	}
 	
 	@Override

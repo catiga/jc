@@ -18,6 +18,8 @@ public class ServerMod {
 	
 	String logs;
 	
+	private String libs;
+	
 	List<AppMod> apps;
 
 	public String getName() {
@@ -82,6 +84,14 @@ public class ServerMod {
 
 	public void setApps(List<AppMod> apps) {
 		this.apps = apps;
+	}
+
+	public String getLibs() {
+		return libs;
+	}
+
+	public void setLibs(String libs) {
+		this.libs = libs;
 	}
 	
 }

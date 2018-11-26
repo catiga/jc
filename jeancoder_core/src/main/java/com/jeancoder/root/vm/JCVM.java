@@ -21,4 +21,6 @@ public interface JCVM extends Lifecycle {
 	
 	public String meId();
 	
+	public void bindLibrary(String lib_path);
+	
 }

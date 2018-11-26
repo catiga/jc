@@ -1,9 +1,9 @@
 package com.jeancoder.core.rendering;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,10 +14,8 @@ import org.slf4j.LoggerFactory;
 import com.jeancoder.core.result.Result;
 import com.jeancoder.core.util.HttpUtil;
 import com.jeancoder.root.env.JCAPP;
-import com.jeancoder.root.io.http.JCHttpResponse;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 public class StaticRendering<T extends Result> extends DefaultRendering<T> implements Rendering {
 
@@ -40,15 +38,17 @@ public class StaticRendering<T extends Result> extends DefaultRendering<T> imple
 		try {
 			response.setContentType(HttpUtil.getContentType(result.getResult()));
 			BufferedInputStream fis = new BufferedInputStream(new FileInputStream(new File(name)));
-			OutputStream os = response.getOutputStream();
-			int len;
-			byte[] _byte = new byte[128];
-			while ((len = fis.read(_byte)) > 0) {
-				os.write(_byte, 0, len);
-			}
-			os.flush();
-			fis.close();
-			this.writeResponse(HttpResponseStatus.OK, (JCHttpResponse) response, true);
+			ByteArrayOutputStream bos = new ByteArrayOutputStream(1000);  
+            byte[] b = new byte[1000];  
+            int n;  
+            while ((n = fis.read(b)) != -1) {  
+                bos.write(b, 0, n);  
+            }  
+            fis.close();  
+            bos.close();  
+            byte[] buffer = bos.toByteArray();
+            
+			this.writeStreamResponse(buffer, true);
 		} catch (Exception e) {
 			logger.error("name not found", e);
 		}

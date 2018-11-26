@@ -1,59 +1,212 @@
 {
-	"ins": {
-		"ins_id": "",
-		"ins_auth_cert": "cert file path",
-		"ins_auth_key": "cert key",
-		"ins_ver": "ver number"
-	},
-	"servers": [
-		{
-			"name": "",
-			"scheme": "http",
-			"host": "",
-			"port": 8090,
-			"proxy_entry": "entry",
-			"proxy_path": "/",
-			"logs": "~/",
-			"apps": [
-				{
-					"app_id": "99019928",
-					"app_code": "project",
-					"app_name": "系统管理",
-					"dev_name": "jeancoder",
-					"org_name": "com",
-					"app_ver": "1.0",
-					"source_type": "binary",
-					"lans": "groovy",
-					"app_base":"/Users/jackielee/Documents/dev_workspace/92yp_app_project",
-					"config": {
-						"description": "管理系统基础配置",
-						"index":null
-					}
-				}
-				
-			]
-		},
-		{
-			"name": "",
-			"scheme": "socket",
-			"host": "",
-			"port": 8091,
-			"proxy_entry": "entry",
-			"proxy_path": "/",
-			"logs": "~/",
-			"apps": [
-				{
-					"app_id": "99019928",
-					"app_code": "project",
-					"app_name": "系统管理",
-					"dev_name": "jeancoder",
-					"org_name": "jeancoder",
-					"app_ver": "1.0",
-					"source_type": "source|binary",
-					"lans": "java|groovy",
-					"app_base":"/Users/jackielee/Documents/dev_workspace/92yp_app_project"
-				}
-			]
-		}
-	]
+    "ins": {
+        "ins_id": "",
+        "ins_auth_cert": "cert file path",
+        "ins_auth_key": "cert key",
+        "ins_ver": "ver number"
+    },
+    "servers": [
+        {
+            "name": "",
+            "scheme": "http",
+            "host": "",
+            "port": 8000,
+            "proxy_entry": "entry",
+            "proxy_path": "/",
+            "logs": "~/",
+            "libs": "/home/idreamsky-ent/JCServer/libs",
+            "apps": [
+                {
+                    "app_id": "99019928",
+                    "app_code": "project",
+                    "app_name": "系统管理",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/home/idreamsky-ent/0000/92yp_app_project",
+                    "config": {
+                        "description": "管理系统基础配置",
+                        "index":"auth/user/list"
+                    }
+                },
+                {
+                    "app_id": "990119281",
+                    "app_code": "scm",
+                    "app_name": "商品管理",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/home/idreamsky-ent/0000/92yp_app_scm",
+                    "config": {
+                        "description": "管理商品数据",
+                        "index":"goods/index"
+                    }
+                },
+                {
+                    "app_id": "99043026",
+                    "app_code": "trade",
+                    "app_name": "交易管理",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/home/idreamsky-ent/0000/trade",
+                    "config": {
+                        "description": "管理交易数据",
+                        "index":"mgr/index"
+                    }
+                },
+                {
+                    "app_id": "990430272",
+                    "app_code": "workdesk",
+                    "app_name": "后厨",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/home/idreamsky-ent/0000/workdesk",
+                    "config": {
+                        "description": "后厨", 
+                        "index":"index"
+                    }
+                },
+                {
+                    "app_id": "990430283",
+                    "app_code": "whichturn",
+                    "app_name": "轮岗结算",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/home/idreamsky-ent/0000/whichturn",
+                    "config": {
+                        "description": "轮岗结算",
+                        "index":"checkin/listx"
+                    }
+                },
+                {
+                    "app_id": "990430284",
+                    "app_code": "crm",
+                    "app_name": "会员管理",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/home/idreamsky-ent/0000/crm",
+                    "config": {
+                        "description": "会员管理",
+                        "index":"index"
+                    }
+                },
+                {
+                    "app_id": "990430285",
+                    "app_code": "general_api",
+                    "app_name": "H5",
+                    "dev_name": "lengjiabao",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/home/idreamsky-ent/0000/92yp_general_api",
+                    "config": {
+                        "description": "会员管理",
+                        "index":"mgr/index"
+                    }
+                },
+                {
+                    "app_id": "990430286",
+                    "app_code": "ticketingsys",
+                    "app_name": "票务管理",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/home/idreamsky-ent/0000/ticketingsys",
+                    "config": {
+                        "description": "票务管理",
+                        "index":"system/list"
+                    }
+                },
+                {
+                    "app_id": "990430287",
+                    "app_code": "counter",
+                    "app_name": "收银台",
+                    "dev_name": "huo_zp",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/home/idreamsky-ent/0000/counter_web",
+                    "config": {
+                        "description": "收银台",
+                        "index":"admin/index"
+                    }
+                }
+                ,
+                {
+                    "app_id": "990430288",
+                    "app_code": "market",
+                    "app_name": "运营支持",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/home/idreamsky-ent/0000/market",
+                    "config": {
+                        "description": "运营支持",
+                        "index":"index"
+                    }
+                }
+                ,
+                {
+                    "app_id": "990430289",
+                    "app_code": "report",
+                    "app_name": "报表",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/home/idreamsky-ent/0000/report",
+                    "config": {
+                        "description": "报表",
+                        "index":"index"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "",
+            "scheme": "socket",
+            "host": "",
+            "port": 8091,
+            "proxy_entry": "entry",
+            "proxy_path": "/",
+            "logs": "~/",
+            "libs": "/home/idreamsky-ent/JCServer/libs",
+            "apps": [
+                {
+                    "app_id": "99019928",
+                    "app_code": "project",
+                    "app_name": "系统管理",
+                    "dev_name": "jeancoder",
+                    "org_name": "jeancoder",
+                    "app_ver": "1.0",
+                    "source_type": "source|binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jackielee/Documents/dev_workspace/92yp_app_project"
+                }
+            ]
+        }
+    ]
 }

@@ -19,6 +19,7 @@ public abstract class ServerImpl extends AbstractServer implements JCServer {
 		modconf.setName("default server");
 		modconf.setPort(12345);
 		modconf.setScheme(ServerCode.HTTP.toString());
+		modconf.setLibs("/Users/jackielee/Desktop/logs");
 	}
 	
 	public ServerImpl(ServerMod modconf) {
@@ -48,6 +49,7 @@ public abstract class ServerImpl extends AbstractServer implements JCServer {
 					}
 				}
 			}
+			getVM().bindLibrary(modconf.getLibs());
 			getVM().setInitApps(convert_proto);
 			getVM().onStart();
 		}
