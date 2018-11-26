@@ -14,13 +14,8 @@ import org.slf4j.LoggerFactory;
 import com.jeancoder.core.cl.AppLoader;
 import com.jeancoder.core.cl.DefLoader;
 import com.jeancoder.core.cl.JCLoader;
-import com.jeancoder.core.common.Common;
 import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.env.JCAPP;
-import com.jeancoder.root.state.JCAPPHolder;
-
-import groovy.lang.Binding;
-import groovy.lang.Script;
 
 /**
  * app lib loader
@@ -29,7 +24,7 @@ import groovy.lang.Script;
  */
 public class TypeDefClassLoader extends URLClassLoader implements DefLoader, JCLoader {
 
-	private static Logger logger = LoggerFactory.getLogger(TypeDefClassLoader.class);
+	protected static Logger logger = LoggerFactory.getLogger(TypeDefClassLoader.class);
 	
 	BootClassLoader parent = null;
 	
@@ -52,28 +47,7 @@ public class TypeDefClassLoader extends URLClassLoader implements DefLoader, JCL
 		this.appins = container.getApp();
 		registerSysJars(appins.getApp_base() + "/" + appins.getLib_base());
 		this.appClassLoader = new AppClassLoader(this);
-		initByRes();
-	}
-	
-	protected void initByRes() {
-		//启动时执行
-		JCAPPHolder.setContainer(container);	//not goods way, fuck
-		String init_script = appins.getOrg() + "." + appins.getDever() + "." + appins.getCode() + "." + Common.INITIAL;
-		try {
-			Class<?> executor = appClassLoader.findClass(init_script);
-			Binding context = new Binding();
-			Script script = (Script) executor.newInstance();
-			script.setBinding(context);
-			Object result = script.run();
-			logger.info("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") INIT SUCCESS. Result=" + result);
-		} catch (ClassNotFoundException e) {
-			//e.printStackTrace();
-			logger.info("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") DOES NOT NEED TO INIT. FOR NOT SET INIT PROGRAM: " + init_script);
-		} catch (Exception e) {
-			logger.error("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") INIT ERROR.", e);
-		} finally {
-			JCAPPHolder.clearContainer();
-		}
+//		initByRes();
 	}
 	
 	public TypeDefClassLoader(URL[] urls, BootClassLoader parent) {

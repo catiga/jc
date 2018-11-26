@@ -1,13 +1,10 @@
 package com.jeancoder.root.env;
 
-import java.util.Enumeration;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jeancoder.cap.config.DevConfigureReader;
 import com.jeancoder.cap.power.DevPowerLoader;
-import com.jeancoder.core.Interceptor.Interceptor;
 import com.jeancoder.core.cl.DefLoader;
 import com.jeancoder.core.cl.JCLoader;
 import com.jeancoder.core.common.Common;
@@ -28,6 +25,7 @@ import com.jeancoder.root.exception.CompileException;
 import com.jeancoder.root.exception.PrivilegeException;
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
+import com.jeancoder.root.state.JCAPPHolder;
 
 import groovy.lang.Binding;
 import groovy.lang.Script;
@@ -63,52 +61,8 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 		return this.containClassLoader;
 	}
 
-	protected Object singleRun(JCHttpRequest req, JCHttpResponse res, String classname) {
-		try {
-			Class<?> executor = containClassLoader.getAppClassLoader().findClass(classname);
-			Binding context = new Binding();
-			Script script = (Script) executor.newInstance();
-			script.setBinding(context);
-			Object result = script.run();
-			return result;
-		} catch (IllegalAccessException e) {
-			throw new PrivilegeException(id().id(), id().code(), classname, this.transferPathToClz(req), "SCRIPT_PRIVILEGE_ERROR", e);
-		} catch (InstantiationException nfex) {
-			throw new CompileException(id().id(), id().code(), classname, this.transferPathToClz(req), "PROGRAM_COMPILE_ERROR", nfex);
-		} catch (ClassNotFoundException nfex) {
-			throw new Code404Exception(id().id(), id().code(), classname, this.transferPathToClz(req), "CLASS_NOT_FOUND", nfex);
-		} catch (Exception ex) {
-			throw new Code500Exception(id().id(), id().code(), classname, this.transferPathToClz(req), "RUNNING_ERROR:" + ex.getCause(), ex);
-		}
-	}
-
 	@Override
 	protected <T extends Result> RunnerResult<T> run(JCHttpRequest req, JCHttpResponse res) {
-//		String resourceId = this.transferPathToClz(req);
-//		try {
-//			Class clz = this.rootLoader.findClass("com.jeancoder.app.sdk.Interceptor.JCInterceptorStack");
-//			Class old = JCInterceptorStack.class;
-//			System.out.println(clz==JCInterceptorStack.class);
-//		} catch (ClassNotFoundException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//		JCInterceptorChain chain = JCInterceptorStack.getJCInterceptorChain(this.appins.getCode(), resourceId);
-//		// 进入拦截器 直接循环执行
-//		for(Interceptor i : chain.getInterceptorChain()) {
-//			Object sing_run_result = singleRun(req, res, i.getPreResource());
-//			System.out.println(sing_run_result);
-//		}
-		
-		Enumeration<Interceptor> inters = this.interceptors();
-		// TODO 这里下午处理
-		if(inters!=null) {
-			while(inters.hasMoreElements()) {
-				Interceptor its = inters.nextElement();
-				Object sing_run_result = this.singleRun(req, res, its.getPreResource());
-				System.out.println(sing_run_result);
-			}
-		}
 		Class<?> executor = null;
 		try {
 			executor = this.transferPathToIns(req);
@@ -146,6 +100,7 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 			}
 			state = STATE_STARTING;
 			containClassLoader = new TypeDefClassLoader(rootLoader, this);
+			this.initByRes();
 			state = STATE_RUNNING;
 		}
 	}
@@ -163,19 +118,36 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 		}
 	}
 
+	protected void initByRes() {
+		//启动时执行
+		JCAPPHolder.setContainer(this);	//not goods way, fuck
+		String init_script = appins.getOrg() + "." + appins.getDever() + "." + appins.getCode() + "." + Common.INITIAL;
+		try {
+			Class<?> executor = this.getSignedClassLoader().getManaged().findClass(init_script);
+			Binding context = new Binding();
+			Script script = (Script) executor.newInstance();
+			script.setBinding(context);
+			Object result = script.run();
+			logger.info("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") INIT SUCCESS. Result=" + result);
+		} catch (ClassNotFoundException e) {
+			//e.printStackTrace();
+			logger.info("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") DOES NOT NEED TO INIT. FOR NOT SET INIT PROGRAM: " + init_script);
+		} catch (Exception e) {
+			logger.error("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") INIT ERROR.", e);
+		} finally {
+			JCAPPHolder.clearContainer();
+		}
+	}
+	
 	@Override
 	public void onInit() {
 		synchronized (_LOCK_) {
 			if (!state.equals(STATE_READY)) {
 				throwCause(null);
 			}
-			logger.info(this.toString());
 			String appPath = appins.getApp_base();
 			DevConfigureReader.init(appPath, appins.code);
-			// //初始化系统能力
 			DevPowerLoader.init(appins.code);
-//			DevSystemProp appcnf = (DevSystemProp) JeancoderConfigurer.fetchDefault(PropType.APPLICATION, appins.code);
-//			DevSysConfigProp sysConfig = (DevSysConfigProp) JeancoderConfigurer.fetchDefault(PropType.SYS, appins.code);
 			
 			DatabasePowerHandler jcDatabasePower = (DatabasePowerHandler) PowerHandlerFactory.getPowerHandler(PowerName.DATABASE, appins.code);
 			MemPowerHandler memPowerHandler = (MemPowerHandler) PowerHandlerFactory.getPowerHandler(PowerName.MEM, appins.code);
@@ -190,49 +162,6 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 			if(qiniuPowerHandler!=null) {
 				BC_CAPS.add(Common.QINIU_POWER, qiniuPowerHandler);
 			}
-
-//			NamerApplication app1 = new NamerApplication();
-//			app1.setAppCode(appcnf.getCode());
-//			app1.setDeveloperCode(appcnf.getDevelopercode());
-//			app1.setDevLang(DevLang.SDK_GROOVY);
-//			app1.setFetchWay(FetchWay.SDK);
-//			app1.setFetchAddress(appPath);
-//			app1.setInstallAddress(appPath);
-//			app1.setInstallWay(InstallWay.DISK);
-//			app1.setDescribe(appcnf.getDescribe());
-//			app1.setIndex(appcnf.getIndex());
-//			app1.setAppName(appcnf.getName());
-//
-//			// InstallerFactory.generateInstaller(app1).install();
-//			Application app = new Application();
-//			app.setApp(app1);
-//			ApplicationHolder.getInstance().addApp(app);
-//			if (sysConfig != null) {
-//				app1.setInstallAddress(sysConfig.getLoadUri());
-//			}
-//			Application application = ApplicationHolder.getInstance().getAppByCode(app1.getAppCode());
-
-			// //打印资源树
-			// ApplicationHolder.getInstance().prinAll();
-			// //初始应用相关的上下文
-//			JCApplicationContext jcApplicationContext = new JCApplicationContext();
-//			jcApplicationContext.setApplication(application);
-			// db
-//			DatabasePowerHandler jcDatabasePower = (DatabasePowerHandler) PowerHandlerFactory.getPowerHandler(PowerName.DATABASE, appins.code);
-//			jcApplicationContext.add(Common.DATABASE, (DatabasePower) jcDatabasePower);
-//			// men
-//			MemPowerHandler memPowerHandler = (MemPowerHandler) PowerHandlerFactory.getPowerHandler(PowerName.MEM, appins.code);
-//			jcApplicationContext.add(Common.MEM_POWER, (MemPower) memPowerHandler);
-//
-//			// 青牛
-//			QiniuPowerHandler qiniuPowerHandler = (QiniuPowerHandler) PowerHandlerFactory.getPowerHandler(PowerName.QINIU, appins.code);
-//			jcApplicationContext.add(Common.QINIU_POWER, (QiniuPower) qiniuPowerHandler);
-//			ApplicationContextPool.addApplicationContext(app1.getAppCode(), jcApplicationContext);
-
-			// 注册拦截器
-			// 执行初始化文件
-			//JCInterceptorStack.setNamerApplication(app1);
-			//JCThreadLocal.setCode(app1.getAppCode());
 			
 			state = STATE_INITED;
 		}

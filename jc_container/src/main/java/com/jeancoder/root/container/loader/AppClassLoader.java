@@ -31,6 +31,8 @@ public class AppClassLoader extends GroovyClassLoader implements JCLoader, AppLo
 
 	final public static String BIN_TARGET = "target/classes";
 	
+	final public static String SOURCE_TARGET = "src/main/java";
+	
 	protected final Map<String, CLHandler> resourceEntries = new ConcurrentHashMap<>();
 	
 	private List<URL> localRepositories = new ArrayList<>();
@@ -42,7 +44,11 @@ public class AppClassLoader extends GroovyClassLoader implements JCLoader, AppLo
 	}
 	
 	public void init() throws Exception {
-		File loading_path = new File(parent.getAppins().getApp_base() + "/" + BIN_TARGET);
+		String bin_target = parent.getAppins().getBin_base();
+		if(bin_target==null) {
+			bin_target = BIN_TARGET;
+		}
+		File loading_path = new File(parent.getAppins().getApp_base() + "/" + bin_target);
 		if(loading_path.exists()&&loading_path.isDirectory()&&loading_path.canRead()) {
 			this.localRepositories.add(loading_path.toURI().toURL());
 		}

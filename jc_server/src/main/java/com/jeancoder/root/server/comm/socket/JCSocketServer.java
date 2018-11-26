@@ -32,7 +32,7 @@ public class JCSocketServer extends ServerImpl implements JCServer {
 
 	private static Logger logger = LoggerFactory.getLogger(JCSocketServer.class);
 	
-	public JCSocketServer() {
+	private JCSocketServer() {
 		this.modconf = new ServerMod();
 		this.modconf.setProxy_entry("entry");
 		this.modconf.setProxy_path("/");

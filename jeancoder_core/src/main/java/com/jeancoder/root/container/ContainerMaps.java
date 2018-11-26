@@ -10,7 +10,7 @@ import com.jeancoder.root.container.core.BCID;
 
 public class ContainerMaps {
 
-	public final static Map<BCID, JCAppContainer> VM_CONTAINERS = new ConcurrentHashMap<BCID, JCAppContainer>();
+	public final Map<BCID, JCAppContainer> VM_CONTAINERS = new ConcurrentHashMap<BCID, JCAppContainer>();
 	
 	public Set<BCID> keySet() {
 		return VM_CONTAINERS.keySet();

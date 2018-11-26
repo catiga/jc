@@ -98,7 +98,7 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 			
 			JCVMDelegator.delegate().getVM().dispatch(stand_request, stand_response);
 		} catch(Exception e) {
-			logger.error("so should send msg by socket to center server:", e);
+			logger.error("so should send msg by socket to center server:" + e.getMessage());
 			StringBuffer error_buffer = new StringBuffer();
 			if(e instanceof RunningException) {
 				RunningException rex = (RunningException)e;

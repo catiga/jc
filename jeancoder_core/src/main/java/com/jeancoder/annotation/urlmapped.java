@@ -4,9 +4,10 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@Retention(RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.CLASS)
 @Documented
-public @interface urlpassed {
+public @interface urlmapped {
 
 	String[] value();
 }
+

@@ -1,13 +1,18 @@
 package com.jeancoder.root.container.core;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jeancoder.core.Interceptor.IntercepHanRule;
 import com.jeancoder.core.Interceptor.Interceptor;
 import com.jeancoder.core.common.Common;
 import com.jeancoder.core.http.JCRequest;
@@ -61,9 +66,37 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 		if(interceptor.getPostResource()!=null) {
 			pos_clz = appins.getOrg() + "." + appins.getDever() + "." + appins.getCode() + "." + Common.INTERCEPTOR + "." + interceptor.getPostResource().replace("/", ".");
 		}
-		interceptor.setPostResource(pos_clz);
-		interceptor.setPreResource(pre_clz);
-		interceptorMap.add(interceptor);
+		//test to find
+		if(pre_clz!=null) {
+			try {
+				Class<?> pre_clz_obj = this.getSignedClassLoader().getManaged().findClass(pre_clz);
+				Object handler = pre_clz_obj.newInstance();
+				if(logger.isDebugEnabled()) {
+					logger.debug("pre interceptor test success:" + pre_clz_obj);
+				}
+				String source_path = appins.getApp_base() + "/" + appins.getSource_base() + "/" + pre_clz.replace(".", "/");
+				IntercepHanRule rules = parseIntercepRules(source_path);
+				interceptor.setHanRules(rules);
+				interceptor.setPreResource(pre_clz);
+				interceptor.bindHandler(handler);
+			} catch(ClassNotFoundException | IllegalAccessException | InstantiationException clex) {
+				interceptor.setPreResource(null);
+			}
+		}
+		if(pos_clz!=null) {
+			try {
+				Class<?> pos_clz_obj = this.getSignedClassLoader().getManaged().findClass(pos_clz);
+				if(logger.isDebugEnabled()) {
+					logger.debug("post interceptor test success:" + pos_clz_obj);
+				}
+				interceptor.setPostResource(pos_clz);
+			} catch(ClassNotFoundException clex) {
+				interceptor.setPostResource(null);
+			}
+		}
+		
+		if(interceptor.getPreResource()!=null||interceptor.getPostResource()!=null)
+			interceptorMap.add(interceptor);
 	}
 	
 	public Enumeration<Interceptor> interceptors() {
@@ -150,17 +183,92 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 	
 	protected TypeDefClassLoader containClassLoader = null;
 	
+	private static class InnerExchange {
+		String entry;
+		
+		List<String> intercep;
+		
+		Object result;
+		
+		public InnerExchange(String uri, List<String> lastones, Object runres) {
+			this.entry = uri;
+			this.intercep = lastones;
+			this.result = runres;
+		}
+		
+		public boolean isSuccess() {
+			return (result instanceof Boolean)?(Boolean)result:false;
+		}
+	}
+	
+	protected InnerExchange callInterceptor(JCHttpRequest req, JCHttpResponse res) {
+		Enumeration<Interceptor> inters = this.interceptors();
+		List<String> passed = new ArrayList<>();
+		if(inters!=null) {
+			while(inters.hasMoreElements()) {
+				Interceptor its = inters.nextElement();
+				String resname = its.getPreResource();
+				String servlet_path = req.getRequestURI().substring(("/" + appins.getCode()).length());
+				if(its.canExecute(servlet_path)&&its.getHandler()!=null) {
+					try {
+						//Class<?> executor = containClassLoader.getAppClassLoader().findClass(resname);
+						//Script script = (Script) executor.newInstance();
+						Script script = (Script) its.getHandler();
+						Binding context = new Binding();
+						script.setBinding(context);
+						Object result = script.run();
+						passed.add(resname);
+						if(!(result instanceof Boolean)) {
+							return new InnerExchange(req.getRequestURI(), passed, result);
+						}
+						boolean run_result = (boolean)result;
+						if(!run_result) {
+							return new InnerExchange(req.getRequestURI(), passed, run_result);
+						}
+					} 
+//					catch (IllegalAccessException e) {
+//						throw new PrivilegeException(id().id(), id().code(), resname, this.transferPathToClz(req), "SCRIPT_PRIVILEGE_ERROR", e);
+//					} catch (InstantiationException nfex) {
+//						throw new CompileException(id().id(), id().code(), resname, this.transferPathToClz(req), "PROGRAM_COMPILE_ERROR", nfex);
+//					} catch (ClassNotFoundException nfex) {
+//						throw new Code404Exception(id().id(), id().code(), resname, this.transferPathToClz(req), "CLASS_NOT_FOUND", nfex);
+//					} 
+					catch (Exception ex) {
+						throw new Code500Exception(id().id(), id().code(), resname, this.transferPathToClz(req), "RUNNING_ERROR:" + ex.getCause(), ex);
+					}
+				} else {
+					return new InnerExchange(req.getRequestURI(), passed, true);
+				}
+			}
+		}
+		return new InnerExchange(req.getRequestURI(), passed, true);
+	}
+	
 	@Override
-	public final <T extends Result> RunnerResult<T> execute(JCHttpRequest req, JCHttpResponse res) {
+	public final <T extends Result> RunnerResult<T> callEntry(JCHttpRequest req, JCHttpResponse res) {
 //		JCThreadLocal.setClassLoader(containClassLoader.getAppClassLoader());
 		JCThreadLocal.setRequest(new JCRequest(req));
 		JCThreadLocal.setResponse(new JCResponse(res));
 //		JCThreadLocal.setCode(appins.getCode());
 		
 		JCAPPHolder.setContainer(this);
+		
 		try {
-			RunnerResult<T> result = this.run(req, res);
-			return result;
+			InnerExchange incsr = this.callInterceptor(req, res);
+			System.out.println(incsr.entry);
+			System.out.println(incsr.intercep);
+			if(incsr.isSuccess()) {
+				RunnerResult<T> result = this.run(req, res);
+				return result;
+			} else {
+				RunnerResult<T> ret_result = new RunnerResult<>();
+				ret_result.setResult(Result.convert(incsr.result));
+				ret_result.setId(id().id());
+				ret_result.setCode(id().code());
+				ret_result.setPath(this.transferPathToClz(req));
+				ret_result.setAppins(this.appins);
+				return ret_result;
+			}
 		}catch(Exception e) {
 			if(e instanceof RunningException) {
 				throw e;
@@ -184,4 +292,75 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 	}
 	
 	protected abstract <T extends Result> RunnerResult<T> run(JCHttpRequest req, JCHttpResponse res);
+	
+	private IntercepHanRule parseIntercepRules(String path) {
+		path = path + "." + appins.getLans();
+		List<String> mapping = new ArrayList<>();
+		List<String> exmapping = new ArrayList<>();
+		try (Stream<String> stream = Files.lines(Paths.get(path))) {
+			stream.forEach(
+				line -> {
+					line = line.trim();
+					if(line.startsWith("@urlmapped")) {
+						line = line.substring("@urlmapped(".length(), line.indexOf(")")).trim();
+						for(String t : line.split(",")) {
+							t = t.trim();
+							t = disposeFirst(t, "[");
+							t = disposeLast(t, "]");
+							mapping.add(t.substring(1, t.length() - 1));
+						}
+					} else if(line.startsWith("@urlpassed")) {
+						line = line.substring("@urlpassed(".length(), line.indexOf(")")).trim();
+						for(String t : line.split(",")) {
+							t = t.trim();
+							t = disposeFirst(t, "[");
+							t = disposeLast(t, "]");
+							exmapping.add(t.substring(1, t.length() - 1));
+						}
+					}
+				}
+			);
+		}catch (IOException e) {
+			logger.error("", e);
+		}
+		if(mapping.isEmpty()) {
+			//默认全部需要执行
+			mapping.add("/");
+		}
+		mapping.forEach(it -> logger.info(it));
+		exmapping.forEach(it -> logger.info(it));
+		IntercepHanRule rule = new IntercepHanRule();
+		rule.setMapping(mapping);
+		rule.setExmapping(exmapping);
+		return rule;
+	}
+	
+	protected static String disposeLast(String uri, String charac) {
+		uri = uri.trim();
+		if(uri.equals(charac)) {
+			return uri;
+		}
+		if(uri.endsWith(charac)) {
+			uri = uri.substring(0, uri.length() - 1);
+			if(uri.endsWith(charac)) {
+				uri = disposeLast(uri, charac);
+			}
+		}
+		return uri;
+	}
+	
+	protected static String disposeFirst(String uri, String charac) {
+		uri = uri.trim();
+		if(uri.equals(charac)) {
+			return uri;
+		}
+		if(uri.startsWith(charac)) {
+			uri = uri.substring(1, uri.length());
+			if(uri.startsWith(charac)) {
+				uri = disposeFirst(uri, charac);
+			}
+		}
+		return uri;
+	}
+	
 }

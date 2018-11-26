@@ -61,9 +61,12 @@ public class WelcomeApplicationRendering<T extends Result> extends DefaultRender
 		TemplateEngine templateEngine = new TemplateEngine();
 		templateEngine.setTemplateResolver(resolver);
 		// 渲染模板
-		String html = templateEngine.process(name, ctx);
-
-		this.writeHtmlResponse(html, true);
-		return html;
+		try {
+			String html = templateEngine.process(name, ctx);
+			this.writeHtmlResponse(html, true);
+			return html;
+		}catch(Exception e) {
+			throw e;
+		}
 	}
 }

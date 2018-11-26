@@ -29,11 +29,13 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 	
 	protected static volatile String state = STATE_READY;
 	
+	public final ContainerMaps VM_CONTAINERS = new ContainerMaps();
+	
 	protected List<JCAPP> appList;
 	
 	@Override
 	public ContainerMaps getContainers() {
-		return JCVM.VM_CONTAINERS;
+		return VM_CONTAINERS;
 	}
 
 	@Override
@@ -91,13 +93,19 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 		return exeresult;
 	}
 	
+	/**
+	 * only support run entry script
+	 * @param req
+	 * @param res
+	 * @return
+	 */
 	protected <T extends Result> RunnerResult<T> makeRun(JCHttpRequest req, JCHttpResponse res) {
 		String app_context_path = req.getContextPath();
 		for(BCID app : getContainers().keySet()) {
 			String app_code = app.code();
 			if(app_context_path.equals("/" + app_code)) {
 				JCAppContainer runner = getContainers().get(app);
-				RunnerResult<T> ret = runner.execute(req, res);
+				RunnerResult<T> ret = runner.callEntry(req, res);
 				return ret;
 			}
 		}

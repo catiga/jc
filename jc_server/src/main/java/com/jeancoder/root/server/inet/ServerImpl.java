@@ -5,16 +5,12 @@ import java.util.List;
 
 import com.jeancoder.root.container.core.BCID;
 import com.jeancoder.root.env.JCAPP;
-import com.jeancoder.root.manager.JCVMDelegator;
 import com.jeancoder.root.server.proto.conf.AppMod;
 import com.jeancoder.root.server.proto.conf.ServerMod;
-import com.jeancoder.root.vm.JCVM;
 
-public abstract class ServerImpl implements JCServer {
+public abstract class ServerImpl extends AbstractServer implements JCServer {
 
 	protected ServerMod modconf;
-	
-	public static JCVM jcvm = JCVMDelegator.delegate().getVM();
 	
 	public ServerImpl() {
 		modconf = new ServerMod();
@@ -40,7 +36,7 @@ public abstract class ServerImpl implements JCServer {
 					//String amid = am.getApp_id();
 					String amcode = am.getApp_code();
 					JCAPP jcapp = null;
-					for(BCID k : jcvm.getContainers().keySet()) {
+					for(BCID k : getVM().getContainers().keySet()) {
 						if(!k.code().equals(amcode)) {
 							jcapp = am.to();
 						}
@@ -52,15 +48,15 @@ public abstract class ServerImpl implements JCServer {
 					}
 				}
 			}
-			jcvm.setInitApps(convert_proto);
-			jcvm.onStart();
+			getVM().setInitApps(convert_proto);
+			getVM().onStart();
 		}
 	}
 
 	@Override
 	public void shutdown() {
 		synchronized (this) {
-			jcvm.getContainers().shutdown();
+			getVM().getContainers().shutdown();
 		}
 	}
 }

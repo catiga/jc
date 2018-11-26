@@ -21,9 +21,7 @@ public interface JCAppContainer extends Lifecycle {
 	
 	public BCID id();
 	
-	<T extends Result> RunnerResult<T> execute(JCHttpRequest req, JCHttpResponse res);
-	
-	//<T extends Result> RunnerResult<T> run(JCHttpRequest req, JCHttpResponse res);
+	<T extends Result> RunnerResult<T> callEntry(JCHttpRequest req, JCHttpResponse res);
 	
 	<T extends Result> RunnerResult<T> execute(String path);
 	

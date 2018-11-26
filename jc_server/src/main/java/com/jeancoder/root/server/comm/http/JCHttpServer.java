@@ -31,7 +31,7 @@ public class JCHttpServer extends ServerImpl implements JCServer {
 	
 	boolean ssl = false;
 	
-	public JCHttpServer() {
+	private JCHttpServer() {
 		this.modconf = new ServerMod();
 		this.modconf.setProxy_entry("entry");
 		this.modconf.setProxy_path("/");

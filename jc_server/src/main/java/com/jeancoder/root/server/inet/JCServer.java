@@ -7,4 +7,5 @@ public interface JCServer {
 	void start();
 	
 	void shutdown();
+	
 }

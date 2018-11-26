@@ -30,6 +30,10 @@ public class JCAPP {
 	
 	String lib_base = "lib";
 	
+	String bin_base;
+	
+	String source_base = "src/main/java";
+	
 	JCAppConfig config;
 	
 	public String getId() {
@@ -150,6 +154,22 @@ public class JCAPP {
 
 	public void setConfig(JCAppConfig config) {
 		this.config = config;
+	}
+
+	public String getBin_base() {
+		return bin_base;
+	}
+
+	public void setBin_base(String bin_base) {
+		this.bin_base = bin_base;
+	}
+
+	public String getSource_base() {
+		return source_base;
+	}
+
+	public void setSource_base(String source_base) {
+		this.source_base = source_base;
 	}
 
 }
