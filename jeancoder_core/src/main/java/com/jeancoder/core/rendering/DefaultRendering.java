@@ -119,10 +119,10 @@ public class DefaultRendering<T extends Result> implements Rendering {
 		//getContext().channel().writeAndFlush(deleg_obj).addListener(ChannelFutureListener.CLOSE);
 	}
 	
-	protected void writeStreamResponse(byte[] bytes, boolean forceClose) {
+	protected void writeStreamResponse(byte[] bytes, String content_type, boolean forceClose) {
 		ByteBuf buf = copiedBuffer(bytes);
 		FullHttpResponse new_response = response.delegateObj().replace(buf);
-		new_response.headers().set(CONTENT_TYPE, "text/json; charset=UTF-8");
+		new_response.headers().set(CONTENT_TYPE, content_type + "; charset=UTF-8");
 		new_response.headers().set(CONTENT_LENGTH, buf.readableBytes());
 		new_response.setStatus(HttpResponseStatus.OK);
 		this.response.replaceDelegateObj(new_response);

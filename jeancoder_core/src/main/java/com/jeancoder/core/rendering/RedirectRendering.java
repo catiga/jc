@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.jeancoder.core.rendering.Rendering;
 import com.jeancoder.core.result.Result;
 import com.jeancoder.root.io.http.JCHttpResponse;
 

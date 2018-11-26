@@ -12,8 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jeancoder.core.result.Result;
-import com.jeancoder.core.util.HttpUtil;
 import com.jeancoder.root.env.JCAPP;
+import com.jeancoder.root.io.http.ContentTypes;
 
 import io.netty.channel.ChannelHandlerContext;
 
@@ -35,8 +35,10 @@ public class StaticRendering<T extends Result> extends DefaultRendering<T> imple
 		String name = result.getResult();
 		name = path + name;
 		logger.info("static_name=" + name);
+		String content_key = name.substring(name.lastIndexOf("."));
+		String content_type = ContentTypes.get(content_key);
 		try {
-			response.setContentType(HttpUtil.getContentType(result.getResult()));
+			//response.setContentType(HttpUtil.getContentType(result.getResult()));
 			BufferedInputStream fis = new BufferedInputStream(new FileInputStream(new File(name)));
 			ByteArrayOutputStream bos = new ByteArrayOutputStream(1000);  
             byte[] b = new byte[1000];  
@@ -48,7 +50,7 @@ public class StaticRendering<T extends Result> extends DefaultRendering<T> imple
             bos.close();  
             byte[] buffer = bos.toByteArray();
             
-			this.writeStreamResponse(buffer, true);
+			this.writeStreamResponse(buffer, content_type, true);
 		} catch (Exception e) {
 			logger.error("name not found", e);
 		}

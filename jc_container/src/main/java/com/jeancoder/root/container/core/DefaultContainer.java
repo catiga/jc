@@ -184,15 +184,15 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 	protected TypeDefClassLoader containClassLoader = null;
 	
 	private static class InnerExchange {
-		String entry;
+//		public String entry;
+//		
+//		public List<String> intercep;
 		
-		List<String> intercep;
-		
-		Object result;
+		public Object result;
 		
 		public InnerExchange(String uri, List<String> lastones, Object runres) {
-			this.entry = uri;
-			this.intercep = lastones;
+//			this.entry = uri;
+//			this.intercep = lastones;
 			this.result = runres;
 		}
 		
