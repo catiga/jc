@@ -1,7 +1,8 @@
 package com.jeancoder.root.io.http;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,9 +29,9 @@ public class ContentTypes {
 
 	static {
 		String path = PATH_CODE;
-		String file_path = Thread.currentThread().getContextClassLoader().getResource(path).getFile();
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(file_path));
+			InputStream ins = ContentTypes.class.getClassLoader().getResourceAsStream(path);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
 
 			String linecontent = null;
 			while ((linecontent = reader.readLine()) != null) {
