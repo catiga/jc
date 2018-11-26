@@ -2,6 +2,9 @@ package com.jeancoder.cap.power;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jeancoder.cap.config.DevDatabaseProp;
 import com.jeancoder.cap.config.DevMemProp;
 import com.jeancoder.cap.config.DevQiniuProp;
@@ -16,6 +19,9 @@ import com.jeancoder.core.power.PowerName;
 import com.jeancoder.core.power.QiniuPowerConfig;
 
 public class DevPowerLoader {
+	
+	private static Logger logger = LoggerFactory.getLogger(DevPowerLoader.class);
+	
 	//TODO 暂时先这样写 可以考虑优化 系统能力分类如何 动态类型 动态添加 
 	public static void init(String appcode) {
 		List<PropItem> dbprops = JeancoderConfigurer.fetch(PropType.DATABASE, appcode);
@@ -26,7 +32,7 @@ public class DevPowerLoader {
 					PowerHandlerFactory.generatePowerHandler(PowerName.DATABASE, dbprop2dbconfig(item),appcode);
 				} catch (JeancoderException e) {
 					//TODO 打印WARNING日志
-					System.out.println("Power generate failed which type is "+PowerName.DATABASE+" id is "+item.getId()+"."+e.getMessage()+e.getCause());
+					logger.error("Power generate failed which type is "+PowerName.DATABASE+" id is "+item.getId()+"."+e.getMessage()+e.getCause(), e);
 				}
 			}
 		}
@@ -45,7 +51,7 @@ public class DevPowerLoader {
 					PowerHandlerFactory.generatePowerHandler(PowerName.QINIU, config, appcode);
 				} catch (JeancoderException e) {
 					//TODO 打印WARNING日志
-					System.out.println("Power generate failed which type is "+PowerName.QINIU+" id is "+item.getId()+"."+e.getMessage()+e.getCause());
+					logger.error("Power generate failed which type is "+PowerName.QINIU+" id is "+item.getId()+"."+e.getMessage()+e.getCause(), e);
 				}
 			}
 		}
@@ -64,7 +70,7 @@ public class DevPowerLoader {
 					PowerHandlerFactory.generatePowerHandler(PowerName.MEM, config, appcode);
 				} catch (JeancoderException e) {
 					//TODO 打印WARNING日志
-					System.out.println("Power generate failed which type is "+PowerName.MEM+" id is "+item.getId()+"."+e.getMessage()+e.getCause());
+					logger.error("Power generate failed which type is "+PowerName.MEM+" id is "+item.getId()+"."+e.getMessage()+e.getCause(), e);
 				}
 			}
 		}
