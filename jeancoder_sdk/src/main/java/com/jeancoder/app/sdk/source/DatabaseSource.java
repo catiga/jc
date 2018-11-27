@@ -1,8 +1,9 @@
 package com.jeancoder.app.sdk.source;
 
+import com.jeancoder.core.cl.AppLoader;
 import com.jeancoder.core.power.DatabasePower;
+import com.jeancoder.root.container.ContainerContextEnv;
 import com.jeancoder.root.container.JCAppContainer;
-import com.jeancoder.root.state.JCAPPHolder;
 
 public class DatabaseSource {
 //	public static DatabasePower getDatabasePower(){
@@ -14,7 +15,15 @@ public class DatabaseSource {
 //	}
 	
 	public static DatabasePower getDatabasePower() {
-		JCAppContainer container = JCAPPHolder.getContainer();
+		JCAppContainer container = ContainerContextEnv.getCurrentContainer();
+		if(container==null) {
+			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			if(loader instanceof AppLoader) {
+				AppLoader app_loader = (AppLoader)loader;
+				
+				container = app_loader.getContextEnv();
+			}
+		}
 		return container.getCaps().getDatabase();
 	}
 }

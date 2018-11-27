@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import com.jeancoder.core.cl.AppLoader;
 import com.jeancoder.core.cl.CLHandler;
 import com.jeancoder.core.cl.JCLoader;
+import com.jeancoder.root.container.JCAppContainer;
 
 import groovy.lang.GroovyClassLoader;
 
@@ -39,7 +40,12 @@ public class AppClassLoader extends GroovyClassLoader implements JCLoader, AppLo
 	
 	final List<CLHandler> APP_CL_HANDLERS = new ArrayList<>();
 
-	public AppClassLoader(TypeDefClassLoader parent) {
+	@Override
+	public JCAppContainer getContextEnv() {
+		return parent.getContextEnv();
+	}
+	
+	protected AppClassLoader(TypeDefClassLoader parent) {
 		this(EMPTY_URL_ARRAY, parent);
 	}
 	

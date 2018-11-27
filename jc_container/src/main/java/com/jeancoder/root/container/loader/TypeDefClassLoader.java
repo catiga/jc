@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.jeancoder.core.cl.AppLoader;
 import com.jeancoder.core.cl.DefLoader;
 import com.jeancoder.core.cl.JCLoader;
+import com.jeancoder.core.cl.JClassLoader;
 import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.env.JCAPP;
 
@@ -22,7 +23,7 @@ import com.jeancoder.root.env.JCAPP;
  * @author jackielee
  *
  */
-public class TypeDefClassLoader extends URLClassLoader implements DefLoader, JCLoader {
+public class TypeDefClassLoader extends JClassLoader implements DefLoader, JCLoader {
 
 	protected static Logger logger = LoggerFactory.getLogger(TypeDefClassLoader.class);
 	
@@ -35,6 +36,11 @@ public class TypeDefClassLoader extends URLClassLoader implements DefLoader, JCL
 	@Override
 	public AppLoader getManaged() {
 		return appClassLoader;
+	}
+
+	@Override
+	public JCAppContainer getContextEnv() {
+		return container;
 	}
 
 	protected JCAppContainer container;

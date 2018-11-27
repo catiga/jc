@@ -83,8 +83,8 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 		logger.info("REMOTE HOST AND IP=" + vis_host_name + "(" + vis_host_ip + ")");
 		logger.info("CONTEXT TYPE=" + context_type);
 		
-		RunnerResult<T> exeresult = makeRun(req, res);
 		ChannelHandlerContext ctx = JCVMDelegator.getContext().getContext();
+		RunnerResult<T> exeresult = makeRun(req, res);
 		try {
 			Rendering rendering = RenderingFactory.getRendering(ctx, exeresult);
 			rendering.process(req, res);

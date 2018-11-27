@@ -1,8 +1,6 @@
-package com.jeancoder.root.state;
+package com.jeancoder.root.container;
 
-import com.jeancoder.root.container.JCAppContainer;
-
-public class JCAPPHolder {
+class JCAPPHolder {
 
 //	private static ThreadLocal<JCAPP> CURRENT_APPS = new ThreadLocal<>();
 	

@@ -19,6 +19,7 @@ import com.jeancoder.core.http.JCRequest;
 import com.jeancoder.core.http.JCResponse;
 import com.jeancoder.core.http.JCThreadLocal;
 import com.jeancoder.core.result.Result;
+import com.jeancoder.root.container.ContainerContextEnv;
 import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.container.PowerCaps;
 import com.jeancoder.root.container.loader.TypeDefClassLoader;
@@ -31,7 +32,6 @@ import com.jeancoder.root.exception.PrivilegeException;
 import com.jeancoder.root.exception.RunningException;
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
-import com.jeancoder.root.state.JCAPPHolder;
 
 import groovy.lang.Binding;
 import groovy.lang.Script;
@@ -145,11 +145,9 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 	}
 	
 	public <T extends Result> RunnerResult<T> execute(String path) {
-//		JCThreadLocal.setClassLoader(containClassLoader.getAppClassLoader());
-//		JCThreadLocal.setCode(appins.getCode());
 		Class<?> executor = null;
-		JCAppContainer original_container = JCAPPHolder.getContainer();
-		JCAPPHolder.setContainer(this);
+		JCAppContainer original_container = ContainerContextEnv.getCurrentContainer();
+		ContainerContextEnv.setCurrentContainer(this);
 		try {
 			executor = this.transferPathToIns(path);
 			Binding context = new Binding();
@@ -174,9 +172,9 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 			throw new Code500Exception(id().id(), id().code(), executor==null?null:executor.getName(), this.transferPathToClz(path), "RUNNING_ERROR:" + ex.getCause(), ex);
 		} finally {
 			if(original_container!=null) {
-				JCAPPHolder.setContainer(original_container);
+				ContainerContextEnv.setCurrentContainer(original_container);
 			} else {
-				JCAPPHolder.clearContainer();
+				ContainerContextEnv.clearCurrentContainer();
 			}
 		}
 	}
@@ -261,8 +259,8 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 		JCThreadLocal.setRequest(new JCRequest(req));
 		JCThreadLocal.setResponse(new JCResponse(res));
 		
-		JCAPPHolder.setContainer(this);
-		
+		//JCAPPHolder.setContainer(this);
+		ContainerContextEnv.setCurrentContainer(this);
 		try {
 			InnerExchange incsr = this.callInterceptor(req, res);
 			if(incsr.isSuccess()) {
@@ -277,7 +275,7 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 				ret_result.setAppins(this.appins);
 				return ret_result;
 			}
-		}catch(Exception e) {
+		} catch(Exception e) {
 			if(e instanceof RunningException) {
 				throw e;
 			} else {
@@ -289,6 +287,8 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 				}
 				throw new Code500Exception(appins, resobj==null?null:resobj.getName(), this.transferPathToClz(req), "RUNNING_ERROR:", e);
 			}
+		} finally {
+			ContainerContextEnv.clearCurrentContainer();
 		}
 	}
 

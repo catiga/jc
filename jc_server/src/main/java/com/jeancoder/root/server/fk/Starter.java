@@ -35,9 +35,6 @@ public class Starter {
 		String val = null;
 		do {
 			val = input.next(); // 等待输入值
-			if(val==null) {
-				val = "start";
-			}
 			if(val.equals("start")) {
 //				Thread daemon = new Thread(new Runnable() {
 //

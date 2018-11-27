@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jeancoder.app.sdk.Interceptor.JCInterceptor;
+import com.jeancoder.root.container.ContainerContextEnv;
 import com.jeancoder.root.container.JCAppContainer;
-import com.jeancoder.root.state.JCAPPHolder;
 
 public class JC {
 
@@ -22,7 +22,7 @@ public class JC {
 			JCInterceptor interceptor = new JCInterceptor();
 			interceptor.setPreResource(__pre__);
 			interceptor.setPostResource(__post__);
-			JCAppContainer container = JCAPPHolder.getContainer();
+			JCAppContainer container = ContainerContextEnv.getCurrentContainer();
 			container.addInterceptor(interceptor);
 		}
 	}

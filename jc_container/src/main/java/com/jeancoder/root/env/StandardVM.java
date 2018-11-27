@@ -31,17 +31,17 @@ public class StandardVM extends DefaultVm implements JCVM {
 	public synchronized void onInit() {
 		logger.info("init boot vm");
 		state = STATE_INITED;
+		//准备基础环境
+		rootLoader = new BootClassLoader(Thread.currentThread().getContextClassLoader());
 	}
 
 	@Override
 	public synchronized void onStart() {
-		logger.info("starting......");
+		logger.info("JC VM STARTING......");
 		state = STATE_STARTING;
-		//准备基础环境
-		rootLoader = new BootClassLoader(Thread.currentThread().getContextClassLoader());
 		if(this.sysLibs!=null)
 			rootLoader.registerSysJars(this.sysLibs);
-		
+		Thread.currentThread().setContextClassLoader(rootLoader);	//reset context
 		if(this.appList!=null) {
 			for(JCAPP jca : this.appList) {
 				BootContainer bc = new BootContainer(jca);
@@ -55,7 +55,7 @@ public class StandardVM extends DefaultVm implements JCVM {
 				}
 			}
 		}
-		logger.info("started");
+		logger.info("JC VM STARTED");
 		state = STATE_RUNNING;
 	}
 

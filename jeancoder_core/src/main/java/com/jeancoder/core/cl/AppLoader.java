@@ -1,6 +1,6 @@
 package com.jeancoder.core.cl;
 
-public interface AppLoader extends JCLoader {
+public interface AppLoader extends KoLoader {
 
 	public CLHandler[] getAppClasses();
 	

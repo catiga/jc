@@ -1,8 +1,9 @@
 package com.jeancoder.app.sdk.source;
 
+import com.jeancoder.core.cl.AppLoader;
 import com.jeancoder.core.power.QiniuPower;
+import com.jeancoder.root.container.ContainerContextEnv;
 import com.jeancoder.root.container.JCAppContainer;
-import com.jeancoder.root.state.JCAPPHolder;
 
 public class QiniuSource {
 	/**
@@ -20,7 +21,16 @@ public class QiniuSource {
 //	}
 	
 	public static QiniuPower getQiniuPower(){
-		JCAppContainer container = JCAPPHolder.getContainer();
+//		JCAppContainer container = JCAPPHolder.getContainer();
+		JCAppContainer container = ContainerContextEnv.getCurrentContainer();
+		if(container==null) {
+			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			if(loader instanceof AppLoader) {
+				AppLoader app_loader = (AppLoader)loader;
+				
+				container = app_loader.getContextEnv();
+			}
+		}
 		return container.getCaps().getQiniu();
 	}
 }

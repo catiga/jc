@@ -58,7 +58,8 @@ public class JeancoderConfigurer {
 	}
 	
 	public static boolean threadOK() {
-		return Thread.currentThread().getContextClassLoader() == JeancoderConfigurer.class.getClassLoader()
-				|| Thread.currentThread().getContextClassLoader().equals(Thread.currentThread().getClass().getClassLoader());
+//		return Thread.currentThread().getContextClassLoader() == JeancoderConfigurer.class.getClassLoader()
+//				|| Thread.currentThread().getContextClassLoader().equals(Thread.currentThread().getClass().getClassLoader());
+		return true;
 	}
 }

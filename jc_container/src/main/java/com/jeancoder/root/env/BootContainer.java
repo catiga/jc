@@ -14,6 +14,7 @@ import com.jeancoder.core.power.PowerHandlerFactory;
 import com.jeancoder.core.power.PowerName;
 import com.jeancoder.core.power.QiniuPowerHandler;
 import com.jeancoder.core.result.Result;
+import com.jeancoder.root.container.ContainerContextEnv;
 import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.container.core.BCID;
 import com.jeancoder.root.container.core.DefaultContainer;
@@ -25,7 +26,6 @@ import com.jeancoder.root.exception.CompileException;
 import com.jeancoder.root.exception.PrivilegeException;
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
-import com.jeancoder.root.state.JCAPPHolder;
 
 import groovy.lang.Binding;
 import groovy.lang.Script;
@@ -99,7 +99,6 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 				throwCause(null);
 			}
 			state = STATE_STARTING;
-			containClassLoader = new TypeDefClassLoader(rootLoader, this);
 			this.initByRes();
 			state = STATE_RUNNING;
 		}
@@ -119,8 +118,7 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 	}
 
 	protected void initByRes() {
-		//启动时执行
-		JCAPPHolder.setContainer(this);	//not goods way, fuck
+		ContainerContextEnv.setCurrentContainer(this);
 		String init_script = appins.getOrg() + "." + appins.getDever() + "." + appins.getCode() + "." + Common.INITIAL;
 		try {
 			Class<?> executor = this.getSignedClassLoader().getManaged().findClass(init_script);
@@ -135,7 +133,8 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 		} catch (Exception e) {
 			logger.error("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") INIT ERROR.", e);
 		} finally {
-			JCAPPHolder.clearContainer();
+			//JCAPPHolder.clearContainer();
+			ContainerContextEnv.clearCurrentContainer();
 		}
 	}
 	
@@ -145,6 +144,8 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 			if (!state.equals(STATE_READY)) {
 				throwCause(null);
 			}
+			containClassLoader = new TypeDefClassLoader(rootLoader, this);
+			//Thread.currentThread().setContextClassLoader(containClassLoader);	//SDK CONTENT INITED
 			String appPath = appins.getApp_base();
 			DevConfigureReader.init(appPath, appins.code);
 			DevPowerLoader.init(appins.code);

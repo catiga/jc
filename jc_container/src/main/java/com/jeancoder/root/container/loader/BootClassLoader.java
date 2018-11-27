@@ -12,13 +12,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jeancoder.core.cl.JCLoader;
+import com.jeancoder.core.cl.JClassLoader;
 
 /**
  * sys lib loader
  * @author jackielee
  *
  */
-public class BootClassLoader extends URLClassLoader implements JCLoader {
+public class BootClassLoader extends JClassLoader implements JCLoader {
 	
 	protected static Logger logger = LoggerFactory.getLogger(BootClassLoader.class);
 	
