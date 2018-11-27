@@ -33,6 +33,9 @@ public class Starter {
 	public static void main(String[] argc) {
 		Scanner input = new Scanner(System.in);
 		String val = null; // 记录输入的字符串
+		if(val==null) {
+			val = "start";
+		}
 		do {
 			val = input.next(); // 等待输入值
 			if(val.equals("start")) {
