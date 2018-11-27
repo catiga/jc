@@ -10,7 +10,7 @@ import com.jeancoder.root.container.core.BCID;
 
 public class ContainerMaps {
 
-	public final Map<BCID, JCAppContainer> VM_CONTAINERS = new ConcurrentHashMap<BCID, JCAppContainer>();
+	private final Map<BCID, JCAppContainer> VM_CONTAINERS = new ConcurrentHashMap<BCID, JCAppContainer>();
 	
 	public Set<BCID> keySet() {
 		return VM_CONTAINERS.keySet();
@@ -34,9 +34,19 @@ public class ContainerMaps {
 		VM_CONTAINERS.put(id, container);
 	}
 	
-	public void shutdown() {
-		VM_CONTAINERS.forEach((k,v) -> {
-			v.onStop();
-		});
+	public void remove(BCID id) {
+		VM_CONTAINERS.remove(id);
 	}
+	
+//	public void shutdown() {
+////		VM_CONTAINERS.forEach((k,v) -> {
+////			v.onStop();
+////		});
+//		for(BCID bcid : VM_CONTAINERS.keySet()) {
+//			JCAppContainer container = VM_CONTAINERS.get(bcid);
+//			container.onStop();
+//			container.onDestroy();
+//			VM_CONTAINERS.remove(bcid);
+//		}
+//	}
 }

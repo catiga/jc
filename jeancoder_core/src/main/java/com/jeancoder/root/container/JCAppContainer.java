@@ -32,4 +32,8 @@ public interface JCAppContainer extends Lifecycle {
 	public void addInterceptor(Interceptor interceptor);
 	
 	public Enumeration<Interceptor> interceptors();
+	
+	public String state();
+	
+	public void changeState(String lifeCycleState);
 }

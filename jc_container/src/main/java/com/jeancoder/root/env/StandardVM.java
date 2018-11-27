@@ -3,6 +3,8 @@ package com.jeancoder.root.env;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jeancoder.root.container.JCAppContainer;
+import com.jeancoder.root.container.core.BCID;
 import com.jeancoder.root.container.loader.BootClassLoader;
 import com.jeancoder.root.vm.DefaultVm;
 import com.jeancoder.root.vm.JCVM;
@@ -61,14 +63,22 @@ public class StandardVM extends DefaultVm implements JCVM {
 
 	@Override
 	public synchronized void onStop() {
-		// TODO Auto-generated method stub
-		
+		for(BCID bcid : VM_CONTAINERS.keySet()) {
+			JCAppContainer container = VM_CONTAINERS.get(bcid);
+			if(container.state().equals(Lifecycle.STATE_RUNNING))
+				container.onStop();
+			container.changeState(Lifecycle.STATE_STOPED);
+		}
 	}
 
 	@Override
 	public synchronized void onDestroy() {
-		// TODO Auto-generated method stub
-		
+		for(BCID bcid : VM_CONTAINERS.keySet()) {
+			JCAppContainer container = VM_CONTAINERS.get(bcid);
+			if(container.state().equals(Lifecycle.STATE_STOPED))
+				container.onDestroy();
+			VM_CONTAINERS.remove(bcid);
+		}
 	}
 	
 }

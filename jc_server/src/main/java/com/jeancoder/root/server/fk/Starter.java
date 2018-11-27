@@ -56,12 +56,14 @@ public class Starter {
 			} else if(val.equals("list")) {
 				for (JCServer handler : iservers) {
 					System.out.println("running server: " + handler);
+				}
+			} else if(val.equals("stop")) {
+				logger.info("preparing to shutdown server");
+				for (JCServer handler : iservers) {
 					if(handler.defServerCode()==ServerCode.HTTP) {
 						handler.shutdown();
 					}
 				}
-			} else if(val.equals("stop")) {
-				System.out.println("准备关闭");
 			}
 		} while (!val.equals("q")); // 如果输入的值不是#就继续输入
 		input.close(); // 关闭资源

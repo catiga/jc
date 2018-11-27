@@ -13,7 +13,7 @@ public interface Lifecycle {
 	final String STATE_STOPING = "STOPING";
 
 	final String STATE_STOPED = "STOPED";
-
+	
 	void onInit();
 
 	void onStart();

@@ -45,7 +45,7 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 		return BCID.generateKey(appins.getId(), appins.getCode());
 	}
 
-	protected String state() {
+	public String state() {
 		return state;
 	}
 
@@ -59,6 +59,11 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 	@Override
 	public DefLoader getSignedClassLoader() {
 		return this.containClassLoader;
+	}
+
+	@Override
+	public void changeState(String lifeCycleState) {
+		this.state = lifeCycleState;
 	}
 
 	@Override

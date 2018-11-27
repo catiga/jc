@@ -58,7 +58,8 @@ public abstract class ServerImpl extends AbstractServer implements JCServer {
 	@Override
 	public void shutdown() {
 		synchronized (this) {
-			getVM().getContainers().shutdown();
+			getVM().onStop();
+			getVM().onDestroy();
 		}
 	}
 }
