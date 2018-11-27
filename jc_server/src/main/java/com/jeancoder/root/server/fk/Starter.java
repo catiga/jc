@@ -32,12 +32,12 @@ public class Starter {
 	 */
 	public static void main(String[] argc) {
 		Scanner input = new Scanner(System.in);
-		String val = null; // 记录输入的字符串
-		if(val==null) {
-			val = "start";
-		}
+		String val = null;
 		do {
 			val = input.next(); // 等待输入值
+			if(val==null) {
+				val = "start";
+			}
 			if(val.equals("start")) {
 //				Thread daemon = new Thread(new Runnable() {
 //
