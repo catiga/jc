@@ -13,9 +13,6 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
 
-/**
- * Created by yaozb on 15-4-11.
- */
 public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> {
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
