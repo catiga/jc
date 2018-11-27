@@ -78,10 +78,10 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 			logger.debug("CONTEXT PATH=" + context_path);
 			logger.debug("PATH INFO=" + path_info);
 			logger.debug("QUERY STRING=" + query_string);
+			logger.debug("SERVER DOMAIN=" + host + ":" + port);
+			logger.debug("REMOTE HOST AND IP=" + vis_host_name + "(" + vis_host_ip + ")");
+			logger.debug("CONTEXT TYPE=" + context_type);
 		}
-		logger.info("SERVER DOMAIN=" + host + ":" + port);
-		logger.info("REMOTE HOST AND IP=" + vis_host_name + "(" + vis_host_ip + ")");
-		logger.info("CONTEXT TYPE=" + context_type);
 		
 		ChannelHandlerContext ctx = JCVMDelegator.getContext().getContext();
 		RunnerResult<T> exeresult = makeRun(req, res);
