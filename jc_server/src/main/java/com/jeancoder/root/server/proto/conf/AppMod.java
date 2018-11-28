@@ -23,6 +23,8 @@ public class AppMod {
 	
 	String app_base;	//support folder and zip file
 	
+	String fetch_address;
+	
 	APPConf config;
 
 	public String getApp_id() {
@@ -89,7 +91,7 @@ public class AppMod {
 		this.lans = lans;
 	}
 	
-	protected String getApp_base() {
+	public  String getApp_base() {
 		return app_base;
 	}
 
@@ -103,6 +105,15 @@ public class AppMod {
 
 	protected void setConfig(APPConf config) {
 		this.config = config;
+	}
+	
+	
+	public String getFetch_address() {
+		return fetch_address;
+	}
+
+	public void setFetch_address(String fetch_address) {
+		this.fetch_address = fetch_address;
 	}
 
 	public JCAPP to() {
