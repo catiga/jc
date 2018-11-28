@@ -1,6 +1,8 @@
 package com.jeancoder.root.server.fk;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -39,47 +41,62 @@ public class Starter {
 		String val = null;
 		do {
 			val = input.next(); // 等待输入值
-			if(val.equals("start")) {
+			if (val.equals("start")) {
 				start();
-			} else if(val.equals("list")) {
+			} else if (val.equals("list")) {
 				for (JCServer handler : iservers) {
 					logger.info("running server: " + handler);
 				}
-			} else if(val.equals("stop")) {
+			} else if (val.equals("stop")) {
 				logger.info("preparing to shutdown server");
 				for (JCServer handler : iservers) {
-					if(handler.defServerCode()==ServerCode.HTTP) {
+					if (handler.defServerCode() == ServerCode.HTTP) {
 						handler.shutdown();
 					}
 				}
-			} else if(val.equals("master")) {
+			} else if (val.equals("master")) {
 				logger.info("connect and register service to master");
-				
+
 			}
 		} while (!val.equals("q")); // 如果输入的值不是#就继续输入
 		input.close(); // 关闭资源
 	}
 
 	public static void start() {
+		String json = null;
 		try {
-//			InputStream ins = Starter.class.getClassLoader().getResourceAsStream(appConf);
-//			BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
-//
-//			String lineContent = null;
-//			StringBuffer buff = new StringBuffer();
-//			while ((lineContent = reader.readLine()) != null) {
-//				buff.append(lineContent);
-//			}
-			String rules = RemoteUtil.getConfigList();
-			ByteResults byteResults = JackSonBeanMapper.fromJson(rules, ByteResults.class);
-			if (!"0000".equals(byteResults.getStatus())) {
-				logger.info("获取配置失败 status:" + byteResults.getStatus() + " msg:" + byteResults.getMsg());
-				return;
-			}
-			System.out.println(new String(byteResults.getResults()));
-			Gson gson = new Gson();
-			FkConf fk_con = gson.fromJson(new String(byteResults.getResults()), FkConf.class);
+			// 本地读取配置文件
+			InputStream ins = Starter.class.getClassLoader().getResourceAsStream(appConf);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
 
+			String lineContent = null;
+			StringBuffer buff = new StringBuffer();
+			while ((lineContent = reader.readLine()) != null) {
+				buff.append(lineContent);
+			}
+			json = buff.toString();
+		} catch (Exception e) {
+		}
+		if (json == null) {
+			try {
+				String rules = RemoteUtil.getConfigList();
+				ByteResults byteResults = JackSonBeanMapper.fromJson(rules, ByteResults.class);
+				if (!"0000".equals(byteResults.getStatus())) {
+					logger.info("获取配置失败 status:" + byteResults.getStatus() + " msg:" + byteResults.getMsg());
+					return;
+				}
+				json = new String(byteResults.getResults());
+			} catch (Exception e) {
+				logger.error("网络加载配置文件错误",e);
+			}
+		}
+		if (json == null) {
+			logger.error("配置文件不存在");
+			return;
+		}
+		try {
+			Gson gson = new Gson();
+			FkConf fk_con = gson.fromJson(json, FkConf.class);
 			for (ServerMod sm : fk_con.getServers()) {
 				JCServer server = ServerFactory.generate(sm);
 				iservers.add(server);
@@ -89,10 +106,12 @@ public class Starter {
 					public void run() {
 						for (AppMod mod : sm.getApps()) {
 							try {
-								System.out.println("开始下载");
-								InputStream ins = RemoteUtil.installation(mod.getFetch_address() ,new Long(mod.getApp_id()));
-								System.out.println("下载");
-								ZipUtil.unzip(mod.getApp_base(), new ZipInputStream(ins));
+								if (mod.getFetch_address() != null) {
+									System.out.println("开始下载");
+									InputStream ins = RemoteUtil.installation(mod.getFetch_address(),new Long(mod.getApp_id()));
+									System.out.println("下载");
+									ZipUtil.unzip(mod.getApp_base(), new ZipInputStream(ins));
+								}
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
