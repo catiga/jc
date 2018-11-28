@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jeancoder.root.server.channels.AcceptorIdleStateTrigger;
 import com.jeancoder.root.server.inet.JCServer;
 import com.jeancoder.root.server.inet.ServerCode;
 import com.jeancoder.root.server.inet.ServerImpl;
@@ -27,11 +28,14 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 
 public class JCSocketServer extends ServerImpl implements JCServer {
 
 	private static Logger logger = LoggerFactory.getLogger(JCSocketServer.class);
-	
+
 	private JCSocketServer() {
 		this.modconf = new ServerMod();
 		this.modconf.setProxy_entry("entry");
@@ -40,16 +44,18 @@ public class JCSocketServer extends ServerImpl implements JCServer {
 		this.modconf.setPort(12346);
 		this.modconf.setScheme(ServerCode.SOCKET.toString());
 	}
-	
+
 	public JCSocketServer(ServerMod mod) {
 		this.modconf = mod;
 	}
-	
+
+	private final AcceptorIdleStateTrigger idleStateTrigger = new AcceptorIdleStateTrigger();
+
 	@Override
 	public ServerCode defServerCode() {
 		return ServerCode.SOCKET;
 	}
-	
+
 	public void start() {
 		EventLoopGroup accGroup = new NioEventLoopGroup();
 		EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -59,9 +65,9 @@ public class JCSocketServer extends ServerImpl implements JCServer {
 
 			server.group(accGroup, workerGroup) // 组装NioEventLoopGroup
 					.channel(NioServerSocketChannel.class) // 设置channel类型为NIO类型
-					.option(ChannelOption.SO_BACKLOG, 1024) // 连接队列长度
-					.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
-					.childOption(ChannelOption.TCP_NODELAY, true).childOption(ChannelOption.SO_KEEPALIVE, true) // 保持长连接
+					.handler(new LoggingHandler(LogLevel.INFO)).option(ChannelOption.SO_BACKLOG, 65535) // 连接队列长度
+					.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000).childOption(ChannelOption.TCP_NODELAY, true)
+					.childOption(ChannelOption.SO_KEEPALIVE, true) // 保持长连接
 					.childOption(ChannelOption.SO_REUSEADDR, true)
 					.childHandler(new ChannelInitializer<SocketChannel>() {
 						@Override
@@ -70,19 +76,24 @@ public class JCSocketServer extends ServerImpl implements JCServer {
 							String remote_host_name = remote.getHostName();
 							String remote_host_address = remote.getAddress().getHostAddress();
 							int remote_port = remote.getPort();
-							logger.info("connection msg: " + remote_host_name + ", address=" + remote_host_address + ":" + remote_port + " connected");
+							logger.info("connection msg: " + remote_host_name + ", address=" + remote_host_address + ":"
+									+ remote_port + " connected");
 							logger.debug("IP:" + ch.localAddress().getHostName());
 							logger.debug("Port:" + ch.localAddress().getPort());
 
 							// 配置入站、出站事件channel
 							ChannelPipeline pipeline = ch.pipeline();
 
-							//pipeline.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
-							pipeline.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0,  2));
-							pipeline.addLast(new ObjectEncoder());
-							pipeline.addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
-
-							pipeline.addLast(new GeneralLiveHandler());
+							pipeline.addLast(new IdleStateHandler(5, 0, 0, TimeUnit.SECONDS)); // 5sec recheck
+							pipeline.addLast(idleStateTrigger);
+//							pipeline.addLast("decoder", new StringDecoder());
+//							pipeline.addLast("encoder", new StringEncoder());
+//							pipeline.addLast(new HeartBeatServerHandler());
+							
+							 pipeline.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 2));
+							 pipeline.addLast(new ObjectEncoder());
+							 pipeline.addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
+							 pipeline.addLast(new GeneralLiveHandler());
 						}
 					});
 			int port = modconf.getPort();
@@ -91,12 +102,12 @@ public class JCSocketServer extends ServerImpl implements JCServer {
 				SocketAddress net_address = channelFuture.channel().localAddress();
 				logger.info(defServerCode() + " SERVER STARTED: " + net_address);
 			}
-			//channelFuture.channel().closeFuture().sync();
+			// channelFuture.channel().closeFuture().sync();
 		} catch (Exception e) {
 			logger.error("service start error:", e);
 		} finally {
-			//accGroup.shutdownGracefully();
-			//workerGroup.shutdownGracefully();
+			// accGroup.shutdownGracefully();
+			// workerGroup.shutdownGracefully();
 		}
 	}
 
