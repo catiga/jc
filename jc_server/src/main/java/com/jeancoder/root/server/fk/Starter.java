@@ -39,32 +39,16 @@ public class Starter {
 		String val = null;
 		do {
 			val = input.next(); // 等待输入值
-			if (val.equals("start")) {
-//				Thread daemon = new Thread(new Runnable() {
-//
-//					@Override
-//					public void run() {
-//						// 用来检查服务，以及接受用户输入
-//						while (true) {
-//							try {
-//								Thread.sleep(1000L);
-//							} catch (InterruptedException e) {
-//								e.printStackTrace();
-//							}
-//						}
-//					}
-//				});
-//				daemon.setDaemon(true);
-//				daemon.start();
+			if(val.equals("start")) {
 				start();
-			} else if (val.equals("list")) {
+			} else if(val.equals("list")) {
 				for (JCServer handler : iservers) {
 					logger.info("running server: " + handler);
 				}
-			} else if (val.equals("stop")) {
+			} else if(val.equals("stop")) {
 				logger.info("preparing to shutdown server");
 				for (JCServer handler : iservers) {
-					if (handler.defServerCode() == ServerCode.HTTP) {
+					if(handler.defServerCode()==ServerCode.HTTP) {
 						handler.shutdown();
 					}
 				}
@@ -74,27 +58,6 @@ public class Starter {
 			}
 		} while (!val.equals("q")); // 如果输入的值不是#就继续输入
 		input.close(); // 关闭资源
-
-		// Thread daemon = new Thread(new Runnable() {
-		//
-		// @Override
-		// public void run() {
-		// //用来检查服务，以及接受用户输入
-		// while(true) {
-		// try {
-		// Thread.sleep(1000L);
-		// } catch (InterruptedException e) {
-		// e.printStackTrace();
-		// }
-		// for(JCServer handler : iservers) {
-		// System.out.println("测试服务器句柄: " + handler);
-		// }
-		// }
-		// }
-		// });
-		// daemon.setDaemon(true);
-		// daemon.start();
-		// start();
 	}
 
 	public static void start() {
