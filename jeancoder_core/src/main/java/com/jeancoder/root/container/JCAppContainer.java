@@ -36,4 +36,9 @@ public interface JCAppContainer extends Lifecycle {
 	public String state();
 	
 	public void changeState(String lifeCycleState);
+	
+	public void addConfig(String filename, String content);
+	
+	public String getConfig(String filename);
+	
 }

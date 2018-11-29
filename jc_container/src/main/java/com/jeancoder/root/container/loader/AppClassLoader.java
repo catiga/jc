@@ -1,9 +1,11 @@
 package com.jeancoder.root.container.loader;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -150,18 +152,23 @@ public class AppClassLoader extends GroovyClassLoader implements JCLoader, AppLo
 			} else {
 				
 				if (pathFile.getPath().endsWith(".class")) {
-//					i++;
-//					System.out.println("当前序号=" + i + ", " + pathFile.getPath());
-					if(pathFile.getPath().indexOf("SscOp")>-1) {
-						System.out.println("here");
-					}
 					try {
 						ioClass(root_path, pathFile);
 					} catch (IOException e) {
 					}
 				} else if (pathFile.getPath().endsWith(".xml") || pathFile.getPath().endsWith(".json")
 						|| pathFile.getPath().endsWith(".conf") || pathFile.getPath().endsWith(".properties")) {
-					//System.out.println(pathFile.getPath());
+					String line = null;
+					try {
+						BufferedReader buf = new BufferedReader(new FileReader(pathFile));
+						StringBuilder content = new StringBuilder();
+						while((line = buf.readLine())!=null) {
+							content.append(line);
+						}
+						this.getContextEnv().addConfig(pathFile.getName(), content.toString());
+						buf.close();
+					}catch(Exception e){
+					}
 				}
 			}
 		}

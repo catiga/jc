@@ -5,7 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.stream.Stream;
 
@@ -45,6 +47,16 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 	protected final PowerCaps BC_CAPS = new PowerCaps();
 	
 	protected List<Interceptor> interceptorMap = new ArrayList<>();
+	
+	protected Map<String, String> configs = new HashMap<>();
+	
+	public void addConfig(String filename, String content) {
+		configs.put(filename, content);
+	}
+	
+	public String getConfig(String filename) {
+		return configs.get(filename);
+	}
 	
 	@Override
 	public JCAPP getApp() {

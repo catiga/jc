@@ -13,12 +13,6 @@ public class JC {
 	
 	public static class interceptor {
 		public static void add(String __pre__, String __post__) {
-//			InterceptorStack is = InterceptorStackSource.getInterceptorStack();
-//			JCInterceptor interceptor = new JCInterceptor();
-//			interceptor.setPreResource(__pre__);
-//			interceptor.setPostResource(__post__);
-//			is.addInterceptor(interceptor);
-			
 			JCInterceptor interceptor = new JCInterceptor();
 			interceptor.setPreResource(__pre__);
 			interceptor.setPostResource(__post__);
