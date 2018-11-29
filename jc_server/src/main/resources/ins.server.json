@@ -16,7 +16,7 @@
 			"proxy_path": "/",
 			"logs": "~/",
 			"libs": "/Users/jackielee/Desktop/logs",
-			
+			"master": "jcs://localhost:8091",
 			"apps": [
 				{
 					"app_id": "99019928",

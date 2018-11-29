@@ -5,10 +5,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-
-import com.jeancoder.root.server.proto.msg.ReplyMsg;
-import com.jeancoder.root.server.proto.msg.ReplyServerBody;
 
 import io.netty.channel.Channel;
 import io.netty.channel.socket.SocketChannel;
@@ -35,6 +31,7 @@ public class NettyChannelMap {
 			e.printStackTrace();
 		}
 		
+		/*
 		new Thread(new Runnable() {
 			
 			@Override
@@ -58,6 +55,7 @@ public class NettyChannelMap {
 				}
 			}
 		}).start();
+		*/
 	}
 
 	public static Channel get(String clientId) {
