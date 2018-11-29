@@ -19,12 +19,15 @@ import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
 import com.jeancoder.root.manager.JCVMDelegator;
 import com.jeancoder.root.server.inet.JCServer;
+import com.jeancoder.root.server.proto.msg.ReplyMsg;
+import com.jeancoder.root.server.proto.msg.ReplyServerBody;
 import com.jeancoder.root.server.state.ServerHolder;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -250,6 +253,13 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 						List<String> all_running_servers = ServerHolder.getHolder().dispatchlist();
 						for(String s : all_running_servers) {
 							view_result.append("<div>" + s + "</div><br/>");
+							SocketChannel channel = (SocketChannel)ServerHolder.getHolder().dispatchaim(s);
+							if(channel!=null) {
+								ReplyMsg msg = new ReplyMsg();
+								ReplyServerBody body = new ReplyServerBody("center server reply:" + "client_id=" + s + " 推送命令");
+								msg.setBody(body);
+								channel.writeAndFlush(msg);
+							}
 						}
 						view_result.append("</body></html>");
 						

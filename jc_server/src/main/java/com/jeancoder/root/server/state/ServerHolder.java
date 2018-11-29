@@ -7,6 +7,8 @@ import java.util.Vector;
 
 import com.jeancoder.root.server.inet.JCServer;
 
+import io.netty.channel.Channel;
+
 public class ServerHolder {
 
 	private static final ServerHolder instance = new ServerHolder();
@@ -24,6 +26,10 @@ public class ServerHolder {
 			all_servers.add(all_client_servers.nextElement());
 		}
 		return all_servers;
+	}
+	
+	public Channel dispatchaim(String id) {
+		return NettyChannelMap.get(id);
 	}
 	
 	public Enumeration<JCServer> servers() {
