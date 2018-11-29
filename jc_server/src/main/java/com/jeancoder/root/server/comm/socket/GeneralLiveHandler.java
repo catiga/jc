@@ -24,7 +24,7 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 	
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-		logger.info(ctx.channel().localAddress().toString() + " 通道不活跃！");
+		logger.info(ctx.channel().localAddress().toString() + " 通道不活跃！" + ctx.channel().isActive());
 		NettyChannelMap.remove((SocketChannel) ctx.channel());
 	}
 	
@@ -50,8 +50,8 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 	 */
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		logger.error("异常信息：\r\n" + cause.getMessage());
-		ctx.close();
+		logger.error("exception:\r\n" + cause.getMessage());
+		//ctx.close();
 	}
 	
 	@Override

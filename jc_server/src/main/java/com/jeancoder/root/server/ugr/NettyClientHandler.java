@@ -3,32 +3,31 @@ package com.jeancoder.root.server.ugr;
 import com.jeancoder.root.server.proto.msg.GeneralMsg;
 import com.jeancoder.root.server.proto.msg.LoginMsg;
 import com.jeancoder.root.server.proto.msg.MsgType;
-import com.jeancoder.root.server.proto.msg.PingMsg;
 import com.jeancoder.root.server.proto.msg.ReplyClientBody;
 import com.jeancoder.root.server.proto.msg.ReplyMsg;
 import com.jeancoder.root.server.proto.msg.ReplyServerBody;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
 
 public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> {
-    @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof IdleStateEvent) {
-            IdleStateEvent e = (IdleStateEvent) evt;
-            switch (e.state()) {
-                case WRITER_IDLE:
-                    PingMsg pingMsg=new PingMsg();
-                    ctx.writeAndFlush(pingMsg);
-                    System.out.println("send ping to server----------");
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
+	// @Override
+	// public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
+	// throws Exception {
+	// if (evt instanceof IdleStateEvent) {
+	// IdleStateEvent e = (IdleStateEvent) evt;
+	// switch (e.state()) {
+	// case WRITER_IDLE:
+	// PingMsg pingMsg=new PingMsg();
+	// ctx.writeAndFlush(pingMsg);
+	// System.out.println("send ping to server----------");
+	// break;
+	// default:
+	// break;
+	// }
+	// }
+	// }
     
 
 	@Override
