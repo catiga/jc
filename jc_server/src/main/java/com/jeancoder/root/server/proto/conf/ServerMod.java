@@ -3,6 +3,8 @@ package com.jeancoder.root.server.proto.conf;
 import java.util.List;
 
 public class ServerMod {
+	
+	String id;
 
 	String name;
 	
@@ -18,9 +20,19 @@ public class ServerMod {
 	
 	String logs;
 	
-	private String libs;
+	String libs;
+	
+	String master;
 	
 	List<AppMod> apps;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;
@@ -93,5 +105,19 @@ public class ServerMod {
 	public void setLibs(String libs) {
 		this.libs = libs;
 	}
+
+	public String getMaster() {
+		return master;
+	}
+
+	public void setMaster(String master) {
+		this.master = master;
+	}
 	
+	public boolean cocheck() {
+		if(this.id==null) {
+			return false;
+		}
+		return true;
+	}
 }

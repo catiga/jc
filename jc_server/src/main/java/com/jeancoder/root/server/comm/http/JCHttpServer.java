@@ -33,6 +33,7 @@ public class JCHttpServer extends ServerImpl implements JCServer {
 	
 	private JCHttpServer() {
 		this.modconf = new ServerMod();
+		this.modconf.setId("id");
 		this.modconf.setProxy_entry("entry");
 		this.modconf.setProxy_path("/");
 		this.modconf.setName("default server");

@@ -3,8 +3,7 @@ package com.jeancoder.root.server.fk;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Enumeration;
 import java.util.Scanner;
 import java.util.zip.ZipInputStream;
 
@@ -20,6 +19,7 @@ import com.jeancoder.root.server.mixture.ByteResults;
 import com.jeancoder.root.server.proto.conf.AppMod;
 import com.jeancoder.root.server.proto.conf.FkConf;
 import com.jeancoder.root.server.proto.conf.ServerMod;
+import com.jeancoder.root.server.state.ServerHolder;
 import com.jeancoder.root.server.util.RemoteUtil;
 import com.jeancoder.root.server.util.ZipUtil;
 
@@ -28,8 +28,6 @@ public class Starter {
 	private static Logger logger = LoggerFactory.getLogger(Starter.class);
 
 	final static String appConf = "ins.server.json";
-
-	final static List<JCServer> iservers = new ArrayList<JCServer>();
 
 	/**
 	 * -- argc commandline parameter
@@ -40,16 +38,19 @@ public class Starter {
 		Scanner input = new Scanner(System.in);
 		String val = null;
 		do {
-			val = input.next(); // 等待输入值
+			val = input.next();
 			if (val.equals("start")) {
 				start();
 			} else if (val.equals("list")) {
-				for (JCServer handler : iservers) {
-					logger.info("running server: " + handler);
+				Enumeration<JCServer> servers = ServerHolder.getHolder().servers();
+				while(servers.hasMoreElements()) {
+					logger.info("running server: " + servers.nextElement());
 				}
 			} else if (val.equals("stop")) {
 				logger.info("preparing to shutdown server");
-				for (JCServer handler : iservers) {
+				Enumeration<JCServer> servers = ServerHolder.getHolder().servers();
+				while(servers.hasMoreElements()) {
+					JCServer handler = servers.nextElement();
 					if (handler.defServerCode() == ServerCode.HTTP) {
 						handler.shutdown();
 					}
@@ -99,7 +100,7 @@ public class Starter {
 			FkConf fk_con = gson.fromJson(json, FkConf.class);
 			for (ServerMod sm : fk_con.getServers()) {
 				JCServer server = ServerFactory.generate(sm);
-				iservers.add(server);
+				ServerHolder.getHolder().add(server);
 				new Thread(new Runnable() {
 
 					@Override
@@ -120,7 +121,6 @@ public class Starter {
 					}
 				}).start();
 			}
-
 		} catch (Exception e) {
 			logger.error("start error:", e);
 		}

@@ -12,8 +12,6 @@ import com.jeancoder.root.server.inet.JCServer;
 import com.jeancoder.root.server.inet.ServerCode;
 import com.jeancoder.root.server.inet.ServerImpl;
 import com.jeancoder.root.server.proto.conf.ServerMod;
-import com.jeancoder.root.server.proto.msg.AskMsg;
-import com.jeancoder.root.server.state.NettyChannelMap;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -38,6 +36,7 @@ public class JCSocketServer extends ServerImpl implements JCServer {
 
 	private JCSocketServer() {
 		this.modconf = new ServerMod();
+		this.modconf.setId("sock_id");
 		this.modconf.setProxy_entry("entry");
 		this.modconf.setProxy_path("/");
 		this.modconf.setName("default server");
@@ -84,7 +83,7 @@ public class JCSocketServer extends ServerImpl implements JCServer {
 							// 配置入站、出站事件channel
 							ChannelPipeline pipeline = ch.pipeline();
 
-							pipeline.addLast(new IdleStateHandler(5, 0, 0, TimeUnit.SECONDS)); // 5sec recheck
+							pipeline.addLast(new IdleStateHandler(10, 0, 0, TimeUnit.SECONDS)); // 10sec recheck idle state
 							pipeline.addLast(idleStateTrigger);
 //							pipeline.addLast("decoder", new StringDecoder());
 //							pipeline.addLast("encoder", new StringEncoder());
@@ -112,17 +111,17 @@ public class JCSocketServer extends ServerImpl implements JCServer {
 	}
 
 	public static void main(String[] argc) throws InterruptedException {
-		JCServer server = new JCSocketServer();
-		System.out.println("服务准备启动");
-		server.start();
-		logger.info("服务启动成功");
-		while (true) {
-			SocketChannel channel = (SocketChannel) NettyChannelMap.get("001");
-			if (channel != null) {
-				AskMsg askMsg = new AskMsg();
-				channel.writeAndFlush(askMsg);
-			}
-			TimeUnit.SECONDS.sleep(10);
-		}
+//		JCServer server = new JCSocketServer();
+//		System.out.println("服务准备启动");
+//		server.start();
+//		logger.info("服务启动成功");
+//		while (true) {
+//			SocketChannel channel = (SocketChannel) NettyChannelMap.get("001");
+//			if (channel != null) {
+//				AskMsg askMsg = new AskMsg();
+//				channel.writeAndFlush(askMsg);
+//			}
+//			TimeUnit.SECONDS.sleep(10);
+//		}
 	}
 }

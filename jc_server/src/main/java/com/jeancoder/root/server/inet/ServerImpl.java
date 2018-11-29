@@ -3,14 +3,22 @@ package com.jeancoder.root.server.inet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jeancoder.root.container.core.BCID;
 import com.jeancoder.root.env.JCAPP;
 import com.jeancoder.root.server.proto.conf.AppMod;
 import com.jeancoder.root.server.proto.conf.ServerMod;
+import com.jeancoder.root.server.ugr.MasterLiveBuilder;
 
 public abstract class ServerImpl extends AbstractServer implements JCServer {
+	
+	private static Logger logger = LoggerFactory.getLogger(ServerImpl.class);
 
 	protected ServerMod modconf;
+	
+	protected MasterLiveBuilder masterHandler;
 	
 	public ServerImpl() {
 		modconf = new ServerMod();
@@ -28,8 +36,28 @@ public abstract class ServerImpl extends AbstractServer implements JCServer {
 	}
 
 	@Override
+	public ServerMod info() {
+		return this.modconf;
+	}
+	
+	@Override
+	public String serverId() {
+		return this.modconf.getId();
+	}
+	
+	@Override
 	public void start() {
 		synchronized (this) {
+			// start delegate service, and just man HTTP
+			if(this.defServerCode().equals(ServerCode.HTTP)&&this.modconf.getMaster()!=null) {
+				try {
+					masterHandler = new MasterLiveBuilder(this.modconf);
+					masterHandler.connect();
+				} catch (Exception e) {
+					logger.error("", e);
+					throw new RuntimeException(e);
+				}
+			}
 			List<AppMod> apps = this.modconf.getApps();
 			List<JCAPP> convert_proto = new ArrayList<>();
 			if(apps!=null) {

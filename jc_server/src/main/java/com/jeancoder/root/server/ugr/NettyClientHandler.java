@@ -1,4 +1,4 @@
-package com.jeancoder.root.server;
+package com.jeancoder.root.server.ugr;
 
 import com.jeancoder.root.server.proto.msg.GeneralMsg;
 import com.jeancoder.root.server.proto.msg.LoginMsg;

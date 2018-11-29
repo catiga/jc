@@ -7,6 +7,8 @@ import static com.jeancoder.root.io.line.HeaderValues.KEEP_ALIVE;
 import static io.netty.buffer.Unpooled.copiedBuffer;
 
 import java.net.InetSocketAddress;
+import java.util.Enumeration;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,8 @@ import com.jeancoder.root.exception.RunningException;
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
 import com.jeancoder.root.manager.JCVMDelegator;
+import com.jeancoder.root.server.inet.JCServer;
+import com.jeancoder.root.server.state.ServerHolder;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFutureListener;
@@ -140,6 +144,15 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 		ctx.channel().writeAndFlush(response);
 	}
 	
+	private void writeResponse(ChannelHandlerContext ctx, HttpResponseStatus status, String content_type, String msg, boolean forceClose) {
+		ByteBuf buf = copiedBuffer(msg, CharsetUtil.UTF_8);
+		FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, buf);
+
+		response.headers().set(CONTENT_TYPE, content_type + "; charset=UTF-8");
+		response.headers().set(CONTENT_LENGTH, buf.readableBytes());
+		ctx.channel().writeAndFlush(response);
+	}
+	
 //	protected void dealWithContentType() throws Exception {
 //		String contentType = getContentType();
 //		if (contentType.equals("application/json")) { // 可以使用HttpJsonDecoder
@@ -213,6 +226,38 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 			String result = SUCCESS + ":welcome msg!------From JC Server";
 			writeResponse(ctx, HttpResponseStatus.OK, result, true);
 			return;
+		} else if(uri_path.startsWith("/TESTJC")) {
+			if(uri_path.indexOf("?")>-1) {
+				String command = uri_path.substring(uri_path.indexOf("?") + 1);
+				if(command!=null) {
+					if(command.equals("ss")) {
+						StringBuilder view_result = new StringBuilder();
+						view_result.append("<html><head></head>");
+						view_result.append("<body>");
+						Enumeration<JCServer> all_running_servers = ServerHolder.getHolder().servers();
+						while(all_running_servers.hasMoreElements()) {
+							JCServer jcs = all_running_servers.nextElement();
+							view_result.append("<div>" + jcs.defServerCode() + ":" + jcs.serverId() + "</div><br/>");
+						}
+						view_result.append("</body></html>");
+						
+						writeResponse(ctx, HttpResponseStatus.OK, "text/html", view_result.toString(), true);
+						return;
+					} else if(command.equals("cs")) {
+						StringBuilder view_result = new StringBuilder();
+						view_result.append("<html><head></head>");
+						view_result.append("<body>");
+						List<String> all_running_servers = ServerHolder.getHolder().dispatchlist();
+						for(String s : all_running_servers) {
+							view_result.append("<div>" + s + "</div><br/>");
+						}
+						view_result.append("</body></html>");
+						
+						writeResponse(ctx, HttpResponseStatus.OK, "text/html", view_result.toString(), true);
+						return;
+					}
+				}
+			}
 		}
 		JCVMDelegator.bindContext(ChannelContextWrapper.newone(ctx));
 		headers = request.headers();
