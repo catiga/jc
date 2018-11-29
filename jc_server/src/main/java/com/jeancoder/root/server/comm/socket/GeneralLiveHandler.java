@@ -54,12 +54,6 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 		ctx.close();
 	}
 	
-//	@Override
-//    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-//		logger.info(msg.toString());
-//        ctx.write("ret messages");
-//    }
-	
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, GeneralMsg baseMsg) throws Exception {
 		logger.info("server receive message=" + baseMsg);
