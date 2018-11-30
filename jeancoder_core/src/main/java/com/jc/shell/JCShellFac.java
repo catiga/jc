@@ -6,7 +6,7 @@ public class JCShellFac {
 	
 	public static void init(ShellChannelHolder hods) {
 		if(var==null) {
-			synchronized(var) {
+			synchronized(JCShellFac.class) {
 				if(var==null) {
 					var = hods;
 				}
