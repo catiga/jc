@@ -1,4 +1,4 @@
-package com.jeancoder.root.server.proto.msg;
+package com.jc.proto.msg;
 
 import java.io.Serializable;
 

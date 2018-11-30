@@ -6,10 +6,10 @@ import java.net.SocketAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jc.proto.conf.ServerMod;
 import com.jeancoder.root.server.inet.JCServer;
 import com.jeancoder.root.server.inet.ServerCode;
 import com.jeancoder.root.server.inet.ServerImpl;
-import com.jeancoder.root.server.proto.conf.ServerMod;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;

@@ -13,16 +13,16 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jc.proto.conf.AppMod;
+import com.jc.proto.msg.ReplyMsg;
+import com.jc.proto.msg.ReplyServerBody;
+import com.jc.proto.msg.ct.UpgradeMsg;
 import com.jeancoder.root.env.ChannelContextWrapper;
 import com.jeancoder.root.exception.RunningException;
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
 import com.jeancoder.root.manager.JCVMDelegator;
 import com.jeancoder.root.server.inet.JCServer;
-import com.jeancoder.root.server.proto.conf.AppMod;
-import com.jeancoder.root.server.proto.msg.ReplyMsg;
-import com.jeancoder.root.server.proto.msg.ReplyServerBody;
-import com.jeancoder.root.server.proto.msg.ct.UpgradeMsg;
 import com.jeancoder.root.server.state.ServerHolder;
 
 import io.netty.buffer.ByteBuf;

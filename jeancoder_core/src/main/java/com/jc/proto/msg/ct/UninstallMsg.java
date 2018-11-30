@@ -1,8 +1,8 @@
-package com.jeancoder.root.server.proto.msg.ct;
+package com.jc.proto.msg.ct;
 
-import com.jeancoder.root.server.proto.conf.AppMod;
-import com.jeancoder.root.server.proto.msg.GeneralMsg;
-import com.jeancoder.root.server.proto.msg.MsgType;
+import com.jc.proto.conf.AppMod;
+import com.jc.proto.msg.GeneralMsg;
+import com.jc.proto.msg.MsgType;
 
 @SuppressWarnings("serial")
 public class UninstallMsg extends GeneralMsg {

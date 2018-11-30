@@ -1,4 +1,4 @@
-package com.jeancoder.root.server.proto.conf;
+package com.jc.proto.conf;
 
 public class Ins {
 

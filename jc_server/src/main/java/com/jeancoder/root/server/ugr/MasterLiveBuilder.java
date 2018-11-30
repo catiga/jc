@@ -6,8 +6,8 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jeancoder.root.server.proto.conf.ServerMod;
-import com.jeancoder.root.server.proto.msg.LoginMsg;
+import com.jc.proto.conf.ServerMod;
+import com.jc.proto.msg.LoginMsg;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;

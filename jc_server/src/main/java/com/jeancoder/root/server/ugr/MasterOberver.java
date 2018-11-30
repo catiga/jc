@@ -5,8 +5,8 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jc.proto.msg.LoginMsg;
 import com.jeancoder.root.server.channels.ChannelHandlerHolder;
-import com.jeancoder.root.server.proto.msg.LoginMsg;
 
 /**
  * Created by Administrator on 2016/9/22.

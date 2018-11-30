@@ -3,7 +3,7 @@ package com.jeancoder.root.server.ugr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jeancoder.root.server.proto.msg.PingMsg;
+import com.jc.proto.msg.PingMsg;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;

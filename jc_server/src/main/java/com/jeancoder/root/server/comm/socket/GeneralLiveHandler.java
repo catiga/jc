@@ -3,14 +3,14 @@ package com.jeancoder.root.server.comm.socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jeancoder.root.server.proto.msg.AskMsg;
-import com.jeancoder.root.server.proto.msg.GeneralMsg;
-import com.jeancoder.root.server.proto.msg.LoginMsg;
-import com.jeancoder.root.server.proto.msg.MsgType;
-import com.jeancoder.root.server.proto.msg.PingMsg;
-import com.jeancoder.root.server.proto.msg.ReplyClientBody;
-import com.jeancoder.root.server.proto.msg.ReplyMsg;
-import com.jeancoder.root.server.proto.msg.ReplyServerBody;
+import com.jc.proto.msg.AskMsg;
+import com.jc.proto.msg.GeneralMsg;
+import com.jc.proto.msg.LoginMsg;
+import com.jc.proto.msg.MsgType;
+import com.jc.proto.msg.PingMsg;
+import com.jc.proto.msg.ReplyClientBody;
+import com.jc.proto.msg.ReplyMsg;
+import com.jc.proto.msg.ReplyServerBody;
 import com.jeancoder.root.server.state.NettyChannelMap;
 
 import io.netty.channel.ChannelHandlerContext;

@@ -6,10 +6,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jc.proto.conf.AppMod;
+import com.jc.proto.conf.ServerMod;
 import com.jeancoder.root.container.core.BCID;
 import com.jeancoder.root.env.JCAPP;
-import com.jeancoder.root.server.proto.conf.AppMod;
-import com.jeancoder.root.server.proto.conf.ServerMod;
 import com.jeancoder.root.server.ugr.MasterLiveBuilder;
 
 public abstract class ServerImpl extends AbstractServer implements JCServer {
@@ -83,14 +83,6 @@ public abstract class ServerImpl extends AbstractServer implements JCServer {
 		}
 	}
 	
-	@Override
-	public void updateApp(AppMod app) {
-		JCAPP jcapp = app.to();
-		jcapp.setLogbase(modconf.getLogs());
-		getVM().updateApp(jcapp);
-		
-	}
-
 	@Override
 	public void shutdown() {
 		synchronized (this) {

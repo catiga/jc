@@ -1,4 +1,4 @@
-package com.jeancoder.root.server.proto.msg;
+package com.jc.proto.msg;
 
 @SuppressWarnings("serial")
 public class ReplyClientBody extends ReplyBody {

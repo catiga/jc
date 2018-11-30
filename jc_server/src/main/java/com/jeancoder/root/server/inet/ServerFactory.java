@@ -1,8 +1,8 @@
 package com.jeancoder.root.server.inet;
 
+import com.jc.proto.conf.ServerMod;
 import com.jeancoder.root.server.comm.http.JCHttpServer;
 import com.jeancoder.root.server.comm.socket.JCSocketServer;
-import com.jeancoder.root.server.proto.conf.ServerMod;
 
 public class ServerFactory {
 
