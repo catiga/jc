@@ -163,7 +163,7 @@ public class AppClassLoader extends GroovyClassLoader implements JCLoader, AppLo
 						BufferedReader buf = new BufferedReader(new FileReader(pathFile));
 						StringBuilder content = new StringBuilder();
 						while((line = buf.readLine())!=null) {
-							content.append(line);
+							content.append(line+"\n\r");
 						}
 						this.getContextEnv().addConfig(pathFile.getName(), content.toString());
 						buf.close();

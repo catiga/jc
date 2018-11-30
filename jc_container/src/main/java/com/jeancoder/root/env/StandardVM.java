@@ -1,8 +1,12 @@
 package com.jeancoder.root.env;
 
+import java.io.File;
+import java.util.Enumeration;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jeancoder.core.util.FileUtil;
 import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.container.core.BCID;
 import com.jeancoder.root.container.loader.BootClassLoader;
@@ -61,6 +65,30 @@ public class StandardVM extends DefaultVm implements JCVM {
 		state = STATE_RUNNING;
 	}
 
+	@Override
+	public void updateApp(JCAPP jcapp) {
+		BootContainer bc = new BootContainer(jcapp);
+		bc.bindBaseEnv(rootLoader);
+		bc.onInit();
+		bc.onStart();
+		
+		Enumeration<JCAppContainer> appContainer  = VM_CONTAINERS.getByCode(jcapp.getCode());
+		JCAppContainer container = appContainer.nextElement();
+		if (container == null) {
+			VM_CONTAINERS.put(bc.id(), bc);
+			return;
+		}
+		if (bc.id().equals(container.id())) {
+			VM_CONTAINERS.put(bc.id(), bc);
+		} else {
+			VM_CONTAINERS.remove(container.id());
+			VM_CONTAINERS.put(bc.id(), bc);
+		}
+		FileUtil.deletefile(new File(container.getApp().getApp_base()));
+	}
+	
+	
+	
 	@Override
 	public synchronized void onStop() {
 		for(BCID bcid : VM_CONTAINERS.keySet()) {

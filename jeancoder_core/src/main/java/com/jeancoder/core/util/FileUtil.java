@@ -170,6 +170,7 @@ public class FileUtil {
 			return;
 		}
 		if (file.listFiles() == null || file.listFiles().length == 0) {
+			file.delete();
 			return;
 		}
 		for (File f : file.listFiles()) {
@@ -179,6 +180,7 @@ public class FileUtil {
 			} else {
 				f.delete();
 			}
+			file.delete();
 		}
 	} 
 	
@@ -212,6 +214,7 @@ public class FileUtil {
 	}
 	
 	public static void main(String[] agr) {
+		deletefile(new File("/Users/huangjie/workspace/server_trun"));
 //		System.out.println(getResourcePath(""));
 		//System.out.println(getSuffixName("1/.2"));
 //		System.out.println(System.getProperty("os.name"));
