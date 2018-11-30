@@ -1,6 +1,7 @@
 package com.jc.channel;
 
 import java.util.Enumeration;
+import java.util.List;
 
 import com.jc.proto.conf.AppMod;
 import com.jc.proto.msg.ct.InstallMsg;
@@ -19,8 +20,12 @@ public class SlaveCli {
 		return instance;
 	}
 	
-	public Enumeration<ShellServer> servers() {
+	public Enumeration<ShellServer> localServers() {
 		return JCShellFac.instance().servers();
+	}
+	
+	public List<String> slaveServers() {
+		return JCShellFac.instance().dispatchlist();
 	}
 	
 	public void upgradeApp(String client_instance_id, AppMod am) {

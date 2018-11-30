@@ -154,6 +154,10 @@ public class ApplicationSource extends SysSource {
 	
 	
 	public static Enumeration<ShellServer>  getOnlineList() {
-		return SlaveCli.instance().servers();
+		return SlaveCli.instance().localServers();
+	}
+	
+	public static List<String> getSlaveServers() {
+		return SlaveCli.instance().slaveServers();
 	}
 }
