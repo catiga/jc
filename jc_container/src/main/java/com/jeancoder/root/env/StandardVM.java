@@ -87,7 +87,7 @@ public class StandardVM extends DefaultVm implements JCVM {
 		if (!container.getApp().getApp_base().equals(jcapp.getApp_base())) {
 			FileUtil.deletefile(new File(container.getApp().getApp_base()));
 		}
-		
+		logger.info("app : " +jcapp.code +" is update success" );
 	}
 	
 	@Override
@@ -97,11 +97,18 @@ public class StandardVM extends DefaultVm implements JCVM {
 		bc.onInit();
 		bc.onStart();
 		VM_CONTAINERS.put(bc.id(), bc);
+		logger.info("app : " +jcapp.code +" is install success" );
 	}
 
 	@Override
 	public void uninstallApp(JCAPP jcapp) {
-		VM_CONTAINERS.remove(BCID.generateKey(jcapp.id, jcapp.code));
+		Enumeration<JCAppContainer> appContainer  = VM_CONTAINERS.getByCode(jcapp.getCode());
+		JCAppContainer container = appContainer.nextElement();
+		if (container != null) {
+			VM_CONTAINERS.remove(BCID.generateKey(jcapp.id, jcapp.code));
+			FileUtil.deletefile(new File(container.getApp().getApp_base()));
+			logger.info("app : " +jcapp.code +" is uninstall success" );
+		}
 	}
 	
 	
