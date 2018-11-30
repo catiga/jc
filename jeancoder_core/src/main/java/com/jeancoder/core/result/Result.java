@@ -43,6 +43,12 @@ public class Result {
 		return this;
 	}
 	
+	public Result setIO(String resourceName) {
+		this.result = resourceName;
+		this.resultType = ResultType.GENERAL_IO;
+		return this;
+	}
+	
 	
 	/**
 	 * 设置视图资源

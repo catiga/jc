@@ -115,6 +115,14 @@ public class MasterLiveBuilder {
 							logger.error("try_count" + (++try_count));
 						}
 					}
+				} else {
+					//直接进行登陆校验
+					masterChannel = (SocketChannel)future.channel();
+					LoginMsg loginMsg = new LoginMsg();
+					loginMsg.setClientId(this.cenjcs.getId());
+					loginMsg.setPassword("yao");
+					loginMsg.setUserName("robin");
+					masterChannel.writeAndFlush(loginMsg);
 				}
 			}
 

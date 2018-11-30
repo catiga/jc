@@ -22,5 +22,7 @@ public enum ResultType {
 	 */
 	STATIC_RESOURCE,
 	
+	GENERAL_IO,
+	
 	NULL,
 }

@@ -23,6 +23,8 @@ public class RenderingFactory {
 				rend = new RedirectRendering<T>(context);
 			} else if (ResultType.CONTROLLER_RESOURCE.equals(result.getResultType())) {
 				rend = new ForwardingRendering<T>(context);
+			} else if (ResultType.GENERAL_IO.equals(result.getResultType())) {
+				rend = new GeneralIORendering<T>(context);
 			}
 		}
 		rend.runningResult = resultWrapper;
