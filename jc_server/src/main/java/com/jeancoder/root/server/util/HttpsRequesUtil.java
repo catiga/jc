@@ -15,6 +15,7 @@ public class HttpsRequesUtil {
 	
 	public static String key = "";
 	
+	@SuppressWarnings("unused")
 	public static String connection(String urlStr, String parameter){
 		try{
 			URL reqURL = new URL(urlStr); //创建URL对象
@@ -49,6 +50,7 @@ public class HttpsRequesUtil {
 		return "";
 	}
 	
+	@SuppressWarnings("unused")
 	public static InputStream connectionStream(String urlStr, String parameter){
 		try{
 			URL reqURL = new URL(urlStr); //创建URL对象

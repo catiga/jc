@@ -246,9 +246,7 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 					catch (Exception ex) {
 						throw new Code500Exception(id().id(), id().code(), resname, this.transferPathToClz(req), "RUNNING_ERROR:" + ex.getCause(), ex);
 					}
-				} else {
-					return new InnerExchange(req.getRequestURI(), passed, true);
-				}
+				}   
 			}
 		}
 		return new InnerExchange(req.getRequestURI(), passed, true);

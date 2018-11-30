@@ -1,5 +1,6 @@
 package com.jeancoder.root.server.inet;
 
+import com.jeancoder.root.server.proto.conf.AppMod;
 import com.jeancoder.root.server.proto.conf.ServerMod;
 
 public interface JCServer {
@@ -13,4 +14,6 @@ public interface JCServer {
 	String serverId();
 	
 	ServerMod info();
+	
+	void updateApp(AppMod appMod);
 }

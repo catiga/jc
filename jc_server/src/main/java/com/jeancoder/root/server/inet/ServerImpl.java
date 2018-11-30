@@ -82,6 +82,14 @@ public abstract class ServerImpl extends AbstractServer implements JCServer {
 			getVM().onStart();
 		}
 	}
+	
+	@Override
+	public void updateApp(AppMod app) {
+		JCAPP jcapp = app.to();
+		jcapp.setLogbase(modconf.getLogs());
+		getVM().updateApp(jcapp);
+		
+	}
 
 	@Override
 	public void shutdown() {

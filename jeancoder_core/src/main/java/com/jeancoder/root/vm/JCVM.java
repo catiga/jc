@@ -23,4 +23,6 @@ public interface JCVM extends Lifecycle {
 	
 	public void bindLibrary(String lib_path);
 	
+	public void updateApp(JCAPP jcapp);
+	
 }
