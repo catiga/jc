@@ -1,9 +1,12 @@
 package com.jeancoder.root.server.proto.conf;
 
+import java.io.Serializable;
+
 import com.jeancoder.root.env.JCAPP;
 import com.jeancoder.root.env.JCAppConfig;
 
-public class AppMod {
+@SuppressWarnings("serial")
+public class AppMod implements Serializable {
 
 	String app_id;
 	
