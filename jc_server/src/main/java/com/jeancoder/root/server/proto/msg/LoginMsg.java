@@ -3,9 +3,9 @@ package com.jeancoder.root.server.proto.msg;
 @SuppressWarnings("serial")
 public class LoginMsg extends GeneralMsg {
 	
-	private String userName;
+	private String userName = "jclogin";
 	
-	private String password;
+	private String password = "jcpass";
 
 	public LoginMsg() {
 		super();

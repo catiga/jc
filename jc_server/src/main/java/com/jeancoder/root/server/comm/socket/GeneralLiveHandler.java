@@ -59,7 +59,7 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 		logger.info("server receive message=" + baseMsg);
 		if (MsgType.LOGIN.equals(baseMsg.getType())) {
 			LoginMsg loginMsg = (LoginMsg) baseMsg;
-			if ("robin".equals(loginMsg.getUserName()) && "yao".equals(loginMsg.getPassword())) {
+			if ("jclogin".equals(loginMsg.getUserName()) && "jcpass".equals(loginMsg.getPassword())) {	//暂存的处理方式
 				// 登录成功,把channel存到服务端的map中
 				NettyChannelMap.add(loginMsg.getClientId(), (SocketChannel) ctx.channel());
 				logger.info("client" + loginMsg.getClientId() + " 登录成功");

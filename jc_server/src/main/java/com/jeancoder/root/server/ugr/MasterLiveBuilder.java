@@ -106,8 +106,6 @@ public class MasterLiveBuilder {
 								masterChannel = (SocketChannel)future.channel();
 								LoginMsg loginMsg = new LoginMsg();
 								loginMsg.setClientId(this.cenjcs.getId());
-								loginMsg.setPassword("yao");
-								loginMsg.setUserName("robin");
 								masterChannel.writeAndFlush(loginMsg);
 								break;
 							}
@@ -120,8 +118,6 @@ public class MasterLiveBuilder {
 					masterChannel = (SocketChannel)future.channel();
 					LoginMsg loginMsg = new LoginMsg();
 					loginMsg.setClientId(this.cenjcs.getId());
-					loginMsg.setPassword("yao");
-					loginMsg.setUserName("robin");
 					masterChannel.writeAndFlush(loginMsg);
 				}
 			}

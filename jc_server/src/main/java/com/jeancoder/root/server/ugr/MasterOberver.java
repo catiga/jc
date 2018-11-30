@@ -106,8 +106,6 @@ public abstract class MasterOberver extends ChannelInboundHandlerAdapter impleme
 					LoginMsg loginMsg = new LoginMsg();
 					String client_id = keeper.info().getId();
 					loginMsg.setClientId(client_id);
-					loginMsg.setPassword("yao");
-					loginMsg.setUserName("robin");
 					masterChannel.writeAndFlush(loginMsg);
 					logger.info("reconnect success");
 				}
