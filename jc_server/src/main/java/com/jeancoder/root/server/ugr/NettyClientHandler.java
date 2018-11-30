@@ -11,6 +11,7 @@ import com.jeancoder.root.server.proto.msg.ReplyClientBody;
 import com.jeancoder.root.server.proto.msg.ReplyMsg;
 import com.jeancoder.root.server.proto.msg.ReplyServerBody;
 import com.jeancoder.root.server.proto.msg.ct.UninstallMsg;
+import com.jeancoder.root.server.proto.msg.ct.UpgradeMsg;
 import com.jeancoder.root.vm.JCVM;
 import com.jeancoder.root.vm.JCVMDelegatorGroup;
 
@@ -66,11 +67,11 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 			logger.debug("receive server msg: " + replyServerBody.getServerInfo());
 		}
 			break;
-		case APPUNINSTALL: {
-			UninstallMsg unmsg = (UninstallMsg)baseMsg;
+		case APPUPGRADE: {
+			UpgradeMsg unmsg = (UpgradeMsg)baseMsg;
 			AppMod appinfo = unmsg.getAppins();
 			JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
-			
+			jcvm.updateApp(appinfo.to());
 		}
 			break;
 		default:

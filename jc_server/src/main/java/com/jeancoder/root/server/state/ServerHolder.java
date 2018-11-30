@@ -5,11 +5,13 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
+import com.jc.shell.JCShellFac;
+import com.jc.shell.ShellChannelHolder;
 import com.jeancoder.root.server.inet.JCServer;
 
 import io.netty.channel.Channel;
 
-public class ServerHolder {
+public class ServerHolder implements ShellChannelHolder {
 
 	private static final ServerHolder instance = new ServerHolder();
 	
@@ -17,6 +19,10 @@ public class ServerHolder {
 	
 	public static final ServerHolder getHolder() {
 		return instance;
+	}
+	
+	private ServerHolder() {
+		JCShellFac.init(this);
 	}
 	
 	public List<String> dispatchlist() {
@@ -32,6 +38,7 @@ public class ServerHolder {
 		return NettyChannelMap.get(id);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Enumeration<JCServer> servers() {
 		Vector<JCServer> sers = new Vector<>();
 		if(!iservers.isEmpty()) {
