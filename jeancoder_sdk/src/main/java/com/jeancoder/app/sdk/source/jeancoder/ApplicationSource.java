@@ -130,6 +130,7 @@ public class ApplicationSource extends SysSource {
 	public static List<NamerApplicationDto> getApplicationAll() {
 		VMDelegate wd = JCVMDelegatorGroup.instance().getDelegator();	
 		ContainerMaps cm = wd.getVM().getContainers();
+		
 		List<NamerApplicationDto> dtoList = new ArrayList<NamerApplicationDto>();
 		for (BCID item: cm.keySet()) {
 			JCAppContainer container = cm.get(item);
@@ -151,9 +152,15 @@ public class ApplicationSource extends SysSource {
 		}
 		return dtoList;
 	}
+
+
 	
 	
 	public static Enumeration<ShellServer>  getOnlineList() {
-		return SlaveCli.instance().servers();
+		return SlaveCli.instance().localServers();
+	}
+	
+	public static List<String> getSlaveServers() {
+		return SlaveCli.instance().slaveServers();
 	}
 }
