@@ -19,8 +19,10 @@ import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
 import com.jeancoder.root.manager.JCVMDelegator;
 import com.jeancoder.root.server.inet.JCServer;
+import com.jeancoder.root.server.proto.conf.AppMod;
 import com.jeancoder.root.server.proto.msg.ReplyMsg;
 import com.jeancoder.root.server.proto.msg.ReplyServerBody;
+import com.jeancoder.root.server.proto.msg.ct.UpgradeMsg;
 import com.jeancoder.root.server.state.ServerHolder;
 
 import io.netty.buffer.ByteBuf;
@@ -37,6 +39,7 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
@@ -231,7 +234,11 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 			return;
 		} else if(uri_path.startsWith("/TESTJC")) {
 			if(uri_path.indexOf("?")>-1) {
-				String command = uri_path.substring(uri_path.indexOf("?") + 1);
+				QueryStringDecoder query = new QueryStringDecoder(uri_path);
+				String command = null;
+				if(query.parameters().get("command")!=null&&!query.parameters().get("command").isEmpty()) {
+					command = query.parameters().get("command").get(0);
+				}
 				if(command!=null) {
 					if(command.equals("ss")) {
 						StringBuilder view_result = new StringBuilder();
@@ -261,6 +268,27 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 								channel.writeAndFlush(msg);
 							}
 						}
+						view_result.append("</body></html>");
+						
+						writeResponse(ctx, HttpResponseStatus.OK, "text/html", view_result.toString(), true);
+						return;
+					} else if(command.equals("upgrade")) {
+						String clsid = query.parameters().get("clsid").get(0);
+						String appid = query.parameters().get("appid").get(0);
+						
+						StringBuilder view_result = new StringBuilder();
+						view_result.append("<html><head></head>");
+						view_result.append("<body>");
+						
+						view_result.append("<div>" + clsid + "</div><br/>");
+						SocketChannel channel = (SocketChannel)ServerHolder.getHolder().dispatchaim(clsid);
+						if(channel!=null) {
+							AppMod am = new AppMod();
+							am.setApp_id(appid);
+							UpgradeMsg msg = new UpgradeMsg(am);
+							channel.writeAndFlush(msg);
+						}
+						
 						view_result.append("</body></html>");
 						
 						writeResponse(ctx, HttpResponseStatus.OK, "text/html", view_result.toString(), true);
