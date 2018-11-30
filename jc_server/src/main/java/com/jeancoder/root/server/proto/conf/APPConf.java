@@ -1,6 +1,9 @@
 package com.jeancoder.root.server.proto.conf;
 
-public class APPConf {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class APPConf implements Serializable {
 
 	String description;
 	
