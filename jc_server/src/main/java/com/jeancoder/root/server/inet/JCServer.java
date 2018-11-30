@@ -11,8 +11,6 @@ public interface JCServer extends ShellServer {
 	
 	void shutdown();
 	
-	String serverId();
-	
 	ServerMod info();
 	
 }

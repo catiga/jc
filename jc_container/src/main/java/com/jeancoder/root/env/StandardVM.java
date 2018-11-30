@@ -84,9 +84,25 @@ public class StandardVM extends DefaultVm implements JCVM {
 			VM_CONTAINERS.remove(container.id());
 			VM_CONTAINERS.put(bc.id(), bc);
 		}
-		FileUtil.deletefile(new File(container.getApp().getApp_base()));
+		if (!container.getApp().getApp_base().equals(jcapp.getApp_base())) {
+			FileUtil.deletefile(new File(container.getApp().getApp_base()));
+		}
+		
 	}
 	
+	@Override
+	public void installApp(JCAPP jcapp) {
+		BootContainer bc = new BootContainer(jcapp);
+		bc.bindBaseEnv(rootLoader);
+		bc.onInit();
+		bc.onStart();
+		VM_CONTAINERS.put(bc.id(), bc);
+	}
+
+	@Override
+	public void uninstallApp(JCAPP jcapp) {
+		VM_CONTAINERS.remove(BCID.generateKey(jcapp.id, jcapp.code));
+	}
 	
 	
 	@Override

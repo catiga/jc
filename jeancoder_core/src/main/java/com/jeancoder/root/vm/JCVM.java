@@ -25,4 +25,8 @@ public interface JCVM extends Lifecycle {
 	
 	public void updateApp(JCAPP jcapp);
 	
+	public void installApp(JCAPP jcapp);
+	
+	public void uninstallApp(JCAPP jcapp);
+	
 }

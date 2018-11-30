@@ -1,5 +1,8 @@
 package com.jeancoder.root.server.ugr;
 
+import java.io.InputStream;
+import java.util.zip.ZipInputStream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +14,8 @@ import com.jc.proto.msg.ReplyClientBody;
 import com.jc.proto.msg.ReplyMsg;
 import com.jc.proto.msg.ReplyServerBody;
 import com.jc.proto.msg.ct.UpgradeMsg;
+import com.jeancoder.root.server.util.RemoteUtil;
+import com.jeancoder.root.server.util.ZipUtil;
 import com.jeancoder.root.vm.JCVM;
 import com.jeancoder.root.vm.JCVMDelegatorGroup;
 
@@ -69,8 +74,34 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 		case APPUPGRADE: {
 			UpgradeMsg unmsg = (UpgradeMsg)baseMsg;
 			AppMod appinfo = unmsg.getAppins();
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						InputStream ins = RemoteUtil.installation(appinfo.getFetch_address(),new Long(appinfo.getApp_id()));
+						ZipUtil.unzip(appinfo.getApp_base(), new ZipInputStream(ins));
+						JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
+						jcvm.updateApp(appinfo.to());
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+		}
+			break;
+		case APPINSTALL: {
+			UpgradeMsg unmsg = (UpgradeMsg)baseMsg;
+			AppMod appinfo = unmsg.getAppins();
 			JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
-			jcvm.updateApp(appinfo.to());
+			jcvm.installApp(appinfo.to());
+		}
+			break;
+		case APPUNINSTALL: {
+			UpgradeMsg unmsg = (UpgradeMsg)baseMsg;
+			AppMod appinfo = unmsg.getAppins();
+			JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
+			jcvm.uninstallApp(appinfo.to());
 		}
 			break;
 		default:

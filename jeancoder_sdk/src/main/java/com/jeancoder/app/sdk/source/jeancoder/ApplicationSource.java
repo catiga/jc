@@ -6,6 +6,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 import com.jc.channel.SlaveCli;
+import com.jc.proto.conf.AppMod;
 import com.jc.shell.ShellServer;
 import com.jeancoder.app.sdk.Interceptor.JCInterceptorStack;
 import com.jeancoder.app.sdk.configure.DevSysConfigProp;
@@ -30,6 +31,7 @@ import com.jeancoder.core.resource.proc.Application;
 import com.jeancoder.core.resource.proc.Resource;
 import com.jeancoder.core.resource.runtime.ApplicationHolder;
 import com.jeancoder.core.util.InputStreamUtil;
+import com.jeancoder.core.util.JackSonBeanMapper;
 import com.jeancoder.root.container.ContainerMaps;
 import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.container.core.BCID;
@@ -156,11 +158,28 @@ public class ApplicationSource extends SysSource {
 
 	
 	
-	public static Enumeration<ShellServer>  getOnlineList() {
-		return SlaveCli.instance().localServers();
+	public static  List<String> getOnlineList() {
+		return SlaveCli.instance().slaveServers();
 	}
 	
-	public static List<String> getSlaveServers() {
-		return SlaveCli.instance().slaveServers();
+	public static Enumeration<ShellServer>  getSlaveServers() {
+		return SlaveCli.instance().localServers();
+		
+	}
+	
+	
+	public static void upgradeApp(String client_instance_id, String modJson) {
+		AppMod appmode = JackSonBeanMapper.fromJson(modJson, AppMod.class);
+		SlaveCli.instance().upgradeApp(client_instance_id, appmode);
+	}
+	
+	public static void installApp(String client_instance_id, String modJson) {
+		AppMod appmode = JackSonBeanMapper.fromJson(modJson, AppMod.class);
+		SlaveCli.instance().installApp(client_instance_id, appmode);
+	}
+	
+	public static  void uninstallApp(String client_instance_id, String modJson) {
+		AppMod appmode = JackSonBeanMapper.fromJson(modJson, AppMod.class);
+		SlaveCli.instance().uninstallApp(client_instance_id, appmode);
 	}
 }
