@@ -2,8 +2,11 @@ package com.jeancoder.app.sdk.source.jeancoder;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
+import com.jc.channel.SlaveCli;
+import com.jc.shell.ShellServer;
 import com.jeancoder.app.sdk.Interceptor.JCInterceptorStack;
 import com.jeancoder.app.sdk.configure.DevSysConfigProp;
 import com.jeancoder.app.sdk.context.ApplicationContextPool;
@@ -127,7 +130,6 @@ public class ApplicationSource extends SysSource {
 	public static List<NamerApplicationDto> getApplicationAll() {
 		VMDelegate wd = JCVMDelegatorGroup.instance().getDelegator();	
 		ContainerMaps cm = wd.getVM().getContainers();
-		
 		List<NamerApplicationDto> dtoList = new ArrayList<NamerApplicationDto>();
 		for (BCID item: cm.keySet()) {
 			JCAppContainer container = cm.get(item);
@@ -148,5 +150,10 @@ public class ApplicationSource extends SysSource {
 			dtoList.add(dto);
 		}
 		return dtoList;
+	}
+	
+	
+	public static Enumeration<ShellServer>  getOnlineList() {
+		return SlaveCli.instance().servers();
 	}
 }
