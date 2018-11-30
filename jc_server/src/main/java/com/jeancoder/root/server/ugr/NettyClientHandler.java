@@ -89,7 +89,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 						e.printStackTrace();
 					}
 				}
-			});
+			}).start();;
 		}
 			break;
 		case APPINSTALL: {
@@ -108,7 +108,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 						e.printStackTrace();
 					}
 				}
-			});
+			}).start();
 
 		}
 			break;
