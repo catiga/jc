@@ -54,7 +54,6 @@ public class JCLHealper {
 	
 	@SuppressWarnings("unused")
 	private String key = publicKey;
-	@SuppressWarnings("unused")
 	private String license = null;
 	
 	private boolean loaded = false;
