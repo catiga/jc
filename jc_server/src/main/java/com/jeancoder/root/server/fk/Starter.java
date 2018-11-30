@@ -93,6 +93,7 @@ public class Starter {
 		}
 		if (json == null) {
 			logger.error("配置文件不存在");
+			System.exit(-1);
 			return;
 		}
 		try {
@@ -123,6 +124,7 @@ public class Starter {
 			}
 		} catch (Exception e) {
 			logger.error("start error:", e);
+			System.exit(-1);
 		}
 	}
 }
