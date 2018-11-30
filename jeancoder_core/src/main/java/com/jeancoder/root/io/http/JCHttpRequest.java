@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -53,6 +54,8 @@ public class JCHttpRequest implements HttpServletRequest {
 
 	// path parameter
 	private Map<String, String[]> parameters;
+	
+	private List<UploadFile> upfiles;
 
 	private boolean inputStreamUsed = false;
 
@@ -62,6 +65,10 @@ public class JCHttpRequest implements HttpServletRequest {
 
 	// The content of the HTTP POST.
 	private String postData;
+
+	public List<UploadFile> getUpfiles() {
+		return upfiles;
+	}
 
 	private InetSocketAddress remoteHost;
 
@@ -96,8 +103,11 @@ public class JCHttpRequest implements HttpServletRequest {
 				}
 			}
 		}
-		parameters = reqpar.parse((FullHttpRequest) request);
-
+		
+		ReqTotal total = reqpar.parse((FullHttpRequest) request);
+		parameters = total.getParameters();
+		upfiles = total.getFiles();
+		
 		contentType = headers.get("CONTENT-TYPE");
 		if (contentType == null) {
 			contentType = "application/x-www-form-urlencoded";
