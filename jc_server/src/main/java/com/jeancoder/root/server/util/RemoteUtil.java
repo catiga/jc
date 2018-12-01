@@ -24,7 +24,7 @@ public class RemoteUtil {
 		Map<String,String> paramsMap = new TreeMap<String,String>();
 		paramsMap.put("m_code", JCLHealper.INSTENSE.getMerchantsCode());
 		paramsMap.put("m_instance", JCLHealper.INSTENSE.getInstanceNum());
-		String  rsaResultsJson = HttpsRequesUtil.connection("http://192.168.1.9:8080/server/api/personal/common/getConfigList", HttpsRequesUtil.getParams(paramsMap, getSignKey()));
+		String  rsaResultsJson = HttpsRequesUtil.connection("http://jcloudapp.pdr365.com/server/api/personal/common/getConfigList", HttpsRequesUtil.getParams(paramsMap, getSignKey()));
 		return rsaResultsJson;
 	}
 	
@@ -52,7 +52,7 @@ public class RemoteUtil {
 		Map<String,String> params = new TreeMap<String,String>();
 		params.put("m_code", JCLHealper.INSTENSE.getMerchantsCode());
 		String parameter = HttpsRequesUtil.getParameter(params);
-		String rsaResultsJson = HttpsRequesUtil.connection("http://192.168.1.9:8080/server/api/sys/getSignKey", "parameter=" + encryptByPublic(parameter));
+		String rsaResultsJson = HttpsRequesUtil.connection("http://jcloudapp.pdr365.com/server/api/sys/getSignKey", "parameter=" + encryptByPublic(parameter));
 		rsaResultsJson = decryptByPublic(rsaResultsJson);
 		StringResults strResult = JackSonBeanMapper.fromJson(rsaResultsJson, StringResults.class);
 		
