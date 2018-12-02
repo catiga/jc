@@ -84,7 +84,7 @@ public class JCHttpResponse implements HttpServletResponse {
 
     @Override
     public void addCookie(Cookie cookie) {
-    	if(cookie==null||cookie.getName()==null) {
+    	if(cookie==null||cookie.getName()==null||cookie.getValue()==null) {
     		return;
     	}
     	io.netty.handler.codec.http.cookie.Cookie net_coo = new DefaultCookie(cookie.getName(), cookie.getValue());
