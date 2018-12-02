@@ -2,12 +2,11 @@ package com.jeancoder.root.io;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.Writer;
 
-public class JCWriter extends PrintWriter {
+public class JCWriter extends Writer {
 	
 	public JCWriter(OutputStream out, boolean autoFlush) {
-		super(out, autoFlush);
 		this.needFlush = autoFlush;
 		this.output = out;
 	}
@@ -40,10 +39,12 @@ public class JCWriter extends PrintWriter {
 		}
 	}
 
+
 	@Override
-	public void print(Object obj) {
+	public void write(char[] cbuf, int off, int len) throws IOException {
+		String buf = new String(cbuf, off, len);
 		try {
-			((JcServletOutputStream)output).write(obj);
+			((JcServletOutputStream)output).write(buf);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

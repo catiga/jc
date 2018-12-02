@@ -36,6 +36,8 @@ public class JCHttpResponse implements HttpServletResponse {
     private String encoding = "UTF-8";
 
     private JCWriter writer;
+    
+    JcServletOutputStream output = new JcServletOutputStream();
 
     private Map<String, String> headers = new HashMap<String, String>();
     
@@ -249,12 +251,11 @@ public class JCHttpResponse implements HttpServletResponse {
 
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
-    	return (ServletOutputStream)writer.getStream();
+    	return output;
     }
 
     @Override
     public PrintWriter getWriter() throws IOException {
-    	JcServletOutputStream output = new JcServletOutputStream();
         writer = new JCWriter(output, false);
         return new PrintWriter(writer);
     }
