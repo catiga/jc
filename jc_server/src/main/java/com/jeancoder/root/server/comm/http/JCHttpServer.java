@@ -3,6 +3,8 @@ package com.jeancoder.root.server.comm.http;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
+import javax.net.ssl.SSLEngine;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +12,7 @@ import com.jc.proto.conf.ServerMod;
 import com.jeancoder.root.server.inet.JCServer;
 import com.jeancoder.root.server.inet.ServerCode;
 import com.jeancoder.root.server.inet.ServerImpl;
+import com.jeancoder.root.server.ssl.SSLContextFactory;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -23,6 +26,7 @@ import io.netty.handler.codec.http.HttpContentCompressor;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 
 public class JCHttpServer extends ServerImpl implements JCServer {
@@ -67,7 +71,16 @@ public class JCHttpServer extends ServerImpl implements JCServer {
 					.childHandler(new ChannelInitializer<NioSocketChannel>() {
 						@Override
 						protected void initChannel(NioSocketChannel ch) {
-							ch.pipeline().addLast("decoder", new HttpRequestDecoder());
+							if(ssl) {
+								try {
+									SSLEngine sslEngine = SSLContextFactory.getSslContext().createSSLEngine();
+									sslEngine.setUseClientMode(false);
+									ch.pipeline().addLast(new SslHandler(sslEngine));
+								}catch(Exception e) {
+									e.printStackTrace();
+								}
+							}
+					        ch.pipeline().addLast("decoder", new HttpRequestDecoder());
 							ch.pipeline().addLast("encoder", new HttpResponseEncoder());
 							ch.pipeline().addLast("aggregator", new HttpObjectAggregator(2147483647));
 							ch.pipeline().addLast("chunkedWriter", new ChunkedWriteHandler());
