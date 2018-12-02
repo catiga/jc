@@ -1,12 +1,11 @@
 package com.jeancoder.root.io.http;
 
+import static com.jeancoder.root.io.line.HeaderNames.CONTENT_ENCODING;
 import static com.jeancoder.root.io.line.HeaderNames.LOCATION;
 import static com.jeancoder.root.io.line.HeaderNames.SET_COOKIE;
-import static com.jeancoder.root.io.line.HeaderNames.CONTENT_ENCODING;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
@@ -15,6 +14,9 @@ import java.util.Map;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+
+import com.jeancoder.root.io.JCWriter;
+import com.jeancoder.root.io.JcServletOutputStream;
 
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -33,7 +35,7 @@ public class JCHttpResponse implements HttpServletResponse {
 
     private String encoding = "UTF-8";
 
-    private StringWriter writer;
+    private JCWriter writer;
 
     private Map<String, String> headers = new HashMap<String, String>();
     
@@ -247,12 +249,13 @@ public class JCHttpResponse implements HttpServletResponse {
 
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
-        throw new UnsupportedOperationException();
+    	return (ServletOutputStream)writer.getStream();
     }
 
     @Override
     public PrintWriter getWriter() throws IOException {
-        writer = new StringWriter();
+    	JcServletOutputStream output = new JcServletOutputStream();
+        writer = new JCWriter(output, false);
         return new PrintWriter(writer);
     }
 

@@ -26,6 +26,10 @@ public class JCVMDelegator implements VMDelegate {
 		CONTEXT_ENV.remove();
 	}
 	
+	public ChannelContextWrapper getCurrentContext() {
+		return CONTEXT_ENV.get();
+	}
+	
 	public static final JCVMDelegator delegate() {
 		JCVMDelegatorGroup group = JCVMDelegatorGroup.instance();
 		if(group!=null&&group.getDelegator()==null) {
