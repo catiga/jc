@@ -70,6 +70,10 @@ public class JCRequest {
 		}
 		return value;
 	}
+	
+	public String getSchema() {
+		return request.getScheme();
+	}
 
 	public Map<String, String[]> getParameterMap() {
 		return request.getParameterMap();
