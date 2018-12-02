@@ -2,8 +2,6 @@ package com.jeancoder.root.container;
 
 public class ContainerContextEnv {
 	
-	static final ThreadLocal<String> SCHEMA_ENV = new ThreadLocal<>();
-	
 	public static JCAppContainer getCurrentContainer() {
 		return JCAPPHolder.getContainer();
 	}
@@ -17,26 +15,6 @@ public class ContainerContextEnv {
 		JCAPPHolder.clearContainer();
 	}
 	
-	public static void setSchema(String schema) {
-		if(schema!=null) {
-			if(schema.equalsIgnoreCase("http")||schema.equalsIgnoreCase("https")) {
-				SCHEMA_ENV.set(schema);
-			}
-		}
-	}
-	
-	public static String getSchema() {
-		try {
-			String schema = SCHEMA_ENV.get();
-			if(schema==null) {
-				schema = "http";
-			}
-			return schema;
-		}finally{
-			SCHEMA_ENV.remove();
-		}
-	}
-
 //	public static JCAppContainer getCurrentContainer() {
 //		ClassLoader current_classloader = Thread.currentThread().getContextClassLoader();
 //		if(current_classloader instanceof KoLoader) {
