@@ -95,7 +95,9 @@ public class Result {
 	@SuppressWarnings("unchecked")
 	public static <T extends Result> T convert(Object general) {
 		if(general==null) {
-			return (T)new Result();
+			Result result = new Result();
+			result.setIO(null);
+			return (T)result;
 		} else {
 			if(!(general instanceof Result)) {
 				Result result = new Result();

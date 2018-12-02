@@ -161,6 +161,7 @@ public class JCHttpResponse implements HttpServletResponse {
     @Override
     public void setDateHeader(String s, long l) {
         //throw new UnsupportedOperationException();
+    	setHeader(s, l + "");
     }
 
     @Override
@@ -171,11 +172,13 @@ public class JCHttpResponse implements HttpServletResponse {
     @Override
     public void setHeader(String s, String s1) {
         headers.put(s, s1);
+        response.headers().set(s, s1);
     }
 
     @Override
     public void addHeader(String s, String s1) {
         headers.put(s, s1);
+        response.headers().add(s, s1);
     }
 
     @Override
@@ -185,7 +188,7 @@ public class JCHttpResponse implements HttpServletResponse {
 
     @Override
     public void addIntHeader(String s, int i) {
-        setHeader(s, "" + i);
+    	addHeader(s, "" + i);
     }
 
     /**
@@ -272,7 +275,8 @@ public class JCHttpResponse implements HttpServletResponse {
 
     @Override
     public void flushBuffer() throws IOException {
-        throw new UnsupportedOperationException();
+        //throw new UnsupportedOperationException();
+    	this.getWriter().flush();
     }
 
     @Override

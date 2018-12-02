@@ -26,7 +26,7 @@ public class ClientIdleStateTrigger extends ChannelInboundHandlerAdapter {
 				Channel current_channel = ctx.channel();
 				ChannelId chid = current_channel.id();
 
-				logger.error("channel_id=" + chid + " will be set IDLE STATE." + current_channel);
+				logger.debug("channel_id=" + chid + " will be set IDLE STATE." + current_channel);
 				//throw new Exception("idle exception");
 				PingMsg pingMsg=new PingMsg();
                 ctx.writeAndFlush(pingMsg);

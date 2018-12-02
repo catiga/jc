@@ -1,5 +1,6 @@
 package com.jeancoder.root.io;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import javax.servlet.ServletOutputStream;
@@ -11,22 +12,28 @@ public class JcServletOutputStream extends ServletOutputStream {
 
 	ChannelContextWrapper ctx = JCVMDelegatorGroup.instance().getDelegator().getCurrentContext();
 	
+	ByteArrayOutputStream bos = new ByteArrayOutputStream();
+	
 	@Override
 	public void write(int b) throws IOException {
 		if(ctx==null) {
 			throw new IOException("channel context null, maybe closed");
 		}
-		ctx.getContext().write(b);
+		bos.write(b);
+	}
+	
+	public byte[] getData() {
+		byte[] data = bos.toByteArray();
+		try {
+			bos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return data;
 	}
 	
 	public void flush() {
-		ctx.getContext().flush();
+		//ctx.getContext().flush();
 	}
 	
-	public void write(Object msg) throws IOException {
-		if(ctx==null) {
-			throw new IOException("channel context null, maybe closed");
-		}
-		ctx.getContext().write(msg);
-	}
 }

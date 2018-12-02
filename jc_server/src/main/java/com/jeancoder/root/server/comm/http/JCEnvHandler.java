@@ -24,8 +24,6 @@ public class JCEnvHandler extends ChannelInboundHandlerAdapter {
 		JCVMDelegator.bindContext(ChannelContextWrapper.newone(ctx));
 		if(logger.isDebugEnabled()) {
 			logger.debug(ctx.channel().id().toString() + " is actived");
-		} else {
-			logger.info(ctx.channel().id().toString() + " is actived");
 		}
 	}
 
@@ -35,10 +33,8 @@ public class JCEnvHandler extends ChannelInboundHandlerAdapter {
 		super.channelInactive(ctx);
 		if(logger.isDebugEnabled()) {
 			logger.debug(ctx.channel().id().toString() + " is closed");
-		} else {
-			logger.info(ctx.channel().id().toString() + " is closed");
 		}
-		ctx.channel().close();
+		//ctx.channel().close();
 	}
 	
 	@Override

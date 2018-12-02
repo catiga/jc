@@ -44,7 +44,7 @@ public class JCWriter extends Writer {
 	public void write(char[] cbuf, int off, int len) throws IOException {
 		String buf = new String(cbuf, off, len);
 		try {
-			((JcServletOutputStream)output).write(buf);
+			output.write(buf.getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
