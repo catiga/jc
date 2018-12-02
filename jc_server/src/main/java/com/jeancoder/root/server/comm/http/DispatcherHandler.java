@@ -104,8 +104,8 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 		InetSocketAddress remote = (InetSocketAddress)ctx.channel().remoteAddress();
 		
 		//打印所有request header
-		logger.info(requestObj.toString());
-		logger.info(requestObj.headers().toString());
+//		logger.info(requestObj.toString());
+//		logger.info(requestObj.headers().toString());
 		try {
 			JCHttpRequest stand_request = new JCHttpRequest((FullHttpRequest)request);
 			stand_request.setRemoteHost(remote);

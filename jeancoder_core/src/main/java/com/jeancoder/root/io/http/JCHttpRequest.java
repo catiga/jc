@@ -41,6 +41,10 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 
 public class JCHttpRequest implements HttpServletRequest {
+	
+	public static final String X_Forwarded_Proto = "X-Forwarded-Proto";
+	
+	public static final String X_Forwarded_For = "X-Forwarded-For";
 
 	private io.netty.handler.codec.http.HttpRequest request;
 
@@ -245,7 +249,11 @@ public class JCHttpRequest implements HttpServletRequest {
 	@Override
 	public StringBuffer getRequestURL() {
 		String domain = request.headers().get(HOST);
-		return new StringBuffer("http://" + domain + uri);
+		String schema = request.headers().get(X_Forwarded_Proto);
+		if(schema==null) {
+			schema = "http";
+		}
+		return new StringBuffer(schema + "://" + domain + uri);
 	}
 
 	@Override
@@ -411,7 +419,11 @@ public class JCHttpRequest implements HttpServletRequest {
 		if (separator != -1) {
 			return uri.substring(0, separator + 3);
 		}
-		return "file://";
+		String schema = request.headers().get(X_Forwarded_Proto);
+		if(schema==null) {
+			schema = "http";
+		}
+		return schema + "://";
 	}
 
 	@Override
@@ -469,12 +481,10 @@ public class JCHttpRequest implements HttpServletRequest {
 
 	@Override
 	public void setAttribute(String s, Object o) {
-		// attributes.put(s, o);
 		synchronized (attributes) {
 			try {
 				attributes.put(s, o);
 			}catch(Exception e) {
-				System.out.println(s + "=============" + o);
 				e.printStackTrace();
 				throw e;
 			}
@@ -502,6 +512,10 @@ public class JCHttpRequest implements HttpServletRequest {
 
 	@Override
 	public boolean isSecure() {
+		String schema = request.headers().get(X_Forwarded_Proto);
+		if(schema!=null&&schema.equalsIgnoreCase("https")) {
+			return true;
+		}
 		return false;
 	}
 
@@ -526,7 +540,7 @@ public class JCHttpRequest implements HttpServletRequest {
 
 	@Override
 	public String getLocalName() {
-		return "Servlet Server";
+		return "JC Server";
 	}
 
 	@Override

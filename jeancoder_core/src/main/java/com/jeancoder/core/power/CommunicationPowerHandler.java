@@ -30,6 +30,7 @@ import com.jeancoder.core.security.BZX509TrustManager;
 import com.jeancoder.core.util.FileUtil;
 import com.jeancoder.core.util.JackSonBeanMapper;
 import com.jeancoder.core.util.StringUtil;
+import com.jeancoder.root.container.ContainerContextEnv;
 import com.jeancoder.root.container.ContainerMaps;
 import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.env.RunnerResult;
@@ -103,7 +104,7 @@ public class CommunicationPowerHandler extends PowerHandler implements Communica
 	private String doRequest(String path,List<CommunicationParam> params, CommunicationMethod method) {
 		String fullUrl = FileUtil.pathsJoint(domain,this.getId(),path);
 		BufferedReader remote_ret = null;
-		
+		String schema = ContainerContextEnv.getSchema();
 		StringBuffer paramsStr = new StringBuffer();
 		
 		if(params != null) {
@@ -137,6 +138,11 @@ public class CommunicationPowerHandler extends PowerHandler implements Communica
 		
 		try {
 			UrlAddress ua = new UrlAddress(fullUrl);
+			System.out.println("***********original_protocol_is:::" + ua.getProtocol());
+			if(schema!=null) {
+				ua.changeProto(schema);
+				System.out.println("***********change_protocol_to:::" + schema);
+			}
 			URL url = null;
 			if(method==CommunicationMethod.POST) {
 				url = new URL(ua.requestPath(this.deploy));

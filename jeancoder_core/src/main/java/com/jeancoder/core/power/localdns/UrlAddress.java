@@ -89,6 +89,10 @@ public class UrlAddress {
 		return protocol + "://" + host + (port==80?"":":" + port) + uri + "?" + param;
 	}
 	
+	public void changeProto(String new_proto) {
+		this.protocol = new_proto;
+	}
+	
 	/**
 	 * 
 	 * @param deploy
