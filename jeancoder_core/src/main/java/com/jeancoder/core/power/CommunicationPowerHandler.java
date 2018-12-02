@@ -137,6 +137,7 @@ public class CommunicationPowerHandler extends PowerHandler implements Communica
 		}
 		
 		try {
+			System.out.println("==========req_api_url=" + fullUrl);
 			UrlAddress ua = new UrlAddress(fullUrl);
 			System.out.println("***********original_protocol_is:::" + ua.getProtocol());
 			if(schema!=null) {
