@@ -27,6 +27,12 @@ public class RequestParser {
 	
 	DiskFileItemFactory factory = new DiskFileItemFactory();
 	
+	public static void main(String[] argc) {
+		String full_uri = "/general_api/ypcall/sp/info/res?=&partner=11110002&ver=1.0&sign=f684468164e1c9d79e122f91416f8ce0";
+		RequestParser par = new RequestParser();
+		par.params(full_uri);
+	}
+	
 	Map<String, String[]> params(String full_uri) {
 		Map<String, String[]> parameters = new HashMap<String, String[]>();
 		if(full_uri.indexOf("?")<0) {
@@ -35,20 +41,22 @@ public class RequestParser {
 		String[] params = full_uri.substring(full_uri.indexOf("?") + 1).trim().split("&");
 		for(String k : params) {
 			String[] key_values = k.split("=");
-			String key = key_values[0].trim();
-			String value = "";
-			if(key_values.length>1) {
-				value = key_values[1];
+			if(key_values!=null&&key_values.length>0) {
+				String key = key_values[0].trim();
+				String value = "";
+				if(key_values.length>1) {
+					value = key_values[1];
+				}
+				String[] exist_values = parameters.get(key);
+				List<String> inner_list = null;
+				if(exist_values!=null&&exist_values.length>0) {
+					inner_list = Arrays.asList(exist_values);
+				} else {
+					inner_list = new ArrayList<String>();
+				}
+				inner_list.add(value);
+				parameters.put(key, inner_list.toArray(new String[inner_list.size()]));
 			}
-			String[] exist_values = parameters.get(key);
-			List<String> inner_list = null;
-			if(exist_values!=null&&exist_values.length>0) {
-				inner_list = Arrays.asList(exist_values);
-			} else {
-				inner_list = new ArrayList<String>();
-			}
-			inner_list.add(value);
-			parameters.put(key, inner_list.toArray(new String[inner_list.size()]));
 		}
 		return parameters;
 	}

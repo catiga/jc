@@ -26,6 +26,8 @@ import io.netty.handler.codec.http.HttpContentCompressor;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 
@@ -65,6 +67,7 @@ public class JCHttpServer extends ServerImpl implements JCServer {
 					.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 20 * 1000)// 连接超时，单位毫秒
 					.option(ChannelOption.SO_BACKLOG, 1024) // 连接队列长度
 					.option(ChannelOption.SO_REUSEADDR, true)
+					.handler(new LoggingHandler(LogLevel.DEBUG))
 					.childOption(ChannelOption.SO_KEEPALIVE, true)
 					.childOption(ChannelOption.TCP_NODELAY, true)
 					//.childOption(ChannelOption.SO_REUSEADDR, true)
