@@ -79,7 +79,11 @@ public class JCThreadLocal {
 		resultLocal.set(result);
 	}
 	public static Result getResult() {
-		return resultLocal.get();
+		try {
+			return resultLocal.get();
+		} finally {
+			resultLocal.remove();
+		}
 	}
 	public static void removeResult() {
 		resultLocal.remove();
