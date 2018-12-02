@@ -158,7 +158,7 @@ public class JCHttpResponse implements HttpServletResponse {
 
     @Override
     public void setDateHeader(String s, long l) {
-        throw new UnsupportedOperationException();
+        //throw new UnsupportedOperationException();
     }
 
     @Override
