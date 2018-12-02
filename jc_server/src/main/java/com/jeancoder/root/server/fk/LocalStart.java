@@ -3,6 +3,8 @@ package com.jeancoder.root.server.fk;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Enumeration;
+import java.util.Scanner;
 import java.util.zip.ZipInputStream;
 
 import org.slf4j.Logger;
@@ -14,15 +16,16 @@ import com.jc.proto.conf.FkConf;
 import com.jc.proto.conf.ServerMod;
 import com.jeancoder.core.util.JackSonBeanMapper;
 import com.jeancoder.root.server.inet.JCServer;
+import com.jeancoder.root.server.inet.ServerCode;
 import com.jeancoder.root.server.inet.ServerFactory;
 import com.jeancoder.root.server.mixture.ByteResults;
 import com.jeancoder.root.server.state.ServerHolder;
 import com.jeancoder.root.server.util.RemoteUtil;
 import com.jeancoder.root.server.util.ZipUtil;
 
-public class Starter {
+public class LocalStart {
 
-	private static Logger logger = LoggerFactory.getLogger(Starter.class);
+	private static Logger logger = LoggerFactory.getLogger(LocalStart.class);
 
 	final static String appConf = "ins.server.json";
 
@@ -32,14 +35,39 @@ public class Starter {
 	 * @param argc
 	 */
 	public static void main(String[] argc) {
-		start();
+		Scanner input = new Scanner(System.in);
+		String val = null;
+		do {
+			val = input.next();
+			if (val.equals("start")) {
+				start();
+			} else if (val.equals("list")) {
+				Enumeration<JCServer> servers = ServerHolder.getHolder().servers();
+				while(servers.hasMoreElements()) {
+					logger.info("running server: " + servers.nextElement());
+				}
+			} else if (val.equals("stop")) {
+				logger.info("preparing to shutdown server");
+				Enumeration<JCServer> servers = ServerHolder.getHolder().servers();
+				while(servers.hasMoreElements()) {
+					JCServer handler = servers.nextElement();
+					if (handler.defServerCode() == ServerCode.HTTP) {
+						handler.shutdown();
+					}
+				}
+			} else if (val.equals("master")) {
+				logger.info("connect and register service to master");
+
+			}
+		} while (!val.equals("q")); // 如果输入的值不是#就继续输入
+		input.close(); // 关闭资源
 	}
 
 	public static void start() {
 		String json = null;
 		try {
 			// 本地读取配置文件
-			InputStream ins = Starter.class.getClassLoader().getResourceAsStream(appConf);
+			InputStream ins = LocalStart.class.getClassLoader().getResourceAsStream(appConf);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
 
 			String lineContent = null;
