@@ -3,6 +3,7 @@ package com.jeancoder.root.env;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jeancoder.app.sdk.source.ResultSource;
 import com.jeancoder.cap.config.DevConfigureReader;
 import com.jeancoder.cap.power.DevPowerLoader;
 import com.jeancoder.core.cl.DefLoader;
@@ -78,6 +79,9 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 			Script script = (Script) executor.newInstance();
 			script.setBinding(context);
 			Object result = script.run();
+			if(result==null) {
+				result = ResultSource.getResult();
+			}
 			RunnerResult<T> ret_result = new RunnerResult<>();
 			ret_result.setResult(Result.convert(result));
 			ret_result.setId(id().id());
