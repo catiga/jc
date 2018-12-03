@@ -2,12 +2,17 @@ package com.jeancoder.core.power;
 
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jeancoder.core.exception.JeancoderException;
 import com.jeancoder.core.util.MemCodeUtil;
 import com.whalin.MemCached.MemCachedClient;
 import com.whalin.MemCached.SockIOPool;
 
 public class MemPowerHandler extends PowerHandler implements MemPower {
+	
+	private static Logger logger = LoggerFactory.getLogger(MemPowerHandler.class.getName());
 
 	private MemPowerConfig config;
 
@@ -57,6 +62,7 @@ public class MemPowerHandler extends PowerHandler implements MemPower {
 
 	@Override
 	public Object get(String k) {
+		logger.info(config.getServer() + ":::" + config.getId());
 		return _client_instance_.get(k(k));
 	}
 

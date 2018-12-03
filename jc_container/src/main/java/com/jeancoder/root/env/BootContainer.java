@@ -33,7 +33,7 @@ import groovy.lang.Script;
 
 public class BootContainer extends DefaultContainer implements JCAppContainer {
 
-	private static Logger logger = LoggerFactory.getLogger(BootContainer.class);
+	private static Logger logger = LoggerFactory.getLogger(BootContainer.class.getName());
 
 	private BootClassLoader rootLoader = null;
 
