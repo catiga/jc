@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import com.jeancoder.core.cl.AppLoader;
 import com.jeancoder.core.cl.CLHandler;
 import com.jeancoder.jdbc.bean.JCBean;
-import com.jeancoder.root.container.ContainerContextEnv;
 
 public class JCEEMapper {
 	
@@ -60,7 +59,8 @@ public class JCEEMapper {
 		Set<Class<?>> classes = new HashSet<Class<?>>();
 		logger.info(Thread.currentThread().getContextClassLoader() + "");
 		try {
-			AppLoader gcl = ContainerContextEnv.getCurrentContainer().getSignedClassLoader().getManaged();
+			//AppLoader gcl = ContainerContextEnv.getCurrentContainer().getSignedClassLoader().getManaged();
+			AppLoader gcl = (AppLoader)Thread.currentThread().getContextClassLoader();
 	    	for (CLHandler c : gcl.getAppClasses()) {
 	    		classes.add(c.getBindClass());
 	    	}
