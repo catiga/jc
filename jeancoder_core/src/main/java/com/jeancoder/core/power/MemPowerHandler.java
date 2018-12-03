@@ -73,10 +73,6 @@ public class MemPowerHandler extends PowerHandler implements MemPower {
 		return value;
 	}
 	
-	 
-	
-	
-	
 
 	@Override
 	public String getAsString(String k) {
