@@ -3,7 +3,6 @@ package com.jeancoder.core.rendering;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.jeancoder.core.rendering.Rendering;
 import com.jeancoder.core.result.Result;
 import com.jeancoder.root.io.http.JCHttpResponse;
 
@@ -19,9 +18,9 @@ public class ForwardingRendering<T extends Result> extends DefaultRendering<T> i
 	@Override
 	public Object process(HttpServletRequest request, HttpServletResponse response) {
 		super.process(request, response);
-		//Result result = this.runningResult;
 		this.writeResponse(HttpResponseStatus.OK, (JCHttpResponse)response, true);
-		return null;
+		Result result = this.runningResult.getResult();
+		return result;
 	}
 
 }

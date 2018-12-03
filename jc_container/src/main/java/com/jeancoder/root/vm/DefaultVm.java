@@ -14,6 +14,7 @@ import com.jeancoder.core.http.JCThreadLocal;
 import com.jeancoder.core.rendering.Rendering;
 import com.jeancoder.core.rendering.RenderingFactory;
 import com.jeancoder.core.result.Result;
+import com.jeancoder.core.result.ResultType;
 import com.jeancoder.root.container.ContainerMaps;
 import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.container.core.BCID;
@@ -21,6 +22,7 @@ import com.jeancoder.root.container.core.LifecycleZa;
 import com.jeancoder.root.env.JCAPP;
 import com.jeancoder.root.env.RunnerResult;
 import com.jeancoder.root.exception.SPPEmptyException;
+import com.jeancoder.root.handler.RunnerResultListener;
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
 import com.jeancoder.root.io.http.JCReqFaca;
@@ -99,7 +101,11 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 		RunnerResult<T> exeresult = makeRun(req, res);
 		try {
 			Rendering rendering = RenderingFactory.getRendering(ctx, exeresult);
-			rendering.process(req, res);
+			Object after = rendering.process(req, res);
+			logger.info("wait to dispose=" + after);
+//			if(after!=null) {
+//				afterTriggered(req, res, after);
+//			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			throw e;
@@ -124,10 +130,30 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 			if(app_context_path.equals("/" + app_code)) {
 				JCAppContainer runner = getContainers().get(app);
 				RunnerResult<T> ret = runner.callEntry(wrapped, res);
+				ret.addListener(new RunnerResultListener<Result>());
 				return ret;
 			}
 		}
 		throw new SPPEmptyException(app_context_path.substring(1), app_context_path.substring(1), req.getRequestURI(), req.getRequestURI(), "", null);
+	}
+	
+	protected void afterTriggered(JCHttpRequest req, JCHttpResponse res, Object result) {
+		if((result instanceof Result)&&((Result)result).getResultType().equals(ResultType.CONTROLLER_RESOURCE)) {
+			QueryUriDis decoder = new QueryUriDis(((Result)result).getResult());
+			
+			req.setAttribute(JCReqFaca.FORWARD_REQUEST_CONTEXT, decoder.getAppCode());
+			req.setAttribute(JCReqFaca.FORWARD_REQUEST_FULLURI, decoder.getRequestURI());
+			req.setAttribute(JCReqFaca.FORWARD_REQUEST_PATH, decoder.getPath());
+			req.setAttribute(JCReqFaca.FORWARD_REQUEST_QUERY, decoder.getQueryString());
+			
+			JCHttpRequest warrper;
+			try {
+				warrper = new RequestFacade(req);
+				JCVMDelegatorGroup.instance().getDelegator().getVM().dispatch(warrper, res);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	protected JCHttpRequest wrapperRequestAndResponse(JCHttpRequest req, JCHttpResponse res) {
@@ -212,7 +238,7 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 		
 		String getQueryString() {
 			if (uri.indexOf('?') == -1) {
-				return null;
+				return "";
 			} else {
 				return uri.substring(uri.indexOf('?') + 1);
 			}

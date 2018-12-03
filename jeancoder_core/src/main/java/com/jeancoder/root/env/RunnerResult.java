@@ -1,17 +1,25 @@
 package com.jeancoder.root.env;
 
+import java.util.EventListener;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import com.jeancoder.core.result.Result;
+import com.jeancoder.root.handler.RunnerResultListener;
+import com.jeancoder.root.handler.TouchIOEvent;
 
 public class RunnerResult<T extends Result> {
-	
+
+	Set<EventListener> listeners = new LinkedHashSet<EventListener>();
+
 	JCAPP appins;
 
 	String code;
-	
+
 	String id;
-	
+
 	String path;
-	
+
 	T result;
 
 	public void setAppins(JCAPP appins) {
@@ -54,4 +62,14 @@ public class RunnerResult<T extends Result> {
 		this.result = result;
 	}
 
+	public void addListener(EventListener listener) {
+		listeners.add(listener);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void notifyListener() {
+		for (EventListener listener : listeners) {
+			((RunnerResultListener<T>) listener).handleEvent(new TouchIOEvent<T>(this.getResult()));
+		}
+	}
 }

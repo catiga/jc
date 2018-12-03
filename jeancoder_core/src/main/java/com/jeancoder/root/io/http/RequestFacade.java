@@ -1,8 +1,12 @@
 package com.jeancoder.root.io.http;
 
+import static com.jeancoder.root.io.line.HeaderNames.HOST;
+
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
@@ -117,6 +121,66 @@ public class RequestFacade extends JCHttpRequest implements JCReqFaca {
 	@Override
 	public Map<String, String[]> getParameterMap() {
 		return delegated.getParameterMap();
+	}
+	
+	@Override
+	public StringBuffer getRequestURL() {
+		String domain = request.headers().get(HOST);
+		String schema = request.headers().get(X_Forwarded_Proto);
+		if(schema==null) {
+			schema = "http";
+		}
+		return new StringBuffer(schema + "://" + domain + this.getRequestURI());
+	}
+	
+	@Override
+	public String getCharacterEncoding() {
+		return delegated.getCharacterEncoding();
+	}
+
+	@Override
+	public void setCharacterEncoding(String s) throws UnsupportedEncodingException {
+		delegated.setCharacterEncoding(s);
+	}
+
+	@Override
+	public int getContentLength() {
+		return delegated.getIntHeader("Content-Length");
+	}
+
+	@Override
+	public void setAttribute(String s, Object o) {
+		delegated.setAttribute(s, o);
+	}
+
+	@Override
+	public void removeAttribute(String s) {
+		delegated.removeAttribute(s);
+	}
+
+	@Override
+	public Locale getLocale() {
+		return delegated.getLocale();
+	}
+	
+	@Override
+	public String getRemoteAddr() {
+		return delegated.getRemoteAddr();
+	}
+
+	@Override
+	public String getRemoteHost() {
+		return delegated.getRemoteHost();
+	}
+	
+	@Override
+	public String getServerName() {
+		return delegated.getServerName();
+	}
+
+	@Override
+	public int getServerPort() {
+		return delegated.getServerPort();
 	}
 	
 }
