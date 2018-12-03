@@ -101,7 +101,9 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 		RunnerResult<T> exeresult = makeRun(req, res);
 		try {
 			Rendering rendering = RenderingFactory.getRendering(ctx, exeresult);
-			Object after = rendering.process(req, res);
+			rendering.process(req, res);
+			
+//			Object after = rendering.process(req, res);
 			//logger.info("wait to dispose=" + after);
 //			if(after!=null) {
 //				afterTriggered(req, res, after);
@@ -248,7 +250,7 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 			if(getRequestURI().equals(getAppCode())) {
 				return "/";
 			}
-			return getRequestURI().substring(getAppCode().length() + 1);
+			return getRequestURI().substring(getAppCode().length());
 		}
 	}
 }
