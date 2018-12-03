@@ -37,9 +37,8 @@ public class RunnerResultListener<T extends Result> implements EventListener {
 		            }  
 		            fis.close();  
 		            bos.close();
-		            for(byte bb : b) {
-		            	response.getWriter().write(bb);
-		            }
+		            
+		            response.getOutputStream().write(bos.toByteArray());
 				}catch(IOException ioex) {
 				}
 			}

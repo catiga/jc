@@ -124,6 +124,17 @@ public class DefaultRendering<T extends Result> implements Rendering {
 		FullHttpResponse new_response = response.delegateObj().replace(buf);
 		new_response.headers().set(CONTENT_TYPE, content_type + "; charset=UTF-8");
 		new_response.headers().set(CONTENT_LENGTH, buf.readableBytes());
+		new_response.headers().set("Content-Disposition", "attachment; filename=nihao");
+		new_response.setStatus(HttpResponseStatus.OK);
+		this.response.replaceDelegateObj(new_response);
+	}
+	
+	protected void writeStreamResponse(byte[] bytes, String content_type, String filename, boolean forceClose) {
+		ByteBuf buf = copiedBuffer(bytes);
+		FullHttpResponse new_response = response.delegateObj().replace(buf);
+		new_response.headers().set(CONTENT_TYPE, content_type + "; charset=UTF-8");
+		new_response.headers().set(CONTENT_LENGTH, buf.readableBytes());
+		new_response.headers().set("Content-Disposition", "attachment; filename=" + filename);
 		new_response.setStatus(HttpResponseStatus.OK);
 		this.response.replaceDelegateObj(new_response);
 	}

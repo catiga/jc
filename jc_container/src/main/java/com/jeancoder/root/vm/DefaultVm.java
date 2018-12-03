@@ -102,7 +102,7 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 		try {
 			Rendering rendering = RenderingFactory.getRendering(ctx, exeresult);
 			Object after = rendering.process(req, res);
-			logger.info("wait to dispose=" + after);
+			//logger.info("wait to dispose=" + after);
 //			if(after!=null) {
 //				afterTriggered(req, res, after);
 //			}
