@@ -2,6 +2,7 @@ package com.jeancoder.root.io.http;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
@@ -15,6 +16,10 @@ public class RequestFacade extends JCHttpRequest implements JCReqFaca {
 		this.delegated = req;
 	}
 
+	public List<UploadFile> getUpfiles() {
+		return delegated.getUpfiles();
+	}
+	
 	public String getRequestURI() {
 		Enumeration<String> attributes = delegated.getAttributeNames();
 		while(attributes.hasMoreElements()) {
