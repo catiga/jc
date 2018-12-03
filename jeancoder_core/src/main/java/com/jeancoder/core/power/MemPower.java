@@ -10,4 +10,13 @@ public interface MemPower {
 	
 	public Object delete(String k);
 	
+	
+	public boolean setAsString(String k, Object e);
+	
+	public boolean setUntilAsString(String k, Object v, Long exp);
+	
+	public String getAsString(String k);
+	
+	public String deleteAsString(String k);
+	
 }
