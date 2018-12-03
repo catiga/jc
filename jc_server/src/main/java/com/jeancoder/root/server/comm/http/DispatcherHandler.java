@@ -93,47 +93,23 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 	static int i = 0;
 	
 	protected void messageReceived(ChannelHandlerContext ctx, HttpRequest requestObj) {
-		logger.info(requestObj.hashCode() + "---" + System.identityHashCode(requestObj));
-		String uri_path = request.uri();
-		if (uri_path.equals(FAVICON_ICO)) {
-			return;
-		}
 		boolean keepAlive = HttpUtil.isKeepAlive(requestObj);
 		FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
-		JCHttpResponse stand_response = new JCHttpResponse(response);
-		InetSocketAddress remote = (InetSocketAddress)ctx.channel().remoteAddress();
 		
+		InetSocketAddress remote = (InetSocketAddress)ctx.channel().remoteAddress();
+		JCHttpRequest stand_request = null; JCHttpResponse stand_response = null;
 		//打印所有request header
 //		logger.info(requestObj.toString());
 //		logger.info(requestObj.headers().toString());
 		try {
-			JCHttpRequest stand_request = new JCHttpRequest((FullHttpRequest)request);
+			stand_request = new JCHttpRequest((FullHttpRequest)request);
 			stand_request.setRemoteHost(remote);
-			
+			stand_response = new JCHttpResponse(response);
 			JCVMDelegator.delegate().getVM().dispatch(stand_request, stand_response);
 		} catch(Exception e) {
 			logger.error("so should send msg by socket to center server:" + e.getMessage());
-			StringBuffer error_buffer = new StringBuffer();
-			if(e instanceof RunningException) {
-				RunningException rex = (RunningException)e;
-				error_buffer.append("VM ID:" + JCVMDelegator.delegate().delegatedId() + "\r\n\r\n");
-				error_buffer.append("JCAPP CODE:" + rex.getApp() + "\r\n");
-				error_buffer.append("JCAPP PATH:" + rex.getPath() + "\r\n");
-				error_buffer.append("JCAPP RES:" + rex.getRes() + "\r\n\r\n");
-			}
-			error_buffer.append(e.getMessage() + "\r\n\r\n");
-			for(StackTraceElement ste : e.getCause()==null?e.getStackTrace():e.getCause().getStackTrace()) {
-				if(ste.getClassName().indexOf("io.netty.")>-1) {
-					break;
-				}
-				error_buffer.append("	at " + ste.getClassName() + "(" + ste.getFileName() + ":" + ste.getLineNumber() + ")\r\n\r\n");
-			}
-			ByteBuf buf = copiedBuffer(error_buffer.toString().getBytes());
-			FullHttpResponse new_response = stand_response.delegateObj().replace(buf);
-			new_response.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
-			new_response.headers().set(CONTENT_LENGTH, buf.readableBytes());
-			new_response.setStatus(HttpResponseStatus.BAD_REQUEST);
-			stand_response.replaceDelegateObj(new_response);
+			processHandlerException(e, stand_request, stand_response);
+			
 		} finally {
 			JCVMDelegator.releaseContext();
 			if(!keepAlive) {
@@ -221,6 +197,30 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 //		String[] list = typeStr.split(";");
 //		return list[0];
 //	}
+	
+	protected void processHandlerException(Throwable e, JCHttpRequest req, JCHttpResponse res) {
+		StringBuffer error_buffer = new StringBuffer();
+		if(e instanceof RunningException) {
+			RunningException rex = (RunningException)e;
+			error_buffer.append("VM ID:" + JCVMDelegator.delegate().delegatedId() + "\r\n\r\n");
+			error_buffer.append("JCAPP CODE:" + rex.getApp() + "\r\n");
+			error_buffer.append("JCAPP PATH:" + rex.getPath() + "\r\n");
+			error_buffer.append("JCAPP RES:" + rex.getRes() + "\r\n\r\n");
+		}
+		error_buffer.append(e.getMessage() + "\r\n\r\n");
+		for(StackTraceElement ste : e.getCause()==null?e.getStackTrace():e.getCause().getStackTrace()) {
+			if(ste.getClassName().indexOf("io.netty.")>-1) {
+				break;
+			}
+			error_buffer.append("	at " + ste.getClassName() + "(" + ste.getFileName() + ":" + ste.getLineNumber() + ")\r\n\r\n");
+		}
+		ByteBuf buf = copiedBuffer(error_buffer.toString().getBytes());
+		FullHttpResponse new_response = res.delegateObj().replace(buf);
+		new_response.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
+		new_response.headers().set(CONTENT_LENGTH, buf.readableBytes());
+		new_response.setStatus(HttpResponseStatus.BAD_REQUEST);
+		res.replaceDelegateObj(new_response);
+	}
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, HttpObject requestObj) throws Exception {
@@ -232,6 +232,12 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 		}
 		HttpRequest request = this.request = (HttpRequest) requestObj;
 		String uri_path = request.uri();
+		
+		if (uri_path.equals(FAVICON_ICO)) {
+			ctx.flush();
+			return;
+		}
+		
 		if(uri_path.equals("/TESTJC")) {
 			String result = SUCCESS + ":welcome msg!------From JC Server";
 			writeResponse(ctx, HttpResponseStatus.OK, result, true);
