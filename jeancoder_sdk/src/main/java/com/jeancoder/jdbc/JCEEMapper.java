@@ -57,7 +57,9 @@ public class JCEEMapper {
 	
 	private Set<Class<?>> getClasses() {
 		Set<Class<?>> classes = new HashSet<Class<?>>();
-		logger.info(Thread.currentThread().getContextClassLoader() + "");
+		if(logger.isDebugEnabled()) {
+			logger.debug(Thread.currentThread().getContextClassLoader() + "");
+		}
 		try {
 			AppLoader gcl = (AppLoader)Thread.currentThread().getContextClassLoader();
 	    	for (CLHandler c : gcl.getAppClasses()) {
