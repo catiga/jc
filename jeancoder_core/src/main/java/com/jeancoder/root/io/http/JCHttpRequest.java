@@ -40,13 +40,13 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 
-public class JCHttpRequest implements HttpServletRequest {
+public class JCHttpRequest implements HttpServletRequest, JCReqFaca {
 	
 	public static final String X_Forwarded_Proto = "X-Forwarded-Proto";
 	
 	public static final String X_Forwarded_For = "X-Forwarded-For";
 
-	private io.netty.handler.codec.http.HttpRequest request;
+	protected io.netty.handler.codec.http.FullHttpRequest request;
 
 	private String uri;
 
@@ -174,7 +174,7 @@ public class JCHttpRequest implements HttpServletRequest {
 
 	@Override
 	public String getPathInfo() {
-		return request.uri();
+		return this.getServletPath();
 	}
 
 	@Override
@@ -258,7 +258,13 @@ public class JCHttpRequest implements HttpServletRequest {
 
 	@Override
 	public String getServletPath() {
-		throw new UnsupportedOperationException();
+		String context = this.getContextPath();
+		String uri = this.getRequestURI();
+		if(uri.equals(context)) {
+			return "/";
+		}
+		uri = uri.substring(context.length());
+		return uri;
 	}
 
 	@Override
@@ -385,7 +391,11 @@ public class JCHttpRequest implements HttpServletRequest {
 
 	@Override
 	public Enumeration<String> getParameterNames() {
-		return null;
+		Vector<String> vec = new Vector<>();
+		parameters.keySet().forEach(k-> {
+			vec.add(k);
+		});
+		return vec.elements();
 	}
 
 	@Override

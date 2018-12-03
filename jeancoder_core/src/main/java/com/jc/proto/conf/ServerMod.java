@@ -18,6 +18,8 @@ public class ServerMod {
 	
 	String proxy_path;
 	
+	String domain_visit;
+	
 	String logs;
 	
 	String libs;
@@ -114,6 +116,14 @@ public class ServerMod {
 		this.master = master;
 	}
 	
+	public String getDomain_visit() {
+		return domain_visit;
+	}
+
+	public void setDomain_visit(String domain_visit) {
+		this.domain_visit = domain_visit;
+	}
+
 	public boolean cocheck() {
 		if(this.id==null) {
 			return false;

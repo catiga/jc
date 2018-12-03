@@ -123,13 +123,20 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 	
 	protected String transferPathToClz(JCHttpRequest req) {
 		String app_context_path = req.getContextPath();
-		String req_uri = req.getRequestURI();
-		if(req_uri.equals(app_context_path)) {
+		String req_uri = req.getPathInfo();
+		if(req_uri.equals("/")) {
 			//req_uri = req_uri + "/welcome";		//set default index page
 			//做一次rewrite 
-			
+			if(this.appins.getConfig().getIndex()!=null) {
+				req_uri = this.appins.getConfig().getIndex();
+			} else {
+				req_uri = "welcome";
+			}
+		} else {
+			req_uri = req_uri.substring(1);
 		}
-		String app_action_path = req_uri.substring(app_context_path.length() + 1);
+//		String app_action_path = req_uri.substring(app_context_path.length() + 1);
+		String app_action_path = req_uri;
 		String prefix = appins.getOrg() + "." + appins.getDever() + ".";
 		prefix = prefix + app_context_path.substring(1) + "." + Common.ENTRY + "." + app_action_path.replace('/', '.');
 		return cutTailDotChar(prefix);
@@ -244,6 +251,7 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 //						throw new Code404Exception(id().id(), id().code(), resname, this.transferPathToClz(req), "CLASS_NOT_FOUND", nfex);
 //					} 
 					catch (Exception ex) {
+						ex.printStackTrace();
 						throw new Code500Exception(id().id(), id().code(), resname, this.transferPathToClz(req), "RUNNING_ERROR:" + ex.getCause(), ex);
 					}
 				}   
@@ -254,7 +262,8 @@ public abstract class DefaultContainer extends LifecycleZa implements JCAppConta
 	
 	@Override
 	public final <T extends Result> RunnerResult<T> callEntry(JCHttpRequest req, JCHttpResponse res) {
-		String servlet_path = req.getRequestURI().substring(("/" + appins.getCode()).length());
+//		String servlet_path = req.getRequestURI().substring(("/" + appins.getCode()).length());
+		String servlet_path = req.getPathInfo();
 		if(servlet_path.startsWith("/" + appins.getSta_base())) {
 			//说明是静态资源
 			Result result = new Result().setStaticName(servlet_path.substring(("/" + appins.getSta_base()).length() + 1));

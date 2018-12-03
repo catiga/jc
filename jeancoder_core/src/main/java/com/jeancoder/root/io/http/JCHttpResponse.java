@@ -25,7 +25,7 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.cookie.DefaultCookie;
 import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 
-public class JCHttpResponse implements HttpServletResponse {
+public class JCHttpResponse implements HttpServletResponse, JCResFaca {
 
     private String contentType;
 

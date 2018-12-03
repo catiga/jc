@@ -79,6 +79,7 @@ public abstract class ServerImpl extends AbstractServer implements JCServer {
 			}
 			getVM().bindLibrary(modconf.getLibs());
 			getVM().setInitApps(convert_proto);
+			getVM().initVMPS(modconf);
 			getVM().onStart();
 		}
 	}

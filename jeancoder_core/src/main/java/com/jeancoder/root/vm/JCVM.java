@@ -2,6 +2,7 @@ package com.jeancoder.root.vm;
 
 import java.util.List;
 
+import com.jc.proto.conf.ServerMod;
 import com.jeancoder.core.result.Result;
 import com.jeancoder.root.container.ContainerMaps;
 import com.jeancoder.root.env.JCAPP;
@@ -29,4 +30,5 @@ public interface JCVM extends Lifecycle {
 	
 	public void uninstallApp(JCAPP jcapp);
 	
+	public void initVMPS(ServerMod mod);
 }

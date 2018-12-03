@@ -200,9 +200,9 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 	
 	protected void processHandlerException(Throwable e, JCHttpRequest req, JCHttpResponse res) {
 		StringBuffer error_buffer = new StringBuffer();
+		error_buffer.append("VM ID:" + JCVMDelegator.delegate().delegatedId() + "\r\n\r\n");
 		if(e instanceof RunningException) {
 			RunningException rex = (RunningException)e;
-			error_buffer.append("VM ID:" + JCVMDelegator.delegate().delegatedId() + "\r\n\r\n");
 			error_buffer.append("JCAPP CODE:" + rex.getApp() + "\r\n");
 			error_buffer.append("JCAPP PATH:" + rex.getPath() + "\r\n");
 			error_buffer.append("JCAPP RES:" + rex.getRes() + "\r\n\r\n");
