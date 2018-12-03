@@ -14,12 +14,17 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jeancoder.core.cl.AppLoader;
 import com.jeancoder.core.cl.CLHandler;
 import com.jeancoder.jdbc.bean.JCBean;
 import com.jeancoder.root.container.ContainerContextEnv;
 
 public class JCEEMapper {
+	
+	private static Logger logger = LoggerFactory.getLogger(JCEEMapper.class.getName());
 	
 	private static final JCEEMapper _instance_ = new JCEEMapper();
 	
@@ -53,8 +58,8 @@ public class JCEEMapper {
 	
 	private Set<Class<?>> getClasses() {
 		Set<Class<?>> classes = new HashSet<Class<?>>();
+		logger.info(Thread.currentThread().getContextClassLoader() + "");
 		try {
-			//AppLoader gcl = JCAPPHolder.getContainer().getSignedClassLoader().getManaged();
 			AppLoader gcl = ContainerContextEnv.getCurrentContainer().getSignedClassLoader().getManaged();
 	    	for (CLHandler c : gcl.getAppClasses()) {
 	    		classes.add(c.getBindClass());
