@@ -72,5 +72,43 @@ public class MemPowerHandler extends PowerHandler implements MemPower {
 		_client_instance_.delete(k(k));
 		return value;
 	}
+	
+	 
+	
+	
+	
+
+	@Override
+	public String getAsString(String k) {
+		Object value = _client_instance_.get(k(k));
+		if (value == null) {
+			return null;
+		}
+		return value.toString();
+	}
+
+	@Override
+	public String deleteAsString(String k) {
+		Object value = _client_instance_.get(k(k));
+		_client_instance_.delete(k(k));
+		if (value == null) {
+			return null;
+		}
+		return value.toString();
+	}
+
+	@Override
+	public boolean setAsString(String k, String e) {
+		return _client_instance_.set(k(k), e);
+	}
+
+	@Override
+	public boolean setUntilAsString(String k, String v, Long exp) {
+		if(exp==null||exp.equals(0l)||exp<0l) {
+			return false;
+		}
+		Date exp_time = new Date(System.currentTimeMillis() + exp*1000);
+		return _client_instance_.set(k(k), v, exp_time);
+	}
 
 }
