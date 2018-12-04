@@ -68,9 +68,17 @@ public class Starter {
 			System.exit(-1);
 			return;
 		}
+		FkConf fk_con = null;
 		try {
 			Gson gson = new Gson();
-			FkConf fk_con = gson.fromJson(json, FkConf.class);
+			fk_con = gson.fromJson(json, FkConf.class);
+			if(fk_con==null||fk_con.getServers()==null||fk_con.getServers().isEmpty()) {
+				throw new RuntimeException("EMPTY");
+			}
+		} catch (Exception e) {
+			logger.error("start error:", e);
+			System.exit(-1);
+		}
 			for (ServerMod sm : fk_con.getServers()) {
 				JCServer server = ServerFactory.generate(sm);
 				ServerHolder.getHolder().add(server);
@@ -94,9 +102,5 @@ public class Starter {
 					}
 				}).start();
 			}
-		} catch (Exception e) {
-			logger.error("start error:", e);
-			System.exit(-1);
-		}
 	}
 }
