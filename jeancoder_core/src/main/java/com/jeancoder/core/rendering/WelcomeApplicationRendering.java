@@ -46,7 +46,7 @@ public class WelcomeApplicationRendering<T extends Result> extends DefaultRender
 		ctx.setVariable("contextPath", "/" + apps.getCode());
 		//ctx.setVariable("JCrequest", JCThreadLocal.getRequest());
 		ctx.setVariable("JCrequest", new JCRequest(request));
-		ctx.setVariable("pub_bucket", "https://cdn.iplaysky.com/static/");
+		//ctx.setVariable("pub_bucket", "https://cdn.iplaysky.com/static/");
 
 		String path = apps.getApp_base() + "/" + apps.getTpl_base() + "/";
 		String name = result.getResult();

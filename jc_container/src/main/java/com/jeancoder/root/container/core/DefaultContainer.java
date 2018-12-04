@@ -38,7 +38,7 @@ import com.jeancoder.root.io.http.JCHttpResponse;
 import groovy.lang.Binding;
 import groovy.lang.Script;
 
-public abstract class DefaultContainer extends LifecycleZa implements JCAppContainer {
+public abstract class DefaultContainer extends QContainer implements JCAppContainer {
 
 	private static Logger logger = LoggerFactory.getLogger(DefaultContainer.class);
 	

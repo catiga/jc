@@ -179,14 +179,13 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 
 	@Override
 	public void onStop() {
-		// TODO Auto-generated method stub
-
+		//close thread task
+		this.offTask();
 	}
 
 	@Override
 	public void onDestroy() {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	protected void throwCause(String msg) {

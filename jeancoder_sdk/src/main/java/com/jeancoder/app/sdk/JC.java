@@ -9,7 +9,7 @@ import com.jeancoder.root.container.JCAppContainer;
 
 public class JC {
 
-	protected static Logger logger = LoggerFactory.getLogger(JC.class);
+	protected static Logger logger = LoggerFactory.getLogger(JC.class.getName());
 	
 	public static class interceptor {
 		public static void add(String __pre__, String __post__) {
