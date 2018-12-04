@@ -84,10 +84,13 @@ public class StandardVM extends DefaultVm implements JCVM {
 			VM_CONTAINERS.remove(container.id());
 			VM_CONTAINERS.put(bc.id(), bc);
 		}
-		if (!container.getApp().getApp_base().equals(jcapp.getApp_base())) {
-			FileUtil.deletefile(new File(container.getApp().getApp_base()));
-		}
+		String app_base = container.getApp().getApp_base();
+		container.onStop();
+		container.onDestroy();
 		logger.info("app : " +jcapp.code +" is update success" );
+		if (!container.getApp().getApp_base().equals(jcapp.getApp_base())) {
+			FileUtil.deletefile(new File(app_base));
+		}
 	}
 	
 	@Override
@@ -104,11 +107,15 @@ public class StandardVM extends DefaultVm implements JCVM {
 	public void uninstallApp(JCAPP jcapp) {
 		Enumeration<JCAppContainer> appContainer  = VM_CONTAINERS.getByCode(jcapp.getCode());
 		JCAppContainer container = appContainer.nextElement();
-		if (container != null) {
-			VM_CONTAINERS.remove(BCID.generateKey(jcapp.id, jcapp.code));
-			FileUtil.deletefile(new File(container.getApp().getApp_base()));
-			logger.info("app : " +jcapp.code +" is uninstall success" );
+		if (container == null) {
+			return;
 		}
+		VM_CONTAINERS.remove(BCID.generateKey(jcapp.id, jcapp.code));
+		String app_base = container.getApp().getApp_base();
+		container.onStop();
+		container.onDestroy();
+		logger.info("app : " +jcapp.code +" is uninstall success" );
+		FileUtil.deletefile(new File(app_base));
 	}
 	
 	
