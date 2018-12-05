@@ -2,6 +2,8 @@ package com.jeancoder.root.io.http;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,6 +22,7 @@ import io.netty.handler.codec.http.multipart.FileUpload;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData.HttpDataType;
+import io.netty.util.CharsetUtil;
 
 public class RequestParser {
 
@@ -33,6 +36,11 @@ public class RequestParser {
 		par.params(full_uri);
 	}
 	
+	/**
+	 * dispost get parameter urldecode
+	 * @param full_uri
+	 * @return
+	 */
 	Map<String, String[]> params(String full_uri) {
 		Map<String, String[]> parameters = new HashMap<String, String[]>();
 		if(full_uri.indexOf("?")<0) {
@@ -46,6 +54,13 @@ public class RequestParser {
 				String value = "";
 				if(key_values.length>1) {
 					value = key_values[1];
+				}
+				if(value!=null&&!value.equals("")) {
+					try {
+						value = URLDecoder.decode(value, CharsetUtil.UTF_8.name());
+					} catch (UnsupportedEncodingException e) {
+						logger.error("PARAMETER VALUE:" + value, e);
+					}
 				}
 				String[] exist_values = parameters.get(key);
 				List<String> inner_list = null;

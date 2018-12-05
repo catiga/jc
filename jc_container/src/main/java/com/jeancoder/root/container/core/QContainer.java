@@ -38,6 +38,6 @@ public abstract class QContainer extends LifecycleZa implements JCAppContainer {
 	}
 	
 	public String toString() {
-		return this + ":::" + this.getApp().getCode();
+		return "QContainere" + ":::" + this.getApp().getCode();
 	}
 }
