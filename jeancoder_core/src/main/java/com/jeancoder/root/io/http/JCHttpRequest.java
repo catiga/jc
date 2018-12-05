@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
@@ -77,6 +78,19 @@ public class JCHttpRequest implements HttpServletRequest, JCReqFaca {
 	private InetSocketAddress remoteHost;
 
 	static final RequestParser reqpar = new RequestParser();
+	
+
+	public String convertByteBufToString(ByteBuf buf) {
+	    String str;
+	    if(buf.hasArray()) { // 处理堆缓冲区
+	        str = new String(buf.array(), buf.arrayOffset() + buf.readerIndex(), buf.readableBytes());
+	    } else { // 处理直接缓冲区以及复合缓冲区
+	        byte[] bytes = new byte[buf.readableBytes()];
+	        buf.getBytes(buf.readerIndex(), bytes);
+	        str = new String(bytes, 0, buf.readableBytes());
+	    }
+	    return str;
+	}
 
 	public JCHttpRequest(FullHttpRequest request) throws IOException {
 		this.request = request;
@@ -116,7 +130,8 @@ public class JCHttpRequest implements HttpServletRequest, JCReqFaca {
 		if (contentType == null) {
 			contentType = "application/x-www-form-urlencoded";
 		}
-		postData = request.content().toString();
+//		postData = request.content().toString();
+		postData = convertByteBufToString(request.content());
 	}
 
 	public void setRemoteHost(InetSocketAddress remoteHost) {
