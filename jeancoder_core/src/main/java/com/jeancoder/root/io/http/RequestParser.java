@@ -63,14 +63,15 @@ public class RequestParser {
 					}
 				}
 				String[] exist_values = parameters.get(key);
-				List<String> inner_list = null;
 				if(exist_values!=null&&exist_values.length>0) {
-					inner_list = Arrays.asList(exist_values);
+					exist_values = Arrays.copyOf(exist_values, exist_values.length + 1);
+					exist_values[exist_values.length - 1] = value;
+					//inner_list = Arrays.asList(exist_values);
 				} else {
-					inner_list = new ArrayList<String>();
+					//inner_list = new ArrayList<String>();
+					exist_values = new String[]{value};
 				}
-				inner_list.add(value);
-				parameters.put(key, inner_list.toArray(new String[inner_list.size()]));
+				parameters.put(key, exist_values);
 			}
 		}
 		return parameters;
