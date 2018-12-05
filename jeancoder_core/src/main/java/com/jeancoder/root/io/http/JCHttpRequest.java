@@ -43,10 +43,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
+import io.netty.util.CharsetUtil;
 
 public class JCHttpRequest implements HttpServletRequest, JCReqFaca {
 	
-	private static Logger logger = LoggerFactory.getLogger(JCHttpRequest.class.getName());
+	static Logger logger = LoggerFactory.getLogger(JCHttpRequest.class.getName());
 	
 	public static final String X_Forwarded_Proto = "X-Forwarded-Proto";
 	
@@ -88,11 +89,21 @@ public class JCHttpRequest implements HttpServletRequest, JCReqFaca {
 	public String convertByteBufToString(ByteBuf buf) {
 	    String str;
 	    if(buf.hasArray()) { // 处理堆缓冲区
-	        str = new String(buf.array(), buf.arrayOffset() + buf.readerIndex(), buf.readableBytes());
+	        try {
+				str = new String(buf.array(), buf.arrayOffset() + buf.readerIndex(), buf.readableBytes(), CharsetUtil.UTF_8.name());
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+				str = new String(buf.array(), buf.arrayOffset() + buf.readerIndex(), buf.readableBytes());
+			}
 	    } else { // 处理直接缓冲区以及复合缓冲区
 	        byte[] bytes = new byte[buf.readableBytes()];
 	        buf.getBytes(buf.readerIndex(), bytes);
-	        str = new String(bytes, 0, buf.readableBytes());
+	        try {
+				str = new String(bytes, 0, buf.readableBytes(), CharsetUtil.UTF_8.name());
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+				str = new String(bytes, 0, buf.readableBytes());
+			}
 	    }
 	    return str;
 	}
@@ -102,11 +113,11 @@ public class JCHttpRequest implements HttpServletRequest, JCReqFaca {
 		uri = request.uri();
 		HttpHeaders headers = request.headers();
 		
-		logger.info("request_notify_url::::::" + uri);
-		logger.info(request.toString());
+		//logger.info("request_notify_url::::::" + uri);
+		//logger.info(request.toString());
 		
 		postData = convertByteBufToString(request.content());
-		logger.info(postData);
+		//logger.info(postData);
 		
 		String value = headers.get(COOKIE);
 		if (value != null) {
