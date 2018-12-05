@@ -218,7 +218,12 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 			error_buffer.append("	at " + ste.getClassName() + "(" + ste.getFileName() + ":" + ste.getLineNumber() + ")\r\n\r\n");
 		}
 		ByteBuf buf = copiedBuffer(error_buffer.toString().getBytes());
-		FullHttpResponse new_response = res.delegateObj().replace(buf);
+		FullHttpResponse new_response = null;
+		if(res!=null&&res.delegateObj()!=null) {
+			new_response = res.delegateObj().replace(buf);
+		} else {
+			new_response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST);
+		}
 		new_response.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
 		new_response.headers().set(CONTENT_LENGTH, buf.readableBytes());
 		new_response.setStatus(HttpResponseStatus.BAD_REQUEST);
