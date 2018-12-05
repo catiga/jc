@@ -26,7 +26,7 @@ import io.netty.util.CharsetUtil;
 
 public class RequestParser {
 
-	private static Logger logger = LoggerFactory.getLogger(RequestParser.class);
+	private static Logger logger = LoggerFactory.getLogger(RequestParser.class.getName());
 	
 	DiskFileItemFactory factory = new DiskFileItemFactory();
 	
@@ -138,9 +138,6 @@ public class RequestParser {
 				} else {
 					// normal post to merge params
 					Attribute data = (Attribute) parm;
-					System.out.println(data);
-					System.out.println(data.getName());
-					System.out.println(data.getValue());
 					if(parameters.containsKey(data.getName())) {
 						String[] values = parameters.get(data.getName());
 						Vector<String> vs = new Vector<String>(Arrays.asList(values));

@@ -36,12 +36,17 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 
 public class JCHttpRequest implements HttpServletRequest, JCReqFaca {
+	
+	private static Logger logger = LoggerFactory.getLogger(JCHttpRequest.class.getName());
 	
 	public static final String X_Forwarded_Proto = "X-Forwarded-Proto";
 	
@@ -96,7 +101,13 @@ public class JCHttpRequest implements HttpServletRequest, JCReqFaca {
 		this.request = request;
 		uri = request.uri();
 		HttpHeaders headers = request.headers();
-
+		
+		logger.info(uri);
+		logger.info(request.toString());
+		
+		postData = convertByteBufToString(request.content());
+		logger.info(postData);
+		
 		String value = headers.get(COOKIE);
 		if (value != null) {
 			Set<io.netty.handler.codec.http.cookie.Cookie> cookie_sets = ServerCookieDecoder.LAX.decode(value);
@@ -131,7 +142,6 @@ public class JCHttpRequest implements HttpServletRequest, JCReqFaca {
 			contentType = "application/x-www-form-urlencoded";
 		}
 //		postData = request.content().toString();
-		postData = convertByteBufToString(request.content());
 	}
 
 	public void setRemoteHost(InetSocketAddress remoteHost) {
