@@ -102,7 +102,7 @@ public class JCHttpRequest implements HttpServletRequest, JCReqFaca {
 		uri = request.uri();
 		HttpHeaders headers = request.headers();
 		
-		logger.info(uri);
+		logger.info("request_notify_url::::::" + uri);
 		logger.info(request.toString());
 		
 		postData = convertByteBufToString(request.content());
