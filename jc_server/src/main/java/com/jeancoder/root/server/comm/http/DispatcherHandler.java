@@ -109,7 +109,6 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 		} catch(Exception e) {
 			logger.error("so should send msg by socket to center server:" + e.getMessage(), e);
 			processHandlerException(e, stand_request, stand_response);
-			
 		} finally {
 			JCVMDelegator.releaseContext();
 			if(!keepAlive) {
@@ -206,6 +205,7 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 		error_buffer.append("VM ID:" + JCVMDelegator.delegate().delegatedId() + "\r\n\r\n");
 		if(e instanceof RunningException) {
 			RunningException rex = (RunningException)e;
+			logger.error(rex.getApp() + "..." + rex.getPath() + "&&&" + rex.getRes());
 			error_buffer.append("JCAPP CODE:" + rex.getApp() + "\r\n");
 			error_buffer.append("JCAPP PATH:" + rex.getPath() + "\r\n");
 			error_buffer.append("JCAPP RES:" + rex.getRes() + "\r\n\r\n");
