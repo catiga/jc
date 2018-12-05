@@ -18,10 +18,10 @@ import org.slf4j.LoggerFactory;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.multipart.Attribute;
-import io.netty.handler.codec.http.multipart.FileUpload;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData.HttpDataType;
+import io.netty.handler.codec.http.multipart.MixedFileUpload;
 import io.netty.util.CharsetUtil;
 
 public class RequestParser {
@@ -104,11 +104,16 @@ public class RequestParser {
 			for (InterfaceHttpData parm : parmList) {
 				HttpDataType data_type = parm.getHttpDataType();
 				if (data_type == HttpDataType.FileUpload) {
-					FileUpload fileUpload = (FileUpload) parm;
+					MixedFileUpload fileUpload = (MixedFileUpload) parm;
 					String fileName = fileUpload.getFilename();
 					String contentType = fileUpload.getContentType();
 					String formField = fileUpload.getName();
-					Long file_size = fileUpload.getFile().length();
+					Long file_size = -1l;
+					if(!fileUpload.isInMemory()) {
+						file_size = fileUpload.getFile().length();
+					} else {
+						file_size = fileUpload.length();
+					}
 					if (fileUpload.isCompleted()) {
 						// 暂存到磁盘
 						String tmp_dir = System.getProperty("java.io.tmpdir");
