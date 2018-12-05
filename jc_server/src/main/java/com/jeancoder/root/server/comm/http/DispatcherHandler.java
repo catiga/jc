@@ -113,7 +113,10 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 		} finally {
 			JCVMDelegator.releaseContext();
 			if(!keepAlive) {
-				ctx.writeAndFlush(stand_response.delegateObj()).addListener(ChannelFutureListener.CLOSE);
+				if(stand_response!=null&&stand_response.delegateObj()!=null)
+					ctx.writeAndFlush(stand_response.delegateObj()).addListener(ChannelFutureListener.CLOSE);
+				else
+					ctx.flush();
 			} else {
 				stand_response.delegateObj().headers().set(CONNECTION, KEEP_ALIVE);
                 ctx.write(stand_response.delegateObj());
