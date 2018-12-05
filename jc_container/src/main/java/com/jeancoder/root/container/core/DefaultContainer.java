@@ -235,6 +235,11 @@ public abstract class DefaultContainer extends QContainer implements JCAppContai
 						script.setBinding(context);
 						Object result = script.run();
 						passed.add(resname);
+						
+						if(result==null || ((result instanceof Boolean)&&(!(boolean)result))) {
+							// try get from thread vars
+							result = JCThreadLocal.getResult();
+						}
 						if(!(result instanceof Boolean)) {
 							return new InnerExchange(req.getRequestURI(), passed, result);
 						}
