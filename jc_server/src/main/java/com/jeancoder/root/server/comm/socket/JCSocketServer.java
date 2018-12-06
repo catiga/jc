@@ -75,24 +75,28 @@ public class JCSocketServer extends ServerImpl implements JCServer {
 							String remote_host_name = remote.getHostName();
 							String remote_host_address = remote.getAddress().getHostAddress();
 							int remote_port = remote.getPort();
-							logger.info("connection msg: " + remote_host_name + ", address=" + remote_host_address + ":"
-									+ remote_port + " connected");
-							logger.debug("IP:" + ch.localAddress().getHostName());
-							logger.debug("Port:" + ch.localAddress().getPort());
+							logger.info("connection msg: " + remote_host_name + ", address=" + remote_host_address + ":" + remote_port + " connected");
+							if (logger.isDebugEnabled()) {
+								logger.debug("IP:" + ch.localAddress().getHostName());
+								logger.debug("Port:" + ch.localAddress().getPort());
+							}
 
 							// 配置入站、出站事件channel
 							ChannelPipeline pipeline = ch.pipeline();
 
-							pipeline.addLast(new IdleStateHandler(10, 0, 0, TimeUnit.SECONDS)); // 10sec recheck idle state
+							pipeline.addLast(new IdleStateHandler(10, 0, 0, TimeUnit.SECONDS)); // 10sec
+																								// recheck
+																								// idle
+																								// state
 							pipeline.addLast(idleStateTrigger);
-//							pipeline.addLast("decoder", new StringDecoder());
-//							pipeline.addLast("encoder", new StringEncoder());
-//							pipeline.addLast(new HeartBeatServerHandler());
-							
-							 pipeline.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 2));
-							 pipeline.addLast(new ObjectEncoder());
-							 pipeline.addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
-							 pipeline.addLast(new GeneralLiveHandler());
+							// pipeline.addLast("decoder", new StringDecoder());
+							// pipeline.addLast("encoder", new StringEncoder());
+							// pipeline.addLast(new HeartBeatServerHandler());
+
+							pipeline.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 2));
+							pipeline.addLast(new ObjectEncoder());
+							pipeline.addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
+							pipeline.addLast(new GeneralLiveHandler());
 						}
 					});
 			int port = modconf.getPort();
@@ -111,17 +115,17 @@ public class JCSocketServer extends ServerImpl implements JCServer {
 	}
 
 	public static void main(String[] argc) throws InterruptedException {
-//		JCServer server = new JCSocketServer();
-//		System.out.println("服务准备启动");
-//		server.start();
-//		logger.info("服务启动成功");
-//		while (true) {
-//			SocketChannel channel = (SocketChannel) NettyChannelMap.get("001");
-//			if (channel != null) {
-//				AskMsg askMsg = new AskMsg();
-//				channel.writeAndFlush(askMsg);
-//			}
-//			TimeUnit.SECONDS.sleep(10);
-//		}
+		// JCServer server = new JCSocketServer();
+		// System.out.println("服务准备启动");
+		// server.start();
+		// logger.info("服务启动成功");
+		// while (true) {
+		// SocketChannel channel = (SocketChannel) NettyChannelMap.get("001");
+		// if (channel != null) {
+		// AskMsg askMsg = new AskMsg();
+		// channel.writeAndFlush(askMsg);
+		// }
+		// TimeUnit.SECONDS.sleep(10);
+		// }
 	}
 }
