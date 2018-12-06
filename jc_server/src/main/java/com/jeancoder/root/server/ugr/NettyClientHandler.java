@@ -16,6 +16,9 @@ import com.jc.proto.msg.ReplyServerBody;
 import com.jc.proto.msg.ct.InstallMsg;
 import com.jc.proto.msg.ct.UninstallMsg;
 import com.jc.proto.msg.ct.UpgradeMsg;
+import com.jc.proto.msg.ct.VmContainerMsg;
+import com.jc.proto.msg.qd.SelectHandler;
+import com.jeancoder.root.container.ContainerMaps;
 import com.jeancoder.root.server.util.RemoteUtil;
 import com.jeancoder.root.server.util.ZipUtil;
 import com.jeancoder.root.vm.JCVM;
@@ -27,7 +30,7 @@ import io.netty.util.ReferenceCountUtil;
 
 public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> {
 	
-	private static Logger logger = LoggerFactory.getLogger(NettyClientHandler.class);
+	private static Logger logger = LoggerFactory.getLogger(NettyClientHandler.class.getName());
 	
 	// @Override
 	// public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
@@ -85,11 +88,10 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 						JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
 						jcvm.updateApp(appinfo.to());
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						logger.error("", e);
 					}
 				}
-			}).start();;
+			}).start();
 		}
 			break;
 		case APPINSTALL: {
@@ -104,8 +106,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 						JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
 						jcvm.installApp(appinfo.to());
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						logger.error("", e);
 					}
 				}
 			}).start();
@@ -117,6 +118,19 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 			AppMod appinfo = unmsg.getAppins();
 			JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
 			jcvm.uninstallApp(appinfo.to());
+		}
+			break;
+		case APPCONTAINERS: {
+			JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
+			ContainerMaps conts = jcvm.getContainers();
+			VmContainerMsg reply = new VmContainerMsg(conts);
+			channelHandlerContext.writeAndFlush(reply);
+		}
+			break;
+			
+		case HANDLER_SELECT: {
+			SelectHandler select = (SelectHandler)baseMsg;
+			logger.info(select.toString()); 	// TODO 
 		}
 			break;
 		default:

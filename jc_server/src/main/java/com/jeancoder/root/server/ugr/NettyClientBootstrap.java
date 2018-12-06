@@ -24,7 +24,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 
 public class NettyClientBootstrap {
 	
-	private static Logger logger = LoggerFactory.getLogger(NettyClientBootstrap.class);
+	private static Logger logger = LoggerFactory.getLogger(NettyClientBootstrap.class.getName());
 	
 	private int port;
 	

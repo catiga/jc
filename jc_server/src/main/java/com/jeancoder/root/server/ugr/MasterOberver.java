@@ -31,7 +31,7 @@ import io.netty.util.TimerTask;
 @Sharable
 public abstract class MasterOberver extends ChannelInboundHandlerAdapter implements TimerTask, ChannelHandlerHolder {
 
-	private static Logger logger = LoggerFactory.getLogger(MasterOberver.class);
+	private static Logger logger = LoggerFactory.getLogger(MasterOberver.class.getName());
 
 	private final Bootstrap bootstrap;
 	private final Timer timer;

@@ -73,9 +73,13 @@ public class MasterLiveBuilder {
 		
 		final MasterOberver watchdog = new MasterOberver(boot, timer, port(), host(), true) {
 			public ChannelHandler[] handlers() {
-				return new ChannelHandler[] { new IdleStateHandler(0, 5, 0, TimeUnit.SECONDS), idleStateTrigger, this, 
-						new ObjectEncoder(), new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
-						new NettyClientHandler(), new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 2) };
+				return new ChannelHandler[] { 
+						new IdleStateHandler(0, 5, 0, TimeUnit.SECONDS), 
+						idleStateTrigger, this, 
+						new ObjectEncoder(), 
+						new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
+						new NettyClientHandler(), 
+						new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 2) };
 			}
 		};
 		watchdog.bindKeeper(this);

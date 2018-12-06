@@ -20,7 +20,7 @@ import io.netty.util.ReferenceCountUtil;
 
 public class GeneralLiveHandler extends SimpleChannelInboundHandler<GeneralMsg> {
 
-	private static Logger logger = LoggerFactory.getLogger(GeneralLiveHandler.class);
+	private static Logger logger = LoggerFactory.getLogger(GeneralLiveHandler.class.getName());
 	
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
@@ -50,7 +50,7 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 	 */
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		logger.error("exception:\r\n" + cause.getMessage());
+		logger.error("exception:" + cause.getMessage());
 		//ctx.close();
 	}
 	
