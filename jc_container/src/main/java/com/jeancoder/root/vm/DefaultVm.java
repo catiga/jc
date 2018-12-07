@@ -21,7 +21,6 @@ import com.jeancoder.root.container.core.BCID;
 import com.jeancoder.root.container.core.LifecycleZa;
 import com.jeancoder.root.env.JCAPP;
 import com.jeancoder.root.env.RunnerResult;
-import com.jeancoder.root.exception.SPPEmptyException;
 import com.jeancoder.root.handler.RunnerResultListener;
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
@@ -136,7 +135,9 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 				return ret;
 			}
 		}
-		throw new SPPEmptyException(app_context_path.substring(1), app_context_path.substring(1), req.getRequestURI(), req.getRequestURI(), "", null);
+		logger.error("can not find the cooresponding container by :" + req.getRequestURI());
+		//throw new SPPEmptyException(app_context_path.substring(1), app_context_path.substring(1), req.getRequestURI(), req.getRequestURI(), "", null);
+		return null;
 	}
 	
 	protected void afterTriggered(JCHttpRequest req, JCHttpResponse res, Object result) {
