@@ -72,7 +72,11 @@ public class JCRequest {
 	}
 	
 	public String getSchema() {
-		return request.getScheme();
+		String schema = request.getScheme();
+		if(!schema.endsWith("://")) {
+			schema = schema + "://";
+		}
+		return schema;
 	}
 
 	public Map<String, String[]> getParameterMap() {

@@ -469,7 +469,7 @@ public class JCHttpRequest implements HttpServletRequest, JCReqFaca {
 		if(schema==null) {
 			schema = "http";
 		}
-		return schema + "://";
+		return schema;
 	}
 
 	@Override
