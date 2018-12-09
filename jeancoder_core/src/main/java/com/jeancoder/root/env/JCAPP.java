@@ -1,6 +1,9 @@
 package com.jeancoder.root.env;
 
-public class JCAPP {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class JCAPP implements Serializable {
 
 	String id;
 	

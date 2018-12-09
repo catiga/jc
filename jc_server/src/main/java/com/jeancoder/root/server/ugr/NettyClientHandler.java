@@ -19,6 +19,7 @@ import com.jc.proto.msg.ct.UpgradeMsg;
 import com.jc.proto.msg.ct.VmContainerMsg;
 import com.jc.proto.msg.qd.SelectHandler;
 import com.jc.proto.msg.qd.TablesHandler;
+import com.jeancoder.core.util.JackSonBeanMapper;
 import com.jeancoder.root.container.ContainerMaps;
 import com.jeancoder.root.server.util.RemoteUtil;
 import com.jeancoder.root.server.util.ZipUtil;
@@ -125,7 +126,11 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 			JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
 			ContainerMaps conts = jcvm.getContainers();
 			VmContainerMsg reply = new VmContainerMsg(conts);
-			channelHandlerContext.writeAndFlush(reply);
+			try {
+				channelHandlerContext.writeAndFlush(reply);	//回写数据
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 			break;
 			
