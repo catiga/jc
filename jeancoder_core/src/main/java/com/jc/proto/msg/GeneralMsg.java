@@ -16,6 +16,9 @@ public abstract class GeneralMsg  implements Serializable {
     //初始化客户端id和消息全局ID
     public GeneralMsg() {
         this.clientId = Constants.getClientId();
+        if(unionid==null) {
+        	unionid = UUID.randomUUID().toString().replace("-", "");
+        }
     }
 
     public String getUnionid() {
