@@ -1,9 +1,12 @@
 package com.jc.proto.msg;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 @SuppressWarnings("serial")
 public abstract class GeneralMsg  implements Serializable {
+	
+	private String unionid;
     
     private MsgType type;
     
@@ -13,9 +16,14 @@ public abstract class GeneralMsg  implements Serializable {
     //初始化客户端id
     public GeneralMsg() {
         this.clientId = Constants.getClientId();
+        this.unionid = UUID.randomUUID().toString();
     }
 
-    public String getClientId() {
+    public String getUnionid() {
+		return unionid;
+	}
+
+	public String getClientId() {
         return clientId;
     }
 
