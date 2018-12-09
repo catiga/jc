@@ -71,7 +71,7 @@ public class MasterLiveBuilder {
 		boot.group(group).channel(NioSocketChannel.class).handler(new LoggingHandler(LogLevel.INFO));
 		boot.option(ChannelOption.SO_KEEPALIVE, true);
 		
-		final MasterOberver watchdog = new MasterOberver(boot, timer, port(), host(), true) {
+		final MasterObserver watchdog = new MasterObserver(boot, timer, port(), host(), true) {
 			public ChannelHandler[] handlers() {
 				return new ChannelHandler[] { 
 						new IdleStateHandler(0, 5, 0, TimeUnit.SECONDS), 

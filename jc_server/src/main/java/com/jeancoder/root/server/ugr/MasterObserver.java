@@ -29,9 +29,9 @@ import io.netty.util.Timer;
 import io.netty.util.TimerTask;
 
 @Sharable
-public abstract class MasterOberver extends ChannelInboundHandlerAdapter implements TimerTask, ChannelHandlerHolder {
+public abstract class MasterObserver extends ChannelInboundHandlerAdapter implements TimerTask, ChannelHandlerHolder {
 
-	private static Logger logger = LoggerFactory.getLogger(MasterOberver.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(MasterObserver.class.getName());
 
 	private final Bootstrap bootstrap;
 	private final Timer timer;
@@ -44,7 +44,7 @@ public abstract class MasterOberver extends ChannelInboundHandlerAdapter impleme
 	private volatile boolean reconnect = true;
 	private int attempts;
 
-	public MasterOberver(Bootstrap bootstrap, Timer timer, int port, String host, boolean reconnect) {
+	public MasterObserver(Bootstrap bootstrap, Timer timer, int port, String host, boolean reconnect) {
 		this.bootstrap = bootstrap;
 		this.timer = timer;
 		this.port = port;

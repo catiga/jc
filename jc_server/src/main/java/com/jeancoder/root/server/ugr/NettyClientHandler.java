@@ -13,13 +13,13 @@ import com.jc.proto.msg.MsgType;
 import com.jc.proto.msg.ReplyClientBody;
 import com.jc.proto.msg.ReplyMsg;
 import com.jc.proto.msg.ReplyServerBody;
+import com.jc.proto.msg.SyncMsg;
 import com.jc.proto.msg.ct.InstallMsg;
 import com.jc.proto.msg.ct.UninstallMsg;
 import com.jc.proto.msg.ct.UpgradeMsg;
 import com.jc.proto.msg.ct.VmContainerMsg;
 import com.jc.proto.msg.qd.SelectHandler;
 import com.jc.proto.msg.qd.TablesHandler;
-import com.jeancoder.core.util.JackSonBeanMapper;
 import com.jeancoder.root.container.ContainerMaps;
 import com.jeancoder.root.server.util.RemoteUtil;
 import com.jeancoder.root.server.util.ZipUtil;
@@ -50,6 +50,13 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 	// }
 	// }
 	// }
+	
+	protected void fireGeneralMsg(ChannelHandlerContext ctx, GeneralMsg revMsg, GeneralMsg sendMsg) {
+		if(revMsg instanceof SyncMsg) {
+			sendMsg.resetUnionid(revMsg.getUnionid());
+		}
+		ctx.writeAndFlush(sendMsg);
+	}
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext channelHandlerContext, GeneralMsg baseMsg) throws Exception {
@@ -126,11 +133,12 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 			JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
 			ContainerMaps conts = jcvm.getContainers();
 			VmContainerMsg reply = new VmContainerMsg(conts);
-			try {
-				channelHandlerContext.writeAndFlush(reply);	//回写数据
-			}catch(Exception e){
-				e.printStackTrace();
-			}
+			fireGeneralMsg(channelHandlerContext, baseMsg, reply);
+//			try {
+//				channelHandlerContext.writeAndFlush(reply);	//回写数据
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
 		}
 			break;
 			
