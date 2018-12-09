@@ -1,6 +1,9 @@
 package com.jeancoder.root.container.core;
 
-public class BCID {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class BCID implements Serializable {
 
 	String id;
 	

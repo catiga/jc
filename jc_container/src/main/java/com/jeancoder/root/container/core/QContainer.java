@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.jc.task.TaskObject;
 import com.jeancoder.root.container.JCAppContainer;
 
+@SuppressWarnings("serial")
 public abstract class QContainer extends LifecycleZa implements JCAppContainer {
 	
 	private static Logger logger = LoggerFactory.getLogger(QContainer.class.getName());

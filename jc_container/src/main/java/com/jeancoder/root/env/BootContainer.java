@@ -31,6 +31,7 @@ import com.jeancoder.root.io.http.JCHttpResponse;
 import groovy.lang.Binding;
 import groovy.lang.Script;
 
+@SuppressWarnings("serial")
 public class BootContainer extends DefaultContainer implements JCAppContainer {
 
 	private static Logger logger = LoggerFactory.getLogger(BootContainer.class.getName());

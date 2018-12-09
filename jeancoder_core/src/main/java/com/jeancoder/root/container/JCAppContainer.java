@@ -1,5 +1,6 @@
 package com.jeancoder.root.container;
 
+import java.io.Serializable;
 import java.util.Enumeration;
 
 import com.jeancoder.core.Interceptor.Interceptor;
@@ -13,7 +14,7 @@ import com.jeancoder.root.env.RunnerResult;
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
 
-public interface JCAppContainer extends Lifecycle, JCTaskKeeper {
+public interface JCAppContainer extends Lifecycle, JCTaskKeeper, Serializable {
 	
 	JCLoader getManagerClassLoader();
 	
