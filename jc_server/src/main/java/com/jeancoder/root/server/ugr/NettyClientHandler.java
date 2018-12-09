@@ -18,6 +18,7 @@ import com.jc.proto.msg.ct.UninstallMsg;
 import com.jc.proto.msg.ct.UpgradeMsg;
 import com.jc.proto.msg.ct.VmContainerMsg;
 import com.jc.proto.msg.qd.SelectHandler;
+import com.jc.proto.msg.qd.TablesHandler;
 import com.jeancoder.root.container.ContainerMaps;
 import com.jeancoder.root.server.util.RemoteUtil;
 import com.jeancoder.root.server.util.ZipUtil;
@@ -131,6 +132,12 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 		case HANDLER_SELECT: {
 			SelectHandler select = (SelectHandler)baseMsg;
 			logger.info(select.toString()); 	// TODO 
+		}
+			break;
+		
+		case HANDLER_TABLES: {
+			TablesHandler msg = (TablesHandler)baseMsg;
+			System.out.println(msg);
 		}
 			break;
 		default:
