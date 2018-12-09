@@ -1,5 +1,6 @@
 package com.jeancoder.root.container;
 
+import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Set;
@@ -8,7 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.jeancoder.root.container.core.BCID;
 
-public class ContainerMaps {
+@SuppressWarnings("serial")
+public class ContainerMaps implements Serializable {
 
 	private final Map<BCID, JCAppContainer> VM_CONTAINERS = new ConcurrentHashMap<BCID, JCAppContainer>();
 	
