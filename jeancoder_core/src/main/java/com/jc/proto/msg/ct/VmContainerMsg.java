@@ -5,7 +5,7 @@ import com.jeancoder.root.container.ContainerMaps;
 
 @SuppressWarnings("serial")
 public class VmContainerMsg extends GeneralMsg {
-
+	
 	ContainerMaps conthos;
 
 	public ContainerMaps getConthos() {
@@ -17,6 +17,7 @@ public class VmContainerMsg extends GeneralMsg {
 	}
 	
 	public VmContainerMsg(ContainerMaps hos) {
+		super();
 		this.conthos = hos;
 	}
 }
