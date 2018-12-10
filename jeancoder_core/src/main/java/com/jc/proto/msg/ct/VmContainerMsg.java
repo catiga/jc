@@ -12,7 +12,8 @@ public class VmContainerMsg extends SyncMsg {
 	
 	Map<BCID, ContainerBean> conthos;
 
-	public Map<BCID, ContainerBean> getConthos() {
+	@Override
+	public Object getResData() {
 		return conthos;
 	}
 
@@ -24,4 +25,5 @@ public class VmContainerMsg extends SyncMsg {
 		super();
 		this.conthos = ContainerBean.cons(hos);
 	}
+	
 }

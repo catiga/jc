@@ -57,4 +57,8 @@ public abstract class GeneralMsg  implements Serializable {
     	}
     	return false;
     }
+    
+    public Object getResData() {
+    	return null;
+    }
 }

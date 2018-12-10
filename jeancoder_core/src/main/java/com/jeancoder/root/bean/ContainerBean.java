@@ -16,6 +16,8 @@ public class ContainerBean implements Serializable {
 	
 	JCAPP app;
 	
+	public ContainerBean() {}
+	
 	public ContainerBean(JCAppContainer container) {
 		this.id = container.id();
 		this.app = container.getApp();

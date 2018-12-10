@@ -4,11 +4,11 @@ import com.jc.proto.msg.MsgType;
 import com.jc.proto.msg.SyncMsg;
 
 @SuppressWarnings("serial")
-public class ViewVmContsMsg extends SyncMsg {
+public class ViewContTblMsg extends SyncMsg {
 
-	public ViewVmContsMsg() {
+	public ViewContTblMsg() {
 		super();
-		setType(MsgType.APPCONTAINERS);
+		setType(MsgType.HANDLER_TABLES);
 	}
 
 	@Override

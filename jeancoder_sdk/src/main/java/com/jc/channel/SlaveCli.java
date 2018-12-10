@@ -106,11 +106,12 @@ public class SlaveCli {
 					return ret_msg;
 				}
 			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} finally {
-				if(timecounter>timeout) {
-					return ret_msg;
-				}
+				logger.error("", e);
+			} catch (Exception e) {
+				logger.error("", e);
+			}
+			if(timecounter>timeout) {
+				return ret_msg;
 			}
 		}
 	}
