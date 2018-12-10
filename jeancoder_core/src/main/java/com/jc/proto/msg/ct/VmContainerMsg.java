@@ -2,13 +2,13 @@ package com.jc.proto.msg.ct;
 
 import java.util.Map;
 
-import com.jc.proto.msg.GeneralMsg;
+import com.jc.proto.msg.SyncMsg;
 import com.jeancoder.root.bean.ContainerBean;
 import com.jeancoder.root.container.ContainerMaps;
 import com.jeancoder.root.container.core.BCID;
 
 @SuppressWarnings("serial")
-public class VmContainerMsg extends GeneralMsg {
+public class VmContainerMsg extends SyncMsg {
 	
 	Map<BCID, ContainerBean> conthos;
 
