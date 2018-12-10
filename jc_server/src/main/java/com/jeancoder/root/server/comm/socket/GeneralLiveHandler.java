@@ -66,49 +66,52 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 				logger.info("client" + loginMsg.getClientId() + " 登录成功");
 			}
 		} else {
-			if (NettyChannelMap.get(baseMsg.getClientId()) == null) {
+//			if (NettyChannelMap.get(baseMsg.getClientId()) == null) {
 				// 说明未登录，或者连接断了，服务器向客户端发起登录请求，让客户端重新登录
-				LoginMsg loginMsg = new LoginMsg();
-				ctx.channel().writeAndFlush(loginMsg);
+//				LoginMsg loginMsg = new LoginMsg();
+//				ctx.channel().writeAndFlush(loginMsg);
+//			}
+			
+			
+			switch (baseMsg.getType()) {
+			case PING: {
+				PingMsg pingMsg = (PingMsg) baseMsg;
+				PingMsg replyPing = new PingMsg();
+				NettyChannelMap.get(pingMsg.getClientId()).writeAndFlush(replyPing);
+			}
+				break;
+			case ASK: {
+				// 收到客户端的请求
+				AskMsg askMsg = (AskMsg) baseMsg;
+				if ("authToken".equals(askMsg.getParams().getAuth())) {
+					ReplyServerBody replyBody = new ReplyServerBody("server info $$$$ !!!");
+					ReplyMsg replyMsg = new ReplyMsg();
+					replyMsg.setBody(replyBody);
+					NettyChannelMap.get(askMsg.getClientId()).writeAndFlush(replyMsg);
+				}
+			}
+				break;
+			case REPLY: {
+				// 收到客户端回复
+				ReplyMsg replyMsg = (ReplyMsg) baseMsg;
+				ReplyClientBody clientBody = (ReplyClientBody) replyMsg.getBody();
+				logger.info("receive client msg: " + clientBody.getClientInfo());
+			}
+				break;
+			default:
+				logger.info("THE DEFAULT MSG HANDLER INPUT:" + baseMsg);
+				String message_id = baseMsg.getUnionid();
+				String client_id = baseMsg.getClientId();
+				MsgType message_type = baseMsg.getType();
+				if(message_id==null) {
+					logger.error("CLIENT_ID=" + client_id + "; MESSAGE_ID=" + message_id + "; MSG_TYPE=" + message_type + " will be dicarded, for the message id empty");
+				} else {
+					this.disposeSyncOrExchangeMsg(baseMsg);
+				}
+				break;
 			}
 		}
-		switch (baseMsg.getType()) {
-		case PING: {
-			PingMsg pingMsg = (PingMsg) baseMsg;
-			PingMsg replyPing = new PingMsg();
-			NettyChannelMap.get(pingMsg.getClientId()).writeAndFlush(replyPing);
-		}
-			break;
-		case ASK: {
-			// 收到客户端的请求
-			AskMsg askMsg = (AskMsg) baseMsg;
-			if ("authToken".equals(askMsg.getParams().getAuth())) {
-				ReplyServerBody replyBody = new ReplyServerBody("server info $$$$ !!!");
-				ReplyMsg replyMsg = new ReplyMsg();
-				replyMsg.setBody(replyBody);
-				NettyChannelMap.get(askMsg.getClientId()).writeAndFlush(replyMsg);
-			}
-		}
-			break;
-		case REPLY: {
-			// 收到客户端回复
-			ReplyMsg replyMsg = (ReplyMsg) baseMsg;
-			ReplyClientBody clientBody = (ReplyClientBody) replyMsg.getBody();
-			logger.info("receive client msg: " + clientBody.getClientInfo());
-		}
-			break;
-		default:
-			logger.info("THE DEFAULT MSG HANDLER INPUT:" + baseMsg);
-			String message_id = baseMsg.getUnionid();
-			String client_id = baseMsg.getClientId();
-			MsgType message_type = baseMsg.getType();
-			if(message_id==null) {
-				logger.error("CLIENT_ID=" + client_id + "; MESSAGE_ID=" + message_id + "; MSG_TYPE=" + message_type + " will be dicarded, for the message id empty");
-			} else {
-				this.disposeSyncOrExchangeMsg(baseMsg);
-			}
-			break;
-		}
+		
 		ReferenceCountUtil.release(baseMsg);
 	}
 	
