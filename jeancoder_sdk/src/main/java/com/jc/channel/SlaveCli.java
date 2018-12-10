@@ -78,7 +78,7 @@ public class SlaveCli {
 			public void operationComplete(ChannelFuture f) throws Exception {
 				boolean succeed = f.isSuccess();
 				if(succeed) {
-					boolean add_result = MessageExchangeCents.getExchanger().add(sync_msg_id);
+					boolean add_result = JCShellFac.instance().emptyMsg(sync_msg_id);
 					if(!add_result) {
 						logger.error(sync_msg_id + " was not persisted successfully.");
 					}

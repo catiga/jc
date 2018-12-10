@@ -28,6 +28,17 @@ public class TotalMessageConnector {
 		}
 	}
 	
+	public static boolean addMsg(String msg_id) {
+		synchronized (_MESSAGE_CENTS_) {
+			GeneralMsg empty = _MESSAGE_CENTS_.get(msg_id);
+			if(empty!=null) {
+				return false;
+			}
+			_MESSAGE_CENTS_.put(msg_id, GeneralMsg.EMPTY);
+			return true;
+		}
+	}
+	
 	public static GeneralMsg consumeMsg(String msg_id) {
 		synchronized (_MESSAGE_CENTS_) {
 			GeneralMsg msg = _MESSAGE_CENTS_.get(msg_id);

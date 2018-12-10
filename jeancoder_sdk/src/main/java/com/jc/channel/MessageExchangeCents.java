@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.jc.proto.msg.GeneralMsg;
 
+@Deprecated
 @SuppressWarnings("serial")
 public class MessageExchangeCents implements Serializable {
 

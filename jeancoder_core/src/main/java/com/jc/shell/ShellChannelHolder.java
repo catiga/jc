@@ -11,6 +11,8 @@ public interface ShellChannelHolder {
 
 	public GeneralMsg consumeMsg(String message_id);
 	
+	public boolean emptyMsg(String message_id);
+	
 	public List<String> dispatchlist();
 	
 	public Channel dispatchaim(String id);

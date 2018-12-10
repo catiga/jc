@@ -30,6 +30,10 @@ public class ServerHolder implements ShellChannelHolder {
 		return TotalMessageConnector.consumeMsg(message_id);
 	}
 	
+	public boolean emptyMsg(String message_id) {
+		return TotalMessageConnector.addMsg(message_id);
+	}
+	
 	public void syncMsg(String message_id, GeneralMsg message) {
 		TotalMessageConnector.syncMsg(message_id, message);
 	}
