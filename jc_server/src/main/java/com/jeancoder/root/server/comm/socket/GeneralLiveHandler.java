@@ -12,6 +12,7 @@ import com.jc.proto.msg.ReplyClientBody;
 import com.jc.proto.msg.ReplyMsg;
 import com.jc.proto.msg.ReplyServerBody;
 import com.jeancoder.root.server.state.NettyChannelMap;
+import com.jeancoder.root.server.state.ServerHolder;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -97,9 +98,22 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 		}
 			break;
 		default:
+			logger.info("THE DEFAULT MSG HANDLER INPUT:" + baseMsg);
+			String message_id = baseMsg.getUnionid();
+			String client_id = baseMsg.getClientId();
+			MsgType message_type = baseMsg.getType();
+			if(message_id==null) {
+				logger.error("CLIENT_ID=" + client_id + "; MESSAGE_ID=" + message_id + "; MSG_TYPE=" + message_type + " will be dicarded, for the message id empty");
+			} else {
+				this.disposeSyncOrExchangeMsg(baseMsg);
+			}
 			break;
 		}
 		ReferenceCountUtil.release(baseMsg);
 	}
-
+	
+	protected <T extends GeneralMsg> void disposeSyncOrExchangeMsg(T msg) {
+		String msg_id = msg.getUnionid();
+		ServerHolder.getHolder().syncMsg(msg_id, msg);
+	}
 }

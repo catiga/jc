@@ -5,6 +5,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
+import com.jc.proto.msg.GeneralMsg;
 import com.jc.shell.JCShellFac;
 import com.jc.shell.ShellChannelHolder;
 import com.jeancoder.root.server.inet.JCServer;
@@ -23,6 +24,14 @@ public class ServerHolder implements ShellChannelHolder {
 	
 	private ServerHolder() {
 		JCShellFac.init(this);
+	}
+	
+	public GeneralMsg consumeMsg(String message_id) {
+		return TotalMessageConnector.consumeMsg(message_id);
+	}
+	
+	public void syncMsg(String message_id, GeneralMsg message) {
+		TotalMessageConnector.syncMsg(message_id, message);
 	}
 	
 	public List<String> dispatchlist() {
