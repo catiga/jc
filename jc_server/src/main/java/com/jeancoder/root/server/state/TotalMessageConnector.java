@@ -17,7 +17,11 @@ public class TotalMessageConnector {
 	
 	public static void syncMsg(String msg_id, GeneralMsg message) {
 		synchronized (_MESSAGE_CENTS_) {
-			if(_MESSAGE_CENTS_.containsKey(msg_id)) {
+			GeneralMsg empty = _MESSAGE_CENTS_.get(msg_id);
+			if(empty==null) {
+				throw new RuntimeException("MESSAGE WAS NOT INITIALIZED CORRECTLY");
+			}
+			if(!empty.isEmpty()) {
 				throw new RuntimeException("MESSAGE REPEAT, COULD NOT BE SYNCED.");
 			}
 			_MESSAGE_CENTS_.put(msg_id, message);

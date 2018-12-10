@@ -30,7 +30,7 @@ public class MessageExchangeCents implements Serializable {
 		synchronized (_MESSAGE_CENTS_) {
 			GeneralMsg exist = _MESSAGE_CENTS_.get(msg_id);
 			if(exist==null) {
-				_MESSAGE_CENTS_.put(msg_id, null);	//pre reserve
+				_MESSAGE_CENTS_.put(msg_id, GeneralMsg.EMPTY);	//pre reserve
 				return true;
 			}
 			return false;

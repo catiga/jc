@@ -1,6 +1,8 @@
 package com.jc.proto.msg;
 
 public enum MsgType {
+	EMPTY, 
+	
 	PING, ASK, REPLY, LOGIN,
 	
 	APPUNINSTALL, APPINSTALL, APPUPGRADE, APPCONTAINERS,

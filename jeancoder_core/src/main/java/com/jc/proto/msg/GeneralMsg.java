@@ -6,6 +6,8 @@ import java.util.UUID;
 @SuppressWarnings("serial")
 public abstract class GeneralMsg  implements Serializable {
 	
+	public static final EmptyMsg EMPTY = new EmptyMsg();
+	
 	protected String unionid;
     
     private MsgType type;
@@ -47,5 +49,12 @@ public abstract class GeneralMsg  implements Serializable {
 
     public void setType(MsgType type) {
         this.type = type;
+    }
+    
+    public boolean isEmpty() {
+    	if(unionid!=null&&unionid.equals(MsgType.EMPTY.toString())) {
+    		return true;
+    	}
+    	return false;
     }
 }
