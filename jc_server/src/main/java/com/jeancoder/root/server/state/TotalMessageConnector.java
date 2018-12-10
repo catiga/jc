@@ -42,7 +42,7 @@ public class TotalMessageConnector {
 	public static GeneralMsg consumeMsg(String msg_id) {
 		synchronized (_MESSAGE_CENTS_) {
 			GeneralMsg msg = _MESSAGE_CENTS_.get(msg_id);
-			if(msg!=null) {
+			if(msg!=null&&!msg.isEmpty()) {
 				_MESSAGE_CENTS_.remove(msg_id);
 			}
 			return msg;

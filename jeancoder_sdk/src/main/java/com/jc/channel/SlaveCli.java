@@ -2,6 +2,7 @@ package com.jc.channel;
 
 import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,6 +89,30 @@ public class SlaveCli {
 	}
 	
 	public GeneralMsg consumeSyncMsg(String message_id) {
-		return JCShellFac.instance().consumeMsg(message_id);
+		Long default_time_out = 5000L;	//默认等待时间为5秒
+		//return JCShellFac.instance().consumeMsg(message_id);
+		return consumeSyncMsg(message_id, default_time_out);
+	}
+	
+	public GeneralMsg consumeSyncMsg(String message_id, Long timeout) {
+		Long timecounter = 0l;
+		GeneralMsg ret_msg = null;
+		for(;;) {
+			timecounter += 500l;
+			try {
+				TimeUnit.MILLISECONDS.sleep(500l);
+				ret_msg = JCShellFac.instance().consumeMsg(message_id);
+				if(ret_msg!=null) {
+					return ret_msg;
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} finally {
+				if(timecounter>timeout) {
+					return ret_msg;
+				}
+			}
+		}
 	}
 }
+
