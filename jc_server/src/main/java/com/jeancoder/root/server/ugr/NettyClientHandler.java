@@ -2,6 +2,8 @@ package com.jeancoder.root.server.ugr;
 
 import java.io.InputStream;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.ZipInputStream;
@@ -144,8 +146,37 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 			break;
 			
 		case HANDLER_SELECT: {
-			SelectHandler select = (SelectHandler)baseMsg;
-			logger.info(select.toString()); 	// TODO 
+			SelectHandler msg = (SelectHandler)baseMsg;
+			JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
+			ContainerMaps conts = jcvm.getContainers();
+			JCAppContainer container = conts.getByCode(msg.getContcode()).nextElement();
+			DatabasePower db_pow = container.getCaps().getDatabase();
+			@SuppressWarnings("deprecation")
+			JeancoderResultSet result = db_pow.doQuery(msg.getSql());
+			ResultSet rs = result.getResultSet();
+			List<String[]> tables = new LinkedList<String[]>();
+			
+			ResultSetMetaData metadata = rs.getMetaData();
+			int col_size = metadata.getColumnCount();
+			List<String> heads = new ArrayList<>(col_size);
+			for(int i=1; i<=col_size; i++) {
+				String column_name = metadata.getColumnName(i);
+				String column_alias_name = metadata.getColumnLabel(i);
+				if(column_alias_name!=null) {
+					column_name = column_alias_name;
+				}
+				heads.add(column_name);
+			}
+			tables.add(heads.toArray(new String[col_size]));
+			while(rs.next()) {
+				List<String> data = new ArrayList<>(col_size);
+				for(int i=1; i<=col_size; i++) {
+					data.add(rs.getString(i));
+				}
+				tables.add(data.toArray(new String[col_size]));
+			}
+			msg.setData(tables);
+			fireGeneralMsg(channelHandlerContext, msg, msg);
 		}
 			break;
 		
