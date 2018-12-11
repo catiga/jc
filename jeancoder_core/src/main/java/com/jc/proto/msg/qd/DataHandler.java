@@ -13,6 +13,16 @@ public abstract class DataHandler extends SyncMsg {
 	
 	private Object data;
 	
+	private String sql;
+	
+	public String getSql() {
+		return sql;
+	}
+
+	public void setSql(String sql) {
+		this.sql = sql;
+	}
+
 	public Object getData() {
 		return data;
 	}

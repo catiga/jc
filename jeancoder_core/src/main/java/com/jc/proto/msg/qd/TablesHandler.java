@@ -8,6 +8,7 @@ public class TablesHandler extends DataHandler {
 	public TablesHandler(String insid, String cont_id, String cont_code) {
 		super(insid, cont_id, cont_code);
 		setType(MsgType.HANDLER_TABLES);
+		setSql("show tables");
 	}
 	
 }
