@@ -51,4 +51,8 @@ public abstract class DataHandler extends SyncMsg {
 		this.contcode = contcode;
 	}
 	
+	@Override
+	public Object getResData() {
+		return getData();
+	}
 }

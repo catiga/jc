@@ -10,9 +10,4 @@ public class TablesHandler extends DataHandler {
 		setType(MsgType.HANDLER_TABLES);
 	}
 	
-	@Override
-	public Object getResData() {
-		return null;
-	}
-	
 }

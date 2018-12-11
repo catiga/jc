@@ -10,9 +10,4 @@ public class SelectHandler extends DataHandler {
 		setType(MsgType.HANDLER_SELECT);
 	}
 	
-	@Override
-	public Object getResData() {
-		return null;
-	}
-	
 }
