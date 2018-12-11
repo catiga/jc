@@ -11,6 +11,16 @@ public abstract class DataHandler extends SyncMsg {
 	
 	private String contcode;
 	
+	private Object data;
+	
+	public Object getData() {
+		return data;
+	}
+
+	public void setData(Object data) {
+		this.data = data;
+	}
+
 	public DataHandler(String insid, String cont_id, String cont_code) {
 		this.insid = insid;
 		this.contid = cont_id;

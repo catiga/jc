@@ -1,6 +1,9 @@
 package com.jeancoder.root.server.ugr;
 
 import java.io.InputStream;
+import java.sql.ResultSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.zip.ZipInputStream;
 
 import org.slf4j.Logger;
@@ -20,7 +23,10 @@ import com.jc.proto.msg.ct.UpgradeMsg;
 import com.jc.proto.msg.ct.VmContainerMsg;
 import com.jc.proto.msg.qd.SelectHandler;
 import com.jc.proto.msg.qd.TablesHandler;
+import com.jeancoder.core.power.DatabasePower;
+import com.jeancoder.core.power.result.JeancoderResultSet;
 import com.jeancoder.root.container.ContainerMaps;
+import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.server.util.RemoteUtil;
 import com.jeancoder.root.server.util.ZipUtil;
 import com.jeancoder.root.vm.JCVM;
@@ -134,11 +140,6 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 			ContainerMaps conts = jcvm.getContainers();
 			VmContainerMsg reply = new VmContainerMsg(conts);
 			fireGeneralMsg(channelHandlerContext, baseMsg, reply);
-//			try {
-//				channelHandlerContext.writeAndFlush(reply);	//回写数据
-//			}catch(Exception e){
-//				e.printStackTrace();
-//			}
 		}
 			break;
 			
@@ -150,7 +151,19 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 		
 		case HANDLER_TABLES: {
 			TablesHandler msg = (TablesHandler)baseMsg;
-			System.out.println(msg);
+			JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
+			ContainerMaps conts = jcvm.getContainers();
+			JCAppContainer container = conts.getByCode(msg.getContcode()).nextElement();
+			DatabasePower db_pow = container.getCaps().getDatabase();
+			@SuppressWarnings("deprecation")
+			JeancoderResultSet result = db_pow.doQuery("show tables");
+			ResultSet rs = result.getResultSet();
+			List<String> tables = new LinkedList<>();
+			while(rs.next()) {
+				tables.add(rs.getString(1));
+			}
+			msg.setData(tables);
+			fireGeneralMsg(channelHandlerContext, msg, msg);
 		}
 			break;
 		default:
