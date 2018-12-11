@@ -2,6 +2,8 @@ package com.jeancoder.root.server.ugr;
 
 import java.io.InputStream;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.ZipInputStream;
@@ -165,15 +167,30 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 		ReferenceCountUtil.release(msgType);
 	}
 	
-	@SuppressWarnings("deprecation")
 	protected Object extractData(DataHandler datahandler) {
 		JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
 		ContainerMaps conts = jcvm.getContainers();
 		JCAppContainer container = conts.getByCode(datahandler.getContcode()).nextElement();
 		
-		JeancoderResultSet result = null;
 		try {
 			DatabasePower db_pow = container.getCaps().getDatabase();
+			Object ret_data = null;
+			if(datahandler instanceof TablesHandler) {
+				ret_data = this.extractDbTables(db_pow, (TablesHandler)datahandler);
+			} else if(datahandler instanceof SelectHandler) {
+				ret_data = this.extractDbTables(db_pow, (SelectHandler)datahandler);
+			}
+			return ret_data;
+		} catch(Exception e) {
+			logger.error("", e);
+			return null;
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	private List<String> extractDbTables(DatabasePower db_pow, TablesHandler datahandler) {
+		JeancoderResultSet result = null;
+		try {
 			result = db_pow.doQuery(datahandler.getSql());
 			ResultSet rs = result.getResultSet();
 			List<String> tables = new LinkedList<>();
@@ -182,8 +199,46 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 			}
 			return tables;
 		} catch(Exception e) {
-			logger.error("", e);
-			return null;
+			throw new RuntimeException(e);
+		} finally {
+			if(result!=null) {
+				result.closeConnection();
+			}
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	private List<String[]> extractDbTables(DatabasePower db_pow, SelectHandler datahandler) {
+		JeancoderResultSet result = null;
+		
+		List<String[]> tables = new LinkedList<String[]>();
+		
+		try {
+			result = db_pow.doQuery(datahandler.getSql());
+			ResultSet rs = result.getResultSet();
+			
+			ResultSetMetaData metadata = rs.getMetaData();
+			int col_size = metadata.getColumnCount();
+			List<String> heads = new ArrayList<>(col_size);
+			for(int i=1; i<=col_size; i++) {
+				String column_name = metadata.getColumnName(i);
+				String column_alias_name = metadata.getColumnLabel(i);
+				if(column_alias_name!=null) {
+					column_name = column_alias_name;
+				}
+				heads.add(column_name);
+			}
+			tables.add(heads.toArray(new String[col_size]));
+			while(rs.next()) {
+				List<String> data = new ArrayList<>(col_size);
+				for(int i=1; i<=col_size; i++) {
+					data.add(rs.getString(i));
+				}
+				tables.add(data.toArray(new String[col_size]));
+			}
+			return tables;
+		} catch(Exception e) {
+			throw new RuntimeException(e);
 		} finally {
 			if(result!=null) {
 				result.closeConnection();
