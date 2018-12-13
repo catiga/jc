@@ -60,16 +60,16 @@ public class Starter {
 				String rules = RemoteUtil.getConfigList();
 				ByteResults byteResults = JackSonBeanMapper.fromJson(rules, ByteResults.class);
 				if (!"0000".equals(byteResults.getStatus())) {
-					logger.info("获取配置失败 status:" + byteResults.getStatus() + " msg:" + byteResults.getMsg());
+					logger.info("load config error status:" + byteResults.getStatus() + " msg:" + byteResults.getMsg());
 					return;
 				}
 				json = new String(byteResults.getResults());
 			} catch (Exception e) {
-				logger.error("网络加载配置文件错误", e);
+				logger.error("checking and loading network error.", e);
 			}
 		}
 		if (json == null) {
-			logger.error("配置文件不存在");
+			logger.error("configs error and will exit.");
 			System.exit(-1);
 			return;
 		}
@@ -94,10 +94,9 @@ public class Starter {
 					for (AppMod mod : sm.getApps()) {
 						try {
 							if (mod.getFetch_address() != null) {
-								System.out.println("开始下载");
-								InputStream ins = RemoteUtil.installation(mod.getFetch_address(),
-										new Long(mod.getApp_id()));
-								System.out.println("下载");
+								logger.info("syncing apps config." + mod.getApp_code());
+								InputStream ins = RemoteUtil.installation(mod.getFetch_address(), new Long(mod.getApp_id()));
+								logger.info("synced apps config." + mod.getApp_code());
 								ZipUtil.unzip(mod.getApp_base(), new ZipInputStream(ins));
 							}
 						} catch (Exception e) {
