@@ -41,11 +41,4 @@ public class ZipUtil {
 		}
 	}
 	
-	public static  void main(String[] arg) {
-//        File file_base=new File("E:\\hello.zip");
-		String entryName = "1231/123123/124124";
-		String name = "1231/";
-		entryName = entryName.substring(name.length(),entryName.length());
-		System.out.println(entryName);
-	}
 }
