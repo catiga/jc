@@ -74,6 +74,7 @@ public class SlaveCli {
 			throw new RuntimeException(client_instance_id + " server not connected.");
 		}
 		String sync_msg_id = sync_msg.getUnionid();
+		logger.info("client_instance_id====" + client_instance_id + ", and channel is ::: " + channel + ", and sync_message_id=" + sync_msg_id);
 		ChannelFuture future = channel.writeAndFlush(sync_msg);
 		future.addListener(new ChannelFutureListener() {
 			public void operationComplete(ChannelFuture f) throws Exception {
@@ -102,7 +103,7 @@ public class SlaveCli {
 			try {
 				TimeUnit.MILLISECONDS.sleep(500l);
 				ret_msg = JCShellFac.instance().consumeMsg(message_id);
-				if(ret_msg!=null) {
+				if(ret_msg!=null&&!ret_msg.isEmpty()) {
 					return ret_msg;
 				}
 			} catch (InterruptedException e) {
