@@ -11,9 +11,9 @@
 	<url>http://maven.apache.org</url>
 
 	<properties>
-		<jc.root.version>0.0.1</jc.root.version>
+		<jc.root.version>0.2.1</jc.root.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jc.jdk.lsver>1.8</jc.jdk.lsver>
+		<jc.jdk.lsver>2.0</jc.jdk.lsver>
 		<jc.netty>4.1.31.Final</jc.netty>
 	</properties>
 
