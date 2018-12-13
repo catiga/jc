@@ -28,6 +28,7 @@
 	</properties>
 
 	<build>
+		<finalName>jcserver_1.13.0.1_dep</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
