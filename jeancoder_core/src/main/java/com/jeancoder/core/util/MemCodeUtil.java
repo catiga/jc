@@ -38,5 +38,4 @@ public class MemCodeUtil {
 		String new_k = "np://" + (app_code==null?"":app_code + "/") + MemCodeUtil.str2HexStr(k);
 		return new_k;
 	}
-	
 }
