@@ -11,8 +11,8 @@ sys_log="/home/jclogs"
 RUNNING_USER=root
 
 JC_HOME="/home/jcshell"
-CLASSPATH=$APP_HOME/classes
-for i in "$APP_HOME"/*.jar; do
+CLASSPATH=$JC_HOME/classes
+for i in "$JC_HOME"/*.jar; do
    CLASSPATH="$CLASSPATH":"$i"
 done
 
