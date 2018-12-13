@@ -91,7 +91,6 @@ public class SlaveCli {
 	
 	public GeneralMsg consumeSyncMsg(String message_id) {
 		Long default_time_out = 5000L;	//默认等待时间为5秒
-		//return JCShellFac.instance().consumeMsg(message_id);
 		return consumeSyncMsg(message_id, default_time_out);
 	}
 	
