@@ -6,8 +6,19 @@ os_shell="linux_centos_65-x86-64"
 os_kernel="2.6.32-696.6.3.el6.x86_64"
 os_apm_uking="jcserver"
 os_apm_uver="1.13.0.1_dep"
+sys_log="/home/jclogs"
 
-JAVA_OPTS=" -Xmx2048m -XX:PermSize=64m -XX:MaxPermSize=512m -XX:+PrintGCDateStamps -XX:+PrintGCDetails -Xloggc:logs/gc.log -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=1 -XX:GCLogFileSize=1024k -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=logs/mtdperf.hprof -server -Dfile.encoding=UTF-8"
+RUNNING_USER=root
+
+JC_HOME="/home/jcshell"
+CLASSPATH=$APP_HOME/classes
+for i in "$APP_HOME"/*.jar; do
+   CLASSPATH="$CLASSPATH":"$i"
+done
+
+APP_MAINCLASS=com.jeancoder.root.server.fk.Starter
+
+JAVA_OPTS="-ms1024m -mx1024m -Xmn256m -Djava.awt.headless=true -XX:MaxPermSize=128m"
 
 psid=0
 checkpid() {
@@ -28,10 +39,12 @@ checktostart() {
 		echo "================================"
 	else
 		echo -n "Starting $os_apm_uking ..."
-		cd ~/shell/bin/jc
-		BASE_DIR=$(pwd)
-		LIB="${BASE_DIR}/lib/"
-		nohup java ${JAVA_OPTS} -server -classpath "${LIB}/*:${LIB}/droolsRuntime/*:eiServer.jar" ${START_CLASS} &
+		cd /home
+        BASE_DIR=$(pwd)
+        LIB="${BASE_DIR}/jcshell/"
+        echo -n "Choose libs $LIB"
+        JAVA_CMD="nohup java $JAVA_OPTS -classpath $CLASSPATH $APP_MAINCLASS >/dev/null 2>&1 &"
+        su - $RUNNING_USER -c "$JAVA_CMD"
 		checkpid
 		if [ $psid -ne 0 ]; then
 			echo "(pid=$psid) [OK]"
