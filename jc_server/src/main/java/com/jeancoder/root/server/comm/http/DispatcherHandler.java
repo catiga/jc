@@ -242,7 +242,7 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 		String uri_path = request.uri();
 		
 		if (uri_path.equals(FAVICON_ICO)) {
-			ctx.flush();
+			writeResponse(ctx, HttpResponseStatus.ACCEPTED, "unsupported", true);
 			return;
 		}
 		
