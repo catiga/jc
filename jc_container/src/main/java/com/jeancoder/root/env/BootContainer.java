@@ -27,9 +27,11 @@ import com.jeancoder.root.exception.CompileException;
 import com.jeancoder.root.exception.PrivilegeException;
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
+import com.jeancoder.root.io.line.HeaderNames;
 
 import groovy.lang.Binding;
 import groovy.lang.Script;
+import io.netty.handler.codec.http.HttpResponseStatus;
 
 @SuppressWarnings("serial")
 public class BootContainer extends DefaultContainer implements JCAppContainer {
@@ -82,6 +84,21 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 			Object result = script.run();
 			if(result==null) {
 				result = JCThreadLocal.getResult();
+			}
+			if(res.getStatus()==HttpResponseStatus.FOUND.code()) {
+				String redirect_uri = res.getHeader(HeaderNames.LOCATION);
+				if(redirect_uri!=null) {
+					String default_schema = req.getScheme();
+					if(default_schema!=null) {
+						//替换schema
+						if(redirect_uri.toLowerCase().startsWith("https")) {
+							redirect_uri = default_schema + redirect_uri.substring("https".length());
+						} else if(redirect_uri.toLowerCase().startsWith("http")) {
+							redirect_uri = default_schema + redirect_uri.substring("http".length());
+						}
+					}
+					result = new Result().setRedirectResource(redirect_uri);
+				}
 			}
 			RunnerResult<T> ret_result = new RunnerResult<>();
 			ret_result.setResult(Result.convert(result));
