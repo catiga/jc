@@ -26,14 +26,18 @@ public class NettyChannelMap {
 
 	public static void add(String clientId, SocketChannel socketChannel) {
 		try {
-			map.put(clientId, socketChannel);
+			synchronized(map) {
+				map.put(clientId, socketChannel);
+			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public static Channel get(String clientId) {
-		return map.get(clientId);
+		synchronized(map) {
+			return map.get(clientId);
+		}
 	}
 
 	@SuppressWarnings("rawtypes")
