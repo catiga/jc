@@ -17,7 +17,8 @@ import io.netty.handler.timeout.IdleStateEvent;
 @ChannelHandler.Sharable
 public class ClientIdleStateTrigger extends ChannelInboundHandlerAdapter {
 
-	private static Logger logger = LoggerFactory.getLogger(ClientIdleStateTrigger.class.getName());
+	//private static Logger logger = LoggerFactory.getLogger(ClientIdleStateTrigger.class.getName());
+	private static Logger logger = LoggerFactory.getLogger("C_IDLESTATE_HANDLER");
 
 	@Override
 	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
