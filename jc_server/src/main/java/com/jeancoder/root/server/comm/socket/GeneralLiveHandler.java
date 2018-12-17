@@ -65,6 +65,13 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 				NettyChannelMap.add(loginMsg.getClientId(), (SocketChannel) ctx.channel());
 				logger.info("client" + loginMsg.getClientId() + " 登录成功");
 			}
+		} else if (MsgType.PING.equals(baseMsg.getType())) {
+			PingMsg pingMsg = (PingMsg)baseMsg;
+			if(pingMsg.getClientId()!=null) {
+				NettyChannelMap.add(pingMsg.getClientId(), (SocketChannel) ctx.channel());
+				PingMsg replyPing = new PingMsg();
+				NettyChannelMap.get(pingMsg.getClientId()).writeAndFlush(replyPing);
+			}
 		} else {
 //			if (NettyChannelMap.get(baseMsg.getClientId()) == null) {
 				// 说明未登录，或者连接断了，服务器向客户端发起登录请求，让客户端重新登录
@@ -74,12 +81,12 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 			
 			
 			switch (baseMsg.getType()) {
-			case PING: {
-				PingMsg pingMsg = (PingMsg) baseMsg;
-				PingMsg replyPing = new PingMsg();
-				NettyChannelMap.get(pingMsg.getClientId()).writeAndFlush(replyPing);
-			}
-				break;
+//			case PING: {
+//				PingMsg pingMsg = (PingMsg) baseMsg;
+//				PingMsg replyPing = new PingMsg();
+//				NettyChannelMap.get(pingMsg.getClientId()).writeAndFlush(replyPing);
+//			}
+//				break;
 			case ASK: {
 				// 收到客户端的请求
 				AskMsg askMsg = (AskMsg) baseMsg;

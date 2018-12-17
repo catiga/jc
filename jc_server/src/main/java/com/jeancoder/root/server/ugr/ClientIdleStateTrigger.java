@@ -3,6 +3,7 @@ package com.jeancoder.root.server.ugr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jc.proto.msg.Constants;
 import com.jc.proto.msg.PingMsg;
 
 import io.netty.channel.Channel;
@@ -26,9 +27,9 @@ public class ClientIdleStateTrigger extends ChannelInboundHandlerAdapter {
 				Channel current_channel = ctx.channel();
 				ChannelId chid = current_channel.id();
 
-				logger.debug("channel_id=" + chid + " will be set IDLE STATE." + current_channel);
+				logger.info("channel_id=" + chid + " will be set IDLE STATE." + current_channel + ", and hbid=" + Constants.getClientId());
 				//throw new Exception("idle exception");
-				PingMsg pingMsg=new PingMsg();
+				PingMsg pingMsg = new PingMsg();
                 ctx.writeAndFlush(pingMsg);
 			}
 		} else {

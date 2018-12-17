@@ -30,32 +30,6 @@ public class NettyChannelMap {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		
-		/*
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				int index = 0;
-				while(true) {
-					try {
-						TimeUnit.MILLISECONDS.sleep(1000l);
-						if(!map.isEmpty()) {
-							for(String client_id : map.keySet()) {
-								SocketChannel channel = map.get(client_id);
-								ReplyMsg msg = new ReplyMsg();
-								ReplyServerBody body = new ReplyServerBody("center server reply:" + index++);
-								msg.setBody(body);
-								channel.writeAndFlush(msg);
-							}
-						}
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}).start();
-		*/
 	}
 
 	public static Channel get(String clientId) {

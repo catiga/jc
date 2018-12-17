@@ -41,6 +41,9 @@ public abstract class GeneralMsg  implements Serializable {
 
     public void setClientId(String clientId) {
         this.clientId = clientId;
+        if(clientId!=null) {
+        	Constants.setClientId(clientId);
+        }
     }
 
     public MsgType getType() {
