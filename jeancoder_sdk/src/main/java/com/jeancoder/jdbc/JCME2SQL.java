@@ -40,6 +40,10 @@ public class JCME2SQL {
 				continue;
 			}
 			try {
+				JCNotColumn not_column = f.getAnnotation(JCNotColumn.class);
+				if(not_column!=null) {
+					continue;
+				}
 				PropertyDescriptor pd = new PropertyDescriptor(f.getName(), entity.getClass());
 				Method read_method = pd.getReadMethod();
 				Object value = read_method.invoke(entity);
