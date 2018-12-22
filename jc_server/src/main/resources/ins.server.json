@@ -15,6 +15,7 @@
 			"proxy_entry": "entry",
 			"proxy_path": "/",
 			"logs": "~/",
+			"domain_visit":"/project/index/index",
 			"libs": "/Users/jackielee/Desktop/logs",
 			"master": "jcs://localhost:8091",
 			"apps": [
