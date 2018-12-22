@@ -45,19 +45,7 @@
 			"proxy_path": "/",
 			"logs": "~/",
 			"libs": "/Users/jackielee/Desktop/logs",
-			"apps": [
-				{
-					"app_id": "99019928",
-					"app_code": "project",
-					"app_name": "系统管理",
-					"dev_name": "jeancoder",
-					"org_name": "jeancoder",
-					"app_ver": "1.0",
-					"source_type": "binary",
-					"lans": "groovy",
-					"app_base":"/Users/jackielee/Documents/dev_workspace/92yp_app_project"
-				}
-			]
+			"apps": []
 		}
 	]
 }
