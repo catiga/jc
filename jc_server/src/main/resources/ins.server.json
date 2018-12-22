@@ -20,80 +20,19 @@
 			"apps": [
 				{
 					"app_id": "99019928",
-					"app_code": "project",
-					"app_name": "系统管理",
+					"app_code": "server",
+					"app_name": "中央服务管理",
 					"dev_name": "jeancoder",
 					"org_name": "com",
 					"app_ver": "1.0",
 					"source_type": "binary",
 					"lans": "groovy",
-					"app_base":"/Users/jackielee/Documents/dev_workspace/92yp_app_project",
+					"app_base":"/Users/jackielee/Documents/server_workspace/jeancoder_server",
 					"config": {
 						"description": "管理系统基础配置",
 						"index":null
 					}
-				},
-				{
-					"app_id": "99011928",
-					"app_code": "scm",
-					"app_name": "商品管理",
-					"dev_name": "jeancoder",
-					"org_name": "com",
-					"app_ver": "1.0",
-					"source_type": "binary",
-					"lans": "groovy",
-					"app_base":"/Users/jackielee/Documents/dev_workspace/92yp_app_scm",
-					"config": {
-						"description": "管理商品数据",
-						"index":null
-					}
-				},
-				{
-					"app_id": "9901128",
-					"app_code": "trade",
-					"app_name": "交易管理",
-					"dev_name": "jeancoder",
-					"org_name": "com",
-					"app_ver": "1.0",
-					"source_type": "binary",
-					"lans": "groovy",
-					"app_base":"/Users/jackielee/Documents/dev_workspace/92yp_app_trade",
-					"config": {
-						"description": "管理交易数据",
-						"index":null
-					}
-				},
-				{
-					"app_id": "9901648",
-					"app_code": "ticketingsys",
-					"app_name": "票务管理",
-					"dev_name": "jeancoder",
-					"org_name": "com",
-					"app_ver": "1.0",
-					"source_type": "binary",
-					"lans": "groovy",
-					"app_base":"/Users/jackielee/Documents/dev_workspace/92yp_ticketingsys",
-					"config": {
-						"description": "管理交易数据",
-						"index":null
-					}
-				},
-				{
-					"app_id": "99016989",
-					"app_code": "counter",
-					"app_name": "收银台",
-					"dev_name": "huo_zp",
-					"org_name": "com",
-					"app_ver": "1.0",
-					"source_type": "binary",
-					"lans": "groovy",
-					"app_base":"/Users/jackielee/Documents/dev_workspace/counter-web",
-					"config": {
-						"description": "收银",
-						"index":null
-					}
 				}
-				
 			]
 		},
 		{

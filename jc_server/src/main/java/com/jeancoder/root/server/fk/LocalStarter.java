@@ -23,9 +23,9 @@ import com.jeancoder.root.server.util.ZipUtil;
 import com.jeancoder.root.vm.JCVM;
 import com.jeancoder.root.vm.JCVMDelegatorGroup;
 
-public class Starter {
+public class LocalStarter {
 
-	private static Logger logger = LoggerFactory.getLogger(Starter.class);
+	private static Logger logger = LoggerFactory.getLogger(LocalStarter.class);
 
 	final static String appConf = "ins.server.json";
 
@@ -42,19 +42,19 @@ public class Starter {
 
 	public static void start() {
 		String json = null;
-//		try {
-//			// 本地读取配置文件
-//			InputStream ins = Starter.class.getClassLoader().getResourceAsStream(appConf);
-//			BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
-//
-//			String lineContent = null;
-//			StringBuffer buff = new StringBuffer();
-//			while ((lineContent = reader.readLine()) != null) {
-//				buff.append(lineContent);
-//			}
-//			json = buff.toString();
-//		} catch (Exception e) {
-//		}
+		try {
+			// 本地读取配置文件
+			InputStream ins = LocalStarter.class.getClassLoader().getResourceAsStream(appConf);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
+
+			String lineContent = null;
+			StringBuffer buff = new StringBuffer();
+			while ((lineContent = reader.readLine()) != null) {
+				buff.append(lineContent);
+			}
+			json = buff.toString();
+		} catch (Exception e) {
+		}
 		if (json == null) {
 			try {
 				String rules = RemoteUtil.getConfigList();
@@ -116,7 +116,7 @@ public class Starter {
 		String json = null;
 		try {
 			// 本地读取配置文件
-			InputStream ins = Starter.class.getClassLoader().getResourceAsStream(appConf);
+			InputStream ins = LocalStarter.class.getClassLoader().getResourceAsStream(appConf);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
 
 			String lineContent = null;
