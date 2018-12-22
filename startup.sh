@@ -4,13 +4,14 @@
 
 os_shell="linux_centos_65-x86-64"
 os_kernel="2.6.32-696.6.3.el6.x86_64"
+JC_HOME=$(cd `dirname $0`; pwd)
 os_apm_uking="jcserver"
+JC_OS_FP="$JC_HOME/$os_apm_uking"
 os_apm_uver="1.13.0.1_dep"
 sys_log="/home/jclogs"
 
 RUNNING_USER=root
 
-JC_HOME="/home/jcshell"
 CLASSPATH=$JC_HOME/classes
 for i in "$JC_HOME"/*.jar; do
    CLASSPATH="$CLASSPATH":"$i"
@@ -22,7 +23,8 @@ JAVA_OPTS="-ms1024m -mx1024m -Xmn256m -Djava.awt.headless=true -XX:MaxPermSize=1
 
 psid=0
 checkpid() {
-   javaps=`ps -ef | grep $os_apm_uking | grep -v "grep"`
+   echo "Checking $JC_OS_FP"
+   javaps=`ps -ef | grep $JC_OS_FP | grep -v "grep"`
 
    if [ -n "$javaps" ]; then
       psid=`echo $javaps | awk '{print $2}'`
@@ -44,7 +46,9 @@ checktostart() {
         LIB="${BASE_DIR}/jcshell/"
         echo -n "Choose libs $LIB"
         JAVA_CMD="nohup java $JAVA_OPTS -classpath $CLASSPATH $APP_MAINCLASS >/dev/null 2>&1 &"
+        
         su - $RUNNING_USER -c "$JAVA_CMD"
+        
 		checkpid
 		if [ $psid -ne 0 ]; then
 			echo "(pid=$psid) [OK]"
