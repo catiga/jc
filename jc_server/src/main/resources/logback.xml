@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds" debug="false">  
 	<contextName>jcoutput</contextName>  
+	<property name="jclogs_path" value="{jclogs_path}"/>   
 	
 	<!-- 输出到控制台 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
@@ -17,7 +18,7 @@
     	      
       	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       		<!-- daily rollover -->
-      		<fileNamePattern>/home/jclogs/jc_info.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+      		<fileNamePattern>${jclogs_path}/jc_info.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
       		<!-- keep 10 days' worth of history -->
       		<maxHistory>10</maxHistory>
     	</rollingPolicy>
@@ -37,7 +38,7 @@
       
       	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       		<!-- daily rollover -->
-      		<fileNamePattern>/home/jclogs/jc_error.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+      		<fileNamePattern>${jclogs_path}/jc_error.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
       		<!-- keep 10 days' worth of history -->
       		<maxHistory>10</maxHistory>
     	</rollingPolicy>
