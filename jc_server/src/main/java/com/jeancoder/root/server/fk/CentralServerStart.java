@@ -23,75 +23,15 @@ import com.jeancoder.root.server.util.ZipUtil;
 import com.jeancoder.root.vm.JCVM;
 import com.jeancoder.root.vm.JCVMDelegatorGroup;
 
-public class Starter {
+public class CentralServerStart {
 
-	private static Logger logger = LoggerFactory.getLogger(Starter.class);
+	private static Logger logger = LoggerFactory.getLogger(CentralServerStart.class);
 
 	final static String appConf = "ins.server.json";
-
-	/**
-	 * -- argc commandline parameter
-	 * 
-	 * @param argc
-	 */
+	
 	public static void main(String[] argc) {
-		start();
+		centralServerStart();
 	}
-
-	public static void start() {
-		String json = null;
-		try {
-			String rules = RemoteUtil.getConfigList();
-			ByteResults byteResults = JackSonBeanMapper.fromJson(rules, ByteResults.class);
-			if (!"0000".equals(byteResults.getStatus())) {
-				logger.info("load config error status:" + byteResults.getStatus() + " msg:" + byteResults.getMsg());
-				return;
-			}
-			json = new String(byteResults.getResults());
-		} catch (Exception e) {
-			logger.error("checking and loading network error.", e);
-		}
-		if (json == null) {
-			logger.error("configs error and will exit.");
-			System.exit(-1);
-			return;
-		}
-		FkConf fk_con = null;
-		try {
-			Gson gson = new Gson();
-			fk_con = gson.fromJson(json, FkConf.class);
-			if (fk_con == null || fk_con.getServers() == null || fk_con.getServers().isEmpty()) {
-				throw new RuntimeException("EMPTY");
-			}
-		} catch (Exception e) {
-			logger.error("start error:", e);
-			System.exit(-1);
-		}
-		for (ServerMod sm : fk_con.getServers()) {
-			JCServer server = ServerFactory.generate(sm);
-			ServerHolder.getHolder().add(server);
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					for (AppMod mod : sm.getApps()) {
-						try {
-							if (mod.getFetch_address() != null) {
-								logger.info("syncing apps config." + mod.getApp_code());
-								InputStream ins = RemoteUtil.installation(mod.getFetch_address(), new Long(mod.getApp_id()));
-								logger.info("synced apps config." + mod.getApp_code());
-								ZipUtil.unzip(mod.getApp_base(), new ZipInputStream(ins));
-							}
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-					server.start();
-				}
-			}).start();
-		}
-	}
-
 	/**
 	 * 中央服务器启动测试环境å
 	 */
@@ -186,4 +126,5 @@ public class Starter {
 			}
 		}).start();
 	}
+	
 }
