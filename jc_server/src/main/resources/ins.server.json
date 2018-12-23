@@ -1,52 +1,53 @@
 {
-	"ins": {
-		"ins_id": "",
-		"ins_auth_cert": "cert file path",
-		"ins_auth_key": "cert key",
-		"ins_ver": "ver number"
-	},
-	"servers": [
-		{
-			"id": "master001",
-			"name": "",
-			"scheme": "http",
-			"host": "",
-			"port": 8090,
-			"proxy_entry": "entry",
-			"proxy_path": "/",
-			"logs": "~/",
-			"domain_visit":"/project/index/index",
-			"libs": "/Users/jackielee/Desktop/logs",
-			"master": "jcs://localhost:8091",
-			"apps": [
-				{
-					"app_id": "99019928",
-					"app_code": "server",
-					"app_name": "中央服务管理",
-					"dev_name": "jeancoder",
-					"org_name": "com",
-					"app_ver": "1.0",
-					"source_type": "binary",
-					"lans": "groovy",
-					"app_base":"/Users/jackielee/Documents/server_workspace/jeancoder_server",
-					"config": {
-						"description": "管理系统基础配置",
-						"index":null
-					}
-				}
-			]
-		},
-		{
-			"id": "master002",
-			"name": "",
-			"scheme": "socket",
-			"host": "",
-			"port": 8091,
-			"proxy_entry": "entry",
-			"proxy_path": "/",
-			"logs": "~/",
-			"libs": "/Users/jackielee/Desktop/logs",
-			"apps": []
-		}
-	]
+    "ins": {
+        "ins_id": "",
+        "ins_auth_cert": "cert file path",
+        "ins_auth_key": "cert key",
+        "ins_ver": "ver number"
+    },
+    "servers": [
+        {
+            "id": "master002",
+            "name": "",
+            "scheme": "socket",
+            "host": "",
+            "port": 8091,
+            "proxy_entry": "entry",
+            "proxy_path": "/",
+            "logs": "/home/jeancoder-server/jclogs",
+            "libs": "/home/jeancoder-server/jclibs",
+            "apps": []
+        },
+        {
+            "id": "1",
+            "name": "",
+            "scheme": "http",
+            "host": "",
+            "port": 8080,
+            "proxy_entry": "entry",
+            "proxy_path": "/",
+            "logs": "/home/jeancoder-server/jclogs",
+            "domain_visit":"/project/index/index",
+            "libs": "/home/jeancoder-server/jclibs",
+            "master": "jcs://jcloudapp.pdr365.com:8091/",
+            "apps": [
+                {
+                    "app_id": "99019928",
+                    "app_code": "server",
+                    "app_name": "系统管理",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/home/jeancoder-server/server_trunk",
+                    "config": {
+                        "description": "管理系统基础配置",
+                        "index":"index"
+                    }
+                }
+                
+            ]
+        }
+    ]
 }
