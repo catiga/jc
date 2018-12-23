@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds" debug="false">  
 	<contextName>jcoutput</contextName>  
+	<property name="jclogs" value="{jclogs_path}" />   
 	
 	<!-- 输出到控制台 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
@@ -17,7 +18,7 @@
     	      
       	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       		<!-- daily rollover -->
-      		<fileNamePattern>/home/jclogs/jc_info.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+      		<fileNamePattern>${jclogs}/jc_info.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
       		<!-- keep 10 days' worth of history -->
       		<maxHistory>10</maxHistory>
     	</rollingPolicy>
@@ -37,7 +38,7 @@
       
       	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       		<!-- daily rollover -->
-      		<fileNamePattern>/home/jclogs/jc_error.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+      		<fileNamePattern>${jclogs}/jc_error.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
       		<!-- keep 10 days' worth of history -->
       		<maxHistory>10</maxHistory>
     	</rollingPolicy>
@@ -45,7 +46,7 @@
 	
 	<!-- APP LOG -->
 	<appender name="APP-LEVEL-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>/home/jclogs/apps/jcr.log</File>
+        <File>/Users/jackielee/Desktop/logs/apps/jcr.log</File>
         <append>true</append>
         <!-- <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>INFO</level>
@@ -53,7 +54,7 @@
             <onMismatch>DENY</onMismatch>
         </filter> -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/home/jclogs/apps/jcr.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <fileNamePattern>/Users/jackielee/Desktop/logs/apps/jcr.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
             <maxHistory>12</maxHistory>
         </rollingPolicy>
         <encoder charset="UTF-8">
