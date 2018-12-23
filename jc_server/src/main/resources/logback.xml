@@ -46,7 +46,7 @@
 	
 	<!-- APP LOG -->
 	<appender name="APP-LEVEL-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>/Users/jackielee/Desktop/logs/apps/jcr.log</File>
+        <File>/home/jclogs/apps/jcr.log</File>
         <append>true</append>
         <!-- <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>INFO</level>
@@ -54,7 +54,7 @@
             <onMismatch>DENY</onMismatch>
         </filter> -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/Users/jackielee/Desktop/logs/apps/jcr.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <fileNamePattern>/home/jclogs/apps/jcr.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
             <maxHistory>12</maxHistory>
         </rollingPolicy>
         <encoder charset="UTF-8">
