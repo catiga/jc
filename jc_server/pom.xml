@@ -49,6 +49,10 @@
 						<goals>
 							<goal>single</goal><!-- 只运行一次 -->
 						</goals>
+						<configuration>
+							<finalName>${project.name}</finalName>
+							<descriptor>src/main/assembly/assembly.xml</descriptor><!--配置描述文件路径-->
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
