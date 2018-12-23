@@ -29,6 +29,9 @@ public class CentralServerStart {
 
 	final static String appConf = "ins.server.json";
 	
+	public static void main(String[] argc) {
+		centralServerStart();
+	}
 	/**
 	 * 中央服务器启动测试环境å
 	 */
