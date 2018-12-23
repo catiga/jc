@@ -1,6 +1,7 @@
 package com.jeancoder.jdbc.template;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -156,6 +157,77 @@ public class CommonJcDaoTemplate<T> extends GeneralJcDaoTemplate<T> {
 				jrs.closeConnection();
 		}
 		return ret;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public List<Object[]> findRawData(Class<T> mapclass, String sql, final Object... params) {
+		DatabasePower dp = DatabaseSource.getDatabasePower();
+		List<Object[]> ret = null;
+		JeancoderResultSet jrs = null;
+		try {
+			SqlParser par = this.buildSql(mapclass, sql);
+			sql = par.clearSql();
+			jrs = dp.doQuery(sql, params);
+			ResultSet rs = jrs.getResultSet();
+			assert rs!=null;
+			
+			while(rs.next()) {
+				if(ret==null) {
+					synchronized(this) {
+						if(ret==null) {
+							ret = new ArrayList<Object[]>();
+						}
+					}
+				}
+				List<Object> instance = this.wrapperRawData(mapclass, rs);
+				ret.add(instance.toArray());
+			}
+		} catch (Exception e) {
+			LOGGER.error("jc_jdbc_template_error", e);
+		}finally{
+			if(jrs!=null)
+				jrs.closeConnection();
+		}
+		return ret;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public JcPage<Object[]> findRawData(Class<T> mapclass, JcPage<Object[]> page, String sql, final Object... params) {
+		DatabasePower dp = DatabaseSource.getDatabasePower();
+		JeancoderResultSet jrs = null;
+		try {
+			Integer start = page.computeFirst();
+			Integer end = page.getPs();
+			SqlParser par = this.buildSql(mapclass, sql);
+			sql = par.clearSql();
+			sql = sql + " limit " + start + ", " + end;
+			jrs = dp.doQuery(sql, params);
+			ResultSet rs = jrs.getResultSet();
+			assert rs!=null;
+			
+			List<Object[]> ret = null;
+			while(rs.next()) {
+				if(ret==null) {
+					synchronized(this) {
+						if(ret==null) {
+							ret = new ArrayList<Object[]>();
+						}
+					}
+				}
+				List<Object> instance = this.wrapperRawData(mapclass, rs);
+				ret.add(instance.toArray());
+			}
+			Long total_count = countSql(par, params);
+			page.setTotalCount(total_count);
+			page.setResult(ret);
+			
+		} catch (Exception e) {
+			LOGGER.error("jc_jdbc_template_error", e);
+		}finally{
+			if(jrs!=null)
+				jrs.closeConnection();
+		}
+		return page;
 	}
 	
 }

@@ -12,6 +12,8 @@ import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.jeancoder.app.sdk.source.DatabaseSource;
 import com.jeancoder.app.sdk.source.LoggerSource;
@@ -160,6 +162,31 @@ public abstract class GeneralJcDaoTemplate<T> {
 			instance = wrapperObjInstance(mappclass, rsindex);
 		}
 		return instance;
+	}
+	
+	protected List<Object> wrapperRawData(Class<T> mappclass, ResultSet rsindex)  throws SQLException, IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		List<Object> retdatas = new ArrayList<Object>();
+		ResultSetMetaData metadata = rsindex.getMetaData();
+		int col_size = metadata.getColumnCount();
+		for(int i=1; i<=col_size; i++) {
+			String column_name = metadata.getColumnName(i);
+			String column_alias_name = metadata.getColumnLabel(i);
+			if(column_alias_name!=null) {
+				column_name = column_alias_name;
+			}
+			//mapped java class
+			String column_class_name = metadata.getColumnClassName(i);
+			//type number
+			int column_type = metadata.getColumnType(i);
+			//type name
+			String column_type_name = metadata.getColumnTypeName(i);
+			
+			LOGGER.debug(column_name + "--" + column_class_name + "--" + column_type + "--" + column_type_name);
+			
+			Object value = rsindex.getObject(i);
+			retdatas.add(value);
+		}
+		return retdatas;
 	}
 	
 	private T wrapperBaseInstance(Class<T> mappclass, ResultSet rsindex) throws SQLException, IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {

@@ -13,6 +13,16 @@ public class JcTemplate {
 	public static JcTemplate INSTANCE() {
 		return INSTANCE;
 	}
+	
+	public <T> List<?> findRawData(Class<T> mapclass, String sql, Object...params) {
+		CommonJcDaoTemplate<T> temp = new CommonJcDaoTemplate<T>();
+		return temp.findRawData(mapclass, sql, params);
+	}
+	
+	public <T> JcPage<?> findRawData(Class<T> mapclass, JcPage<Object[]> page, String sql, Object...params) {
+		CommonJcDaoTemplate<T> temp = new CommonJcDaoTemplate<T>();
+		return temp.findRawData(mapclass, page, sql, params);
+	}
 
 	public <T> JcPage<T> find(Class<T> mapclass, JcPage<T> page, String sql, Object...params) {
 		CommonJcDaoTemplate<T> temp = new CommonJcDaoTemplate<T>();
