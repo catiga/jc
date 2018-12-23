@@ -5,15 +5,15 @@
 os_shell="linux_centos_65-x86-64"
 os_kernel="2.6.32-696.6.3.el6.x86_64"
 JC_HOME=$(cd `dirname $0`; pwd)
-os_apm_uking="jcserver"
+os_apm_uking="lib/jc_server"
 JC_OS_FP="$JC_HOME/$os_apm_uking"
 os_apm_uver="1.13.0.1_dep"
-sys_log="/home/jclogs"
+sys_log="$JC_HOME/jclogs"
 
 RUNNING_USER=root
 
 CLASSPATH=$JC_HOME/classes
-for i in "$JC_HOME"/*.jar; do
+for i in "$JC_HOME"/lib/*.jar; do
    CLASSPATH="$CLASSPATH":"$i"
 done
 
@@ -47,7 +47,8 @@ checktostart() {
         echo -n "Choose libs $LIB"
         JAVA_CMD="nohup java $JAVA_OPTS -classpath $CLASSPATH $APP_MAINCLASS >/dev/null 2>&1 &"
         
-        su - $RUNNING_USER -c "$JAVA_CMD"
+        nohup java $JAVA_OPTS -classpath $CLASSPATH $APP_MAINCLASS
+        #su - $RUNNING_USER -c "$JAVA_CMD"
         
 		checkpid
 		if [ $psid -ne 0 ]; then
