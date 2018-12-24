@@ -1,0 +1,4 @@
+option java_package = "com.jeancoder.protobuf"; 
+option java_outer_classname = "UserProbuf";
+
+env=dev
