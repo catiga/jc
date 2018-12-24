@@ -17,7 +17,6 @@ import io.netty.handler.timeout.IdleStateEvent;
 @ChannelHandler.Sharable
 public class ClientIdleStateTrigger extends ChannelInboundHandlerAdapter {
 
-	//private static Logger logger = LoggerFactory.getLogger(ClientIdleStateTrigger.class.getName());
 	private static Logger logger = LoggerFactory.getLogger("C_IDLESTATE_HANDLER");
 
 	@Override
@@ -27,9 +26,7 @@ public class ClientIdleStateTrigger extends ChannelInboundHandlerAdapter {
 			if (state == IdleState.WRITER_IDLE) {
 				Channel current_channel = ctx.channel();
 				ChannelId chid = current_channel.id();
-
-				logger.info("channel_id=" + chid + " will be set IDLE STATE." + current_channel + ", and hbid=" + Constants.getClientId());
-				//throw new Exception("idle exception");
+				logger.info("channel_id=" + chid + " will be set IDLE STATE." + ", and hbid=" + Constants.getClientId() + ", chopucse:::" + Constants.getClientId());
 				PingMsg pingMsg = new PingMsg();
                 ctx.writeAndFlush(pingMsg);
 			}
