@@ -23,11 +23,9 @@ import com.jeancoder.root.server.util.ZipUtil;
 import com.jeancoder.root.vm.JCVM;
 import com.jeancoder.root.vm.JCVMDelegatorGroup;
 
-public class LocalStarter {
+public class LocalStarter extends ExternalStarter {
 
 	private static Logger logger = LoggerFactory.getLogger(LocalStarter.class);
-
-	final static String appConf = "ins.server.json";
 
 	/**
 	 * -- argc commandline parameter

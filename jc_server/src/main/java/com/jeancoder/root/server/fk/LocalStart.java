@@ -23,11 +23,9 @@ import com.jeancoder.root.server.state.ServerHolder;
 import com.jeancoder.root.server.util.RemoteUtil;
 import com.jeancoder.root.server.util.ZipUtil;
 
-public class LocalStart {
+public class LocalStart extends ExternalStarter {
 
 	private static Logger logger = LoggerFactory.getLogger(LocalStart.class);
-
-	final static String appConf = "ins.server.json";
 
 	/**
 	 * -- argc commandline parameter

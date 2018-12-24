@@ -23,12 +23,10 @@ import com.jeancoder.root.server.util.ZipUtil;
 import com.jeancoder.root.vm.JCVM;
 import com.jeancoder.root.vm.JCVMDelegatorGroup;
 
-public class CentralServerStart {
+public class CentralServerStart extends ExternalStarter {
 
 	private static Logger logger = LoggerFactory.getLogger(CentralServerStart.class);
 
-	final static String appConf = "ins.server.json";
-	
 	public static void main(String[] argc) {
 		centralServerStart();
 	}
