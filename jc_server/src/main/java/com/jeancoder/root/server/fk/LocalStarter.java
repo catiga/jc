@@ -39,20 +39,7 @@ public class LocalStarter extends ExternalStarter {
 	}
 
 	public static void start() {
-		String json = null;
-		try {
-			// 本地读取配置文件
-			InputStream ins = LocalStarter.class.getClassLoader().getResourceAsStream(appConf);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
-
-			String lineContent = null;
-			StringBuffer buff = new StringBuffer();
-			while ((lineContent = reader.readLine()) != null) {
-				buff.append(lineContent);
-			}
-			json = buff.toString();
-		} catch (Exception e) {
-		}
+		String json = loadLocal();
 		if (json == null) {
 			try {
 				String rules = RemoteUtil.getConfigList();

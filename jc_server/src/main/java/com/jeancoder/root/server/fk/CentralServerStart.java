@@ -1,8 +1,6 @@
 package com.jeancoder.root.server.fk;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.zip.ZipInputStream;
 
 import org.slf4j.Logger;
@@ -34,20 +32,7 @@ public class CentralServerStart extends ExternalStarter {
 	 * 中央服务器启动测试环境å
 	 */
 	public static void centralServerStart() {
-		String json = null;
-		try {
-			// 本地读取配置文件
-			InputStream ins = Starter.class.getClassLoader().getResourceAsStream(appConf);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
-
-			String lineContent = null;
-			StringBuffer buff = new StringBuffer();
-			while ((lineContent = reader.readLine()) != null) {
-				buff.append(lineContent);
-			}
-			json = buff.toString();
-		} catch (Exception e) {
-		}
+		String json = loadLocal();
 		if (json == null) {
 			logger.error("配置文件不存在");
 			System.exit(-1);

@@ -1,5 +1,8 @@
 package com.jeancoder.root.server.fk;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 
 import org.slf4j.LoggerFactory;
@@ -25,6 +28,24 @@ public abstract class ExternalStarter {
 			StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
 		}catch(Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public static String loadLocal() {
+		try {
+			// 本地读取配置文件
+			InputStream ins = Starter.class.getClassLoader().getResourceAsStream(appConf);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
+
+			String lineContent = null;
+			StringBuffer buff = new StringBuffer();
+			while ((lineContent = reader.readLine()) != null) {
+				buff.append(lineContent);
+			}
+			return buff.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 	
