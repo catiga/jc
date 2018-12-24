@@ -84,7 +84,7 @@ public class JCSocketServer extends ServerImpl implements JCServer {
 							// 配置入站、出站事件channel
 							ChannelPipeline pipeline = ch.pipeline();
 
-							pipeline.addLast(new IdleStateHandler(10, 0, 0, TimeUnit.SECONDS)); // 10sec
+							pipeline.addLast(new IdleStateHandler(25, 0, 0, TimeUnit.SECONDS)); // 10sec
 																								// recheck
 																								// idle
 																								// state

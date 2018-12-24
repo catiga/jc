@@ -14,6 +14,7 @@ import com.jc.proto.msg.ReplyServerBody;
 import com.jeancoder.root.server.state.NettyChannelMap;
 import com.jeancoder.root.server.state.ServerHolder;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
@@ -68,7 +69,14 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 		} else if (MsgType.PING.equals(baseMsg.getType())) {
 			PingMsg pingMsg = (PingMsg)baseMsg;
 			if(pingMsg.getClientId()!=null) {
+				//execute update channel 
+				String channel_client_id = pingMsg.getClientId();
+				Channel exist_channel = NettyChannelMap.get(channel_client_id);
+				if(exist_channel==null || (exist_channel!=ctx.channel())) {
+					logger.info("channel_client_id:::" + channel_client_id + " will be updated for The exist channel:::" + exist_channel + " is not equle the new one:::" + ctx.channel());
+				}
 				NettyChannelMap.add(pingMsg.getClientId(), (SocketChannel) ctx.channel());
+				//reply ping msg as heart beat pack
 				PingMsg replyPing = new PingMsg();
 				NettyChannelMap.get(pingMsg.getClientId()).writeAndFlush(replyPing);
 			}
