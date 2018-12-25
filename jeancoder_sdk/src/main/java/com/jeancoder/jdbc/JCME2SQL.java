@@ -44,6 +44,7 @@ public class JCME2SQL {
 				if(not_column!=null) {
 					continue;
 				}
+				
 				PropertyDescriptor pd = new PropertyDescriptor(f.getName(), entity.getClass());
 				Method read_method = pd.getReadMethod();
 				Object value = read_method.invoke(entity);
@@ -126,6 +127,8 @@ public class JCME2SQL {
 			ret = "NULL";
 		} else {
 			if(value instanceof String) {
+				//对value进行转义
+				value = value.toString().replace("'", "\\'");
 				value = "'" + value + "'";
 			} else if(value instanceof Date) {
 				value = "'" + _sdf_.format(value) + "'";
