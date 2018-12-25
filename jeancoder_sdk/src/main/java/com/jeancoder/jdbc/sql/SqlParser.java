@@ -198,7 +198,6 @@ public class SqlParser {
 //			}
 //		}
 //		
-	 
 		StringBuffer buf = new StringBuffer();
 		buf.append("SELECT  COUNT(*) FROM ( ");
 		boolean allow_append = false;
