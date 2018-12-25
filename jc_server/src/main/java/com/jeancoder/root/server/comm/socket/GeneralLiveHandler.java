@@ -58,7 +58,7 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 	
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, GeneralMsg baseMsg) throws Exception {
-		logger.info("server receive message=" + baseMsg);
+		logger.info("server receive message=" + baseMsg + " and from client_id:::" + baseMsg.getClientId());
 		if (MsgType.LOGIN.equals(baseMsg.getType())) {
 			LoginMsg loginMsg = (LoginMsg) baseMsg;
 			if ("jclogin".equals(loginMsg.getUserName()) && "jcpass".equals(loginMsg.getPassword())) {	//暂存的处理方式

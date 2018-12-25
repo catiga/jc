@@ -51,7 +51,7 @@ public class NettyClientBootstrap {
 			@Override
 			protected void initChannel(SocketChannel socketChannel) throws Exception {
 				//socketChannel.pipeline().addLast(new IdleStateHandler(20, 10, 0));
-				socketChannel.pipeline().addLast(new IdleStateHandler(0, 10, 0, TimeUnit.SECONDS));
+				socketChannel.pipeline().addLast(new IdleStateHandler(0, 0, 5, TimeUnit.SECONDS));
 				socketChannel.pipeline().addLast(idleStateTrigger);
 				socketChannel.pipeline().addLast(new ObjectEncoder());
 				socketChannel.pipeline().addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));

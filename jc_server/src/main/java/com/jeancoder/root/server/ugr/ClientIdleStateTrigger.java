@@ -21,17 +21,54 @@ public class ClientIdleStateTrigger extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+		Channel current_channel = ctx.channel();
+		ChannelId chid = current_channel.id();
+
 		if (evt instanceof IdleStateEvent) {
 			IdleState state = ((IdleStateEvent) evt).state();
-			if (state == IdleState.WRITER_IDLE) {
-				Channel current_channel = ctx.channel();
-				ChannelId chid = current_channel.id();
-				logger.info("channel_id=" + chid + " will be set IDLE STATE." + ", and hbid=" + Constants.getClientId() + ", chopucse:::" + Constants.getClientId());
-				PingMsg pingMsg = new PingMsg();
-                ctx.writeAndFlush(pingMsg);
+			logger.info("IDST TYPE:::" + state + ",CHANNEL_ID=" + chid + " BESET IDST." + ", CHOPUCSE:::" + Constants.getClientId());
+			switch (state) {
+			case READER_IDLE:
+				handleReaderIdle(ctx);
+				break;
+			case WRITER_IDLE:
+				handleWriterIdle(ctx);
+				break;
+			case ALL_IDLE:
+				handleAllIdle(ctx);
+				break;
+			default:
+				break;
 			}
+
+			// if (state == IdleState.WRITER_IDLE) {
+			// logger.info("channel_id=" + chid + " will be set IDLE STATE." +
+			// ", and hbid=" + Constants.getClientId() + ", chopucse:::" +
+			// Constants.getClientId());
+			// PingMsg pingMsg = new PingMsg();
+			// ctx.writeAndFlush(pingMsg);
+			// }
 		} else {
 			super.userEventTriggered(ctx, evt);
 		}
 	}
+
+	protected void handleReaderIdle(ChannelHandlerContext ctx) {
+		logger.info("---READER_IDLE---");
+		PingMsg pingMsg = new PingMsg();
+		ctx.writeAndFlush(pingMsg);
+	}
+
+	protected void handleWriterIdle(ChannelHandlerContext ctx) {
+		logger.info("---WRITER_IDLE---");
+		PingMsg pingMsg = new PingMsg();
+		ctx.writeAndFlush(pingMsg);
+	}
+
+	protected void handleAllIdle(ChannelHandlerContext ctx) {
+		logger.info("---ALL_IDLE---");
+		PingMsg pingMsg = new PingMsg();
+		ctx.writeAndFlush(pingMsg);
+	}
+
 }
