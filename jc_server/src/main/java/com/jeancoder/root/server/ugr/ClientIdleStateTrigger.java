@@ -23,10 +23,10 @@ public class ClientIdleStateTrigger extends ChannelInboundHandlerAdapter {
 	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
 		Channel current_channel = ctx.channel();
 		ChannelId chid = current_channel.id();
-
+		String client_id = Constants.getClientId();
 		if (evt instanceof IdleStateEvent) {
 			IdleState state = ((IdleStateEvent) evt).state();
-			logger.info("IDST TYPE:::" + state + ",CHANNEL_ID=" + chid + " BESET IDST." + ", CHOPUCSE:::" + Constants.getClientId());
+			logger.info("IDST TYPE:::" + state + ",CHANNEL_ID=" + chid + "[" + client_id + "]" + " BESET IDST." + ", CHOPUCSE:::" + Constants.getClientId());
 			switch (state) {
 			case READER_IDLE:
 				handleReaderIdle(ctx);
@@ -54,21 +54,24 @@ public class ClientIdleStateTrigger extends ChannelInboundHandlerAdapter {
 	}
 
 	protected void handleReaderIdle(ChannelHandlerContext ctx) {
-		logger.info("---READER_IDLE---");
+		logger.info("---READER_IDLE---" + ctx.channel());
 		PingMsg pingMsg = new PingMsg();
 		ctx.writeAndFlush(pingMsg);
+		logger.info("pingmg over:::" + ctx.channel());
 	}
 
 	protected void handleWriterIdle(ChannelHandlerContext ctx) {
-		logger.info("---WRITER_IDLE---");
+		logger.info("---WRITER_IDLE---" + ctx.channel());
 		PingMsg pingMsg = new PingMsg();
 		ctx.writeAndFlush(pingMsg);
+		logger.info("pingmg over:::" + ctx.channel());
 	}
 
 	protected void handleAllIdle(ChannelHandlerContext ctx) {
-		logger.info("---ALL_IDLE---");
+		logger.info("---ALL_IDLE---" + ctx.channel());
 		PingMsg pingMsg = new PingMsg();
 		ctx.writeAndFlush(pingMsg);
+		logger.info("pingmg over:::" + ctx.channel());
 	}
 
 }
