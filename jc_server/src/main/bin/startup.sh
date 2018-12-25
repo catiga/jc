@@ -19,7 +19,7 @@ done
 
 APP_MAINCLASS=com.jeancoder.root.server.fk.Starter
 
-JAVA_OPTS="-ms1024m -mx1024m -Xmn256m -Djava.awt.headless=true -XX:MaxPermSize=128m"
+JAVA_OPTS="-ms1024m -mx1024m -Xmn256m -Dfile.encoding=UTF-8 -Djava.awt.headless=true -XX:MaxPermSize=128m"
 
 psid=0
 checkpid() {
@@ -47,8 +47,8 @@ checktostart() {
         echo -n "Choose libs $LIB"
         JAVA_CMD="nohup java $JAVA_OPTS -classpath $CLASSPATH $APP_MAINCLASS >/dev/null 2>&1 &"
         
-        nohup java $JAVA_OPTS -classpath $CLASSPATH $APP_MAINCLASS
-        #su - $RUNNING_USER -c "$JAVA_CMD"
+        #nohup java $JAVA_OPTS -classpath $CLASSPATH $APP_MAINCLASS
+        su - $RUNNING_USER -c "$JAVA_CMD"
         
 		checkpid
 		if [ $psid -ne 0 ]; then
