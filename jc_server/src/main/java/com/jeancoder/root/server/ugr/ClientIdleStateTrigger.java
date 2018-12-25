@@ -56,21 +56,21 @@ public class ClientIdleStateTrigger extends ChannelInboundHandlerAdapter {
 	protected void handleReaderIdle(ChannelHandlerContext ctx) {
 		logger.info("---READER_IDLE---" + ctx.channel());
 		PingMsg pingMsg = new PingMsg();
-		ctx.writeAndFlush(pingMsg);
+		ctx.channel().writeAndFlush(pingMsg);
 		logger.info("pingmg over:::" + ctx.channel());
 	}
 
 	protected void handleWriterIdle(ChannelHandlerContext ctx) {
 		logger.info("---WRITER_IDLE---" + ctx.channel());
 		PingMsg pingMsg = new PingMsg();
-		ctx.writeAndFlush(pingMsg);
+		ctx.channel().writeAndFlush(pingMsg);
 		logger.info("pingmg over:::" + ctx.channel());
 	}
 
 	protected void handleAllIdle(ChannelHandlerContext ctx) {
 		logger.info("---ALL_IDLE---" + ctx.channel());
 		PingMsg pingMsg = new PingMsg();
-		ctx.writeAndFlush(pingMsg);
+		ctx.channel().writeAndFlush(pingMsg);
 		logger.info("pingmg over:::" + ctx.channel());
 	}
 
