@@ -164,51 +164,22 @@ public class SqlParser {
 		if(!isSelectSql()) {
 			return null;
 		}
-//		SqlFragment select = frags.get(0);
-//		select.target = "count(*)";
-//		StringBuffer buf = new StringBuffer();
-//		buf.append(select.action + " " + select.target + " ");
-//		boolean allow_append = false;
-//		for(int i=1; i<frags.size(); i++) {
-//			if(frags.get(i).action.equals("limit")) {
-//				continue;
-//			}
-//			if((frags.get(i).getAction().equals(Token.FROM.name)) && (!allow_append)) {
-//				allow_append = true;
-//			}
-//			if(allow_append) {
-//				buf.append(frags.get(i).action + " " + frags.get(i).target + " ");
-//			}
-//		}
-//		return buf.toString().trim();
-//		SqlFragment select = frags.get(0);
-//		select.target = "count(*)";
-//		StringBuffer buf = new StringBuffer();
-//		buf.append(select.action + " " + select.target + " ");
-//		boolean allow_append = false;
-//		for(int i=1; i<frags.size(); i++) {
-//			if(frags.get(i).action.equals("limit")) {
-//				continue;
-//			}
-//			if((frags.get(i).getAction().equals(Token.FROM.name)) && (!allow_append)) {
-//				allow_append = true;
-//			}
-//			if(allow_append) {
-//				buf.append(frags.get(i).action + " " + frags.get(i).target + " ");
-//			}
-//		}
-//		
+		SqlFragment select = frags.get(0);
+		select.target = "count(*)";
 		StringBuffer buf = new StringBuffer();
-		buf.append("SELECT  COUNT(*) FROM ( ");
+		buf.append(select.action + " " + select.target + " ");
 		boolean allow_append = false;
-		for(int i=0; i<frags.size(); i++) {
+		for(int i=1; i<frags.size(); i++) {
+			if(frags.get(i).action.equals("limit")) {
+				continue;
+			}
 			if((frags.get(i).getAction().equals(Token.FROM.name)) && (!allow_append)) {
 				allow_append = true;
 			}
-			buf.append(frags.get(i).action + " " + frags.get(i).target + " ");
+			if(allow_append) {
+				buf.append(frags.get(i).action + " " + frags.get(i).target + " ");
+			}
 		}
-		buf.append(") count_sq " );
-		
 		return buf.toString().trim();
 	}
 	
