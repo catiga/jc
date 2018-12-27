@@ -1,5 +1,6 @@
 package com.jeancoder.core.result;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -91,6 +92,14 @@ public class Result {
 	public Map<String, Object> getDataMap() {
 		return dataMap;
 	}
+	
+	
+	public Result setStream(InputStream stream, String name) {
+		this.data = stream;
+		this.result = name;
+		this.resultType = ResultType.STREAM;
+		return this;
+}
 	
 	@SuppressWarnings("unchecked")
 	public static <T extends Result> T convert(Object general) {

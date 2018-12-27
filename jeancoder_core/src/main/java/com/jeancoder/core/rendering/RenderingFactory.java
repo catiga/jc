@@ -28,6 +28,8 @@ public class RenderingFactory {
 				rend = new ForwardingRendering<T>(context);
 			} else if (ResultType.GENERAL_IO.equals(result.getResultType())) {
 				rend = new GeneralIORendering<T>(context);
+			} else if (ResultType.STREAM.equals(result.getResultType())) {
+				rend = new StreamRendering<T>(context);
 			}
 		}
 		rend.runningResult = resultWrapper;
