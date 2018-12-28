@@ -40,7 +40,9 @@ public abstract class QContainer extends LifecycleZa implements JCAppContainer {
 						boolean cancel_result = task.cancel();
 						task.shut();
 						logger.info(this + " " + task + " cancel task:::" + cancel_result);
-						its.remove();
+						if(cancel_result) {
+							its.remove();
+						}
 					}
 				}
 			}

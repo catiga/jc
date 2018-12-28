@@ -36,6 +36,7 @@ public class TimerTaskObject extends ConcurrentTaskObject implements TaskObject 
 					}
 				};
 				timer.scheduleAtFixedRate(timerTask, delay, internal);
+				scheduled = true;
 			}
 		}
 	}
