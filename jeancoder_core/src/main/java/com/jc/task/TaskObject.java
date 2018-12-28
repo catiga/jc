@@ -4,5 +4,7 @@ public interface TaskObject {
 
 	void run();
 	
-	void cancel();
+	boolean cancel();
+	
+	void shut();
 }

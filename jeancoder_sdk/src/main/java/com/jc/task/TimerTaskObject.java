@@ -4,8 +4,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class TimerTaskObject extends ConcurrentTaskObject implements TaskObject {
-
+	
 	private Timer timer;
+	
+	private TimerTask timerTask;
 	
 	Long delay = 0L;
 	
@@ -27,21 +29,32 @@ public class TimerTaskObject extends ConcurrentTaskObject implements TaskObject 
 	public void run() {
 		synchronized (__LOCK__) {
 			if(!scheduled) {
-				timer.scheduleAtFixedRate(new TimerTask() {
+				timerTask = new TimerTask() {
+					@Override
 					public void run() {
 						task.execute();
 					}
-				}, delay, internal);
+				};
+				timer.scheduleAtFixedRate(timerTask, delay, internal);
 			}
 		}
 	}
 
 	@Override
-	public void cancel() {
+	public boolean cancel() {
 		synchronized(__LOCK__) {
-			if(timer!=null&&scheduled) {
-				timer.cancel();
+			if(timerTask!=null&&scheduled) {
+				boolean taskcelres = timerTask.cancel();
+				return taskcelres;
 			}
+			return false;
+		}
+	}
+
+	@Override
+	public void shut() {
+		if(timer!=null&&scheduled) {
+			this.timer.cancel();
 		}
 	}
 	

@@ -43,7 +43,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 @SuppressWarnings("serial")
 public abstract class DefaultContainer extends QContainer implements JCAppContainer {
 
-	private static Logger logger = LoggerFactory.getLogger(DefaultContainer.class);
+	private static Logger logger = LoggerFactory.getLogger(DefaultContainer.class.getName());
 	
 	protected JCAPP appins;
 	
