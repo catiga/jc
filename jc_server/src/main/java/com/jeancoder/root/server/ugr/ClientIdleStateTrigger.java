@@ -26,7 +26,9 @@ public class ClientIdleStateTrigger extends ChannelInboundHandlerAdapter {
 		String client_id = Constants.getClientId();
 		if (evt instanceof IdleStateEvent) {
 			IdleState state = ((IdleStateEvent) evt).state();
-			logger.info("IDST TYPE:::" + state + ",CHANNEL_ID=" + chid + "[" + client_id + "]" + " BESET IDST." + ", CHOPUCSE:::" + Constants.getClientId());
+			if(logger.isDebugEnabled()) {
+				logger.debug("IDST TYPE:::" + state + ",CHANNEL_ID=" + chid + "[" + client_id + "]" + " BESET IDST." + ", CHOPUCSE:::" + Constants.getClientId());
+			}
 			switch (state) {
 			case READER_IDLE:
 				handleReaderIdle(ctx);
