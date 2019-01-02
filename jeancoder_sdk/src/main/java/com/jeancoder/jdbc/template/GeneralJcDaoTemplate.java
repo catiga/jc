@@ -75,6 +75,26 @@ public abstract class GeneralJcDaoTemplate<T> {
 		return -1L;
 	}
 	
+	@SuppressWarnings("deprecation")
+	protected long countSql(String sql, Object...params) {
+		String countSql = "SELECT COUNT(*) FROM ("+sql+") countSql";
+		JeancoderResultSet jrs = null;
+		try {
+			DatabasePower dp = DatabaseSource.getDatabasePower();
+			jrs = dp.doQuery(countSql, params);
+			ResultSet rs = jrs.getResultSet();
+			while(rs.next()) {
+				return rs.getLong(1);
+			}
+		}catch(Exception e) {
+			LOGGER.error("", e);
+		}finally{
+			if(jrs!=null)
+				jrs.closeConnection();
+		}
+		return -1L;
+	}
+	
 	protected SqlParser buildSql(Class<T> mapclass, String sql) {
 		SqlParser par = new SqlParser(sql);
 		return par;
