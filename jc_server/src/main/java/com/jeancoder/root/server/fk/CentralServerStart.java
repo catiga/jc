@@ -60,54 +60,6 @@ public class CentralServerStart extends ExternalStarter {
 				}
 			}).start();
 		}
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				logger.error("线程启动");
-				try {
-					Thread.sleep(15000);
-					String json = "";
-					try {
-						String rules = RemoteUtil.getConfigList();
-						ByteResults byteResults = JackSonBeanMapper.fromJson(rules, ByteResults.class);
-						if (!"0000".equals(byteResults.getStatus())) {
-							logger.info("获取配置失败 status:" + byteResults.getStatus() + " msg:" + byteResults.getMsg());
-							return;
-						}
-						json = new String(byteResults.getResults());
-					} catch (Exception e) {
-						logger.error("网络加载配置文件错误", e);
-					}
-					try {
-						Gson gson = new Gson();
-						FkConf fk_con = gson.fromJson(json, FkConf.class);
-						for (ServerMod sm : fk_con.getServers()) {
-							if (!sm.getScheme().equalsIgnoreCase(ServerCode.HTTP.toString())) {
-								continue;
-							}
-							for (AppMod mod : sm.getApps()) {
-								try {
-									InputStream ins = RemoteUtil.installation(mod.getFetch_address(),
-											new Long(mod.getApp_id()));
-									ZipUtil.unzip(mod.getApp_base(), new ZipInputStream(ins));
-									JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
-									jcvm.installApp(mod.to());
-								} catch (Exception e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-							}
-						}
-					} catch (Exception e) {
-						logger.error("start error:", e);
-						System.exit(-1);
-					}
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}).start();
 	}
 	
 }
