@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jeancoder.core.Interceptor.IntercepHanRule;
 import com.jeancoder.core.Interceptor.Interceptor;
+import com.jeancoder.core.cl.AppLoader;
 import com.jeancoder.core.common.Common;
 import com.jeancoder.core.http.JCRequest;
 import com.jeancoder.core.http.JCResponse;
@@ -169,6 +170,9 @@ public abstract class DefaultContainer extends QContainer implements JCAppContai
 	public <T extends Result> RunnerResult<T> execute(String path) {
 		Class<?> executor = null;
 		JCAppContainer original_container = ContainerContextEnv.getCurrentContainer();
+		if(original_container==null) {
+			original_container = ((AppLoader)Thread.currentThread().getContextClassLoader()).getContextEnv();
+		}
 		ContainerContextEnv.setCurrentContainer(this);
 		try {
 			executor = this.transferPathToIns(path);
