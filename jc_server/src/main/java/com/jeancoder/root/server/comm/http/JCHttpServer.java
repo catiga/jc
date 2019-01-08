@@ -64,7 +64,7 @@ public class JCHttpServer extends ServerImpl implements JCServer {
 			final ServerBootstrap server = new ServerBootstrap();
 			server.group(accGroup, workerGroup) // 组装NioEventLoopGroup
 					.channel(NioServerSocketChannel.class) // 设置channel类型为NIO类型
-					.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 20 * 1000)// 连接超时，单位毫秒
+					.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3 * 1000)// 连接超时，单位毫秒
 					.option(ChannelOption.SO_BACKLOG, 1024) // 连接队列长度
 					.option(ChannelOption.SO_REUSEADDR, true)
 					.handler(new LoggingHandler(LogLevel.DEBUG))
