@@ -27,7 +27,7 @@
             "proxy_entry": "entry",
             "proxy_path": "/",
             "logs": "/home/jeancoder-server/jclogs",
-            "domain_visit":"/project/index/index",
+            "domain_visit":"/web/index",
             "libs": "/home/jeancoder-server/jclibs",
             "master": "jcs://jcloudapp.pdr365.com:8091/",
             "apps": [
