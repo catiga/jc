@@ -18,16 +18,18 @@ public class DataRendering<T extends Result> extends DefaultRendering<T> impleme
 	public Object process(HttpServletRequest request, HttpServletResponse response) {
 		super.process(request, response);
 		Result result = this.runningResult.getResult();
+		Object data_obj = null;
 		if(result.getData() instanceof String) {
-			Object data_obj = result.getData();
+			data_obj = result.getData();
 			if(data_obj!=null)
 				this.writeJsonResponse(result.getData().toString(), true);
 			else
 				this.writeJsonResponse("{}", true);
 		} else {
-			this.writeJsonResponse(JackSonBeanMapper.toJson(result.getData()), true);
+			data_obj = JackSonBeanMapper.toJson(result.getData());
+			this.writeJsonResponse(data_obj.toString(), true);
 		}
-		return null;
+		return data_obj;
 	}
 
 }

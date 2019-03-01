@@ -21,6 +21,8 @@ public class RunnerResult<T extends Result> {
 	String path;
 
 	T result;
+	
+	Object data;
 
 	public void setAppins(JCAPP appins) {
 		this.appins = appins;
@@ -60,6 +62,14 @@ public class RunnerResult<T extends Result> {
 
 	public void setResult(T result) {
 		this.result = result;
+	}
+
+	public void setData(Object data) {
+		this.data = data;
+	}
+
+	public Object getData() {
+		return data;
 	}
 
 	public void addListener(EventListener listener) {

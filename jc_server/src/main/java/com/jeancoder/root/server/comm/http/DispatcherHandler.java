@@ -22,6 +22,7 @@ import com.jeancoder.root.exception.RunningException;
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
 import com.jeancoder.root.manager.JCVMDelegator;
+import com.jeancoder.root.server.comm.ws.WebSocketHandler;
 import com.jeancoder.root.server.inet.JCServer;
 import com.jeancoder.root.server.state.ServerHolder;
 
@@ -33,6 +34,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
@@ -41,6 +43,8 @@ import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
+import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
 
@@ -231,6 +235,35 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 	}
 
 	@Override
+	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+		// TODO Auto-generated method stub
+		super.channelRead(ctx, msg);
+	}
+	
+	
+	
+	
+	WebSocketServerHandshaker handshaker;
+    
+    protected String getWebSocketURL(HttpRequest req) {
+        System.out.println("Req URI : " + req.uri());
+        String url =  "ws://" + req.headers().get("Host") + req.uri();
+        System.out.println("Constructed URL : " + url);
+        return url;
+    }
+    
+    protected void handleHandshake(ChannelHandlerContext ctx, HttpRequest req) {
+        WebSocketServerHandshakerFactory wsFactory =
+                new WebSocketServerHandshakerFactory(getWebSocketURL(req), null, true);
+        handshaker = wsFactory.newHandshaker(req);
+        if (handshaker == null) {
+            WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
+        } else {
+            handshaker.handshake(ctx.channel(), req);
+        }
+    }
+
+	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, HttpObject requestObj) throws Exception {
 		if (!(requestObj instanceof HttpRequest)) {		//discard invalid request
 			String result = ERROR + ":unsupport request!------From JC Server";
@@ -245,6 +278,21 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 			writeResponse(ctx, HttpResponseStatus.ACCEPTED, "unsupported", true);
 			return;
 		}
+		HttpHeaders headers_obj = ((HttpRequest)requestObj).headers();
+		if ("Upgrade".equalsIgnoreCase(headers_obj.get(HttpHeaderNames.CONNECTION)) &&
+                "WebSocket".equalsIgnoreCase(headers_obj.get(HttpHeaderNames.UPGRADE))) {
+
+            //Adding new handler to the existing pipeline to handle WebSocket Messages
+            ctx.pipeline().replace(this, "websocketHandler", new WebSocketHandler(requestObj));
+
+            logger.info("WebSocketHandler added to the pipeline");
+            logger.info("Opened Channel : " + ctx.channel());
+            logger.info("Handshaking....");
+            //Do the Handshake to upgrade connection from HTTP to WebSocket protocol
+            handleHandshake(ctx, (HttpRequest)requestObj);
+            logger.info("Handshake is done");
+            return;
+        }
 		
 		if(uri_path.equals("/TESTJC")) {
 			String result = SUCCESS + ":welcome msg!------From JC Server";

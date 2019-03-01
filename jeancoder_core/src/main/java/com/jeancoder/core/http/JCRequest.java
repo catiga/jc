@@ -16,13 +16,15 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.UploadFile;
+import com.jeancoder.root.io.socketx.DataBuf;
+import com.jeancoder.root.io.socketx.WSRequest;
 
 public class JCRequest {
 	public static final int MEMORY_THRESHOLD   = 1024 * 1024 * 3;  // 3MB
 	public static final int MAX_FILE_SIZE      = 1024 * 1024 * 40; // 40MB
 	public static final int MAX_REQUEST_SIZE   = 1024 * 1024 * 50; // 50MB
 
-	private HttpServletRequest request;
+	protected HttpServletRequest request;
 	
 	private JCSession session;
 	
@@ -31,6 +33,22 @@ public class JCRequest {
 	private Map<String, String[]> _parameters_ = new HashMap<>();
 	
 	private List<FileItem> _file_items_ = null;
+	
+	@SuppressWarnings("unchecked")
+	public DataBuf wsdata() {
+		if(this.request instanceof WSRequest) {
+			return ((WSRequest<DataBuf>)this.request).getData();
+		}
+		throw new RuntimeException("Not WS Request");
+	}
+	
+	@SuppressWarnings("unchecked")
+	public ChannelWrapper wschannel() {
+		if(this.request instanceof WSRequest) {
+			return ((WSRequest<DataBuf>)this.request).getChannel();
+		}
+		throw new RuntimeException("Not WS Request");
+	}
 	
 	public JCRequest(HttpServletRequest request) {
 		this.request = request;
