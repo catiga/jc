@@ -221,24 +221,28 @@ public class JCHttpRequest implements HttpServletRequest, JCReqFaca {
 	@Override
 	public String getContextPath() {
 		String uri = request.uri();
-		if (uri.length() > 1) {
-			StringBuffer buff = new StringBuffer();
-			int start = 0;
-			for (;;) {
-				if (start >= uri.length()) {
-					break;
-				}
-				char c;
-				if ((c = uri.charAt(start++)) != '/' && c != '?' && c != '#') {
-					buff.append(c + "");
-				} else {
-					if (buff.length() > 0) {
+		if(!uri.startsWith("/?")) {
+			if (uri.length() > 1) {
+				StringBuffer buff = new StringBuffer();
+				int start = 0;
+				for (;;) {
+					if (start >= uri.length()) {
 						break;
 					}
+					char c;
+					if ((c = uri.charAt(start++)) != '/' && c != '?' && c != '#') {
+						buff.append(c + "");
+					} else {
+						if (buff.length() > 0) {
+							break;
+						}
+					}
 				}
+				buff.insert(0, '/');
+				return buff.toString();
+			} else {
+				return "/";
 			}
-			buff.insert(0, '/');
-			return buff.toString();
 		} else {
 			return "/";
 		}
