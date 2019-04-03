@@ -51,7 +51,7 @@ public class StaticRendering<T extends Result> extends DefaultRendering<T> imple
             
 			this.writeStreamResponse(buffer, content_type, true);
 		} catch (Exception e) {
-			logger.error(name + " rendering error:", e);
+			logger.error(name + " rendering error:");
 		}
 		return null;
 	}

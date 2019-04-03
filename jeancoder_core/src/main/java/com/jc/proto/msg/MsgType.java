@@ -9,5 +9,7 @@ public enum MsgType {
 	
 	HANDLER_SELECT, HANDLER_TABLES,
 	
-	EXCHANGE
+	EXCHANGE,
+	
+	MONIT_REQ,
 }
