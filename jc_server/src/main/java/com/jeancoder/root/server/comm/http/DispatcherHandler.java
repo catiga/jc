@@ -367,13 +367,5 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 		headers = request.headers();
 		messageReceived(ctx, request);
 	}
-	
-//	private void initPostRequestDecoder() {
-//		if (decoder != null) {
-//			decoder.cleanFiles();
-//			decoder = null;
-//		}
-//		decoder = new HttpPostRequestDecoder(factory, request, Charsets.toCharset(CharEncoding.UTF_8));
-//	}
-	
+		
 }
