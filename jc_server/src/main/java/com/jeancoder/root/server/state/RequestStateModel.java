@@ -19,27 +19,17 @@ public class RequestStateModel implements Serializable {
 	
 	Integer statusCode;
 	
-	String scheme;
-	
 	String remoteAddr;
 	
 	String userAgent;
 	
-	String otherInfo;
-	
 	String errInfo;
-	
-	String contentType;
 	
 	public RequestStateModel(HttpRequest request) {
 		this.uri = request.uri();
 		this.reqTime = Calendar.getInstance().getTimeInMillis();
 		this.userAgent = JackSonBeanMapper.toJson(request.headers());
 		
-	}
-
-	public String getScheme() {
-		return scheme;
 	}
 
 	public String getUri() {
@@ -67,14 +57,6 @@ public class RequestStateModel implements Serializable {
 		return userAgent;
 	}
 
-	public String getOtherInfo() {
-		return otherInfo;
-	}
-
-	public void setOtherInfo(String otherInfo) {
-		this.otherInfo = otherInfo;
-	}
-
 	public Long getResTime() {
 		return resTime;
 	}
@@ -99,10 +81,6 @@ public class RequestStateModel implements Serializable {
 		this.errInfo = errInfo;
 	}
 
-	public String getContentType() {
-		return contentType;
-	}
-
 	public int length() {
 		int len = 0;
 		if(uri!=null) {
@@ -117,23 +95,14 @@ public class RequestStateModel implements Serializable {
 		if(statusCode!=null) {
 			len += statusCode.toString().length();
 		}
-		if(scheme!=null) {
-			len += scheme.length();
-		}
 		if(remoteAddr!=null) {
 			len += remoteAddr.length();
 		}
 		if(userAgent!=null) {
 			len += userAgent.length();
 		}
-		if(otherInfo!=null) {
-			len += otherInfo.length();
-		}
 		if(errInfo!=null) {
 			len += errInfo.length();
-		}
-		if(contentType!=null) {
-			len += contentType.length();
 		}
 		return len;
 	}

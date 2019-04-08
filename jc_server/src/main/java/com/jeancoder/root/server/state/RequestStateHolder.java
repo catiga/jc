@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class RequestStateHolder {
-
+	
 	private static List<RequestStateModel> _list_ = new LinkedList<>();
 	
 	public final static RequestStateHolder INSTANCE = new RequestStateHolder();
@@ -31,8 +31,10 @@ public class RequestStateHolder {
 	
 	public List<RequestStateModel> trigger() {
 		synchronized (_list_) {
+			List<RequestStateModel> str_1 = new LinkedList<RequestStateModel>(_list_);
 			_list_.clear();
-			return _list_;
+			return str_1;
 		}
 	}
+	
 }
