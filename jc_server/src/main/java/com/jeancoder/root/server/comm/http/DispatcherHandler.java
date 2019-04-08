@@ -7,8 +7,16 @@ import static com.jeancoder.root.io.line.HeaderValues.KEEP_ALIVE;
 import static io.netty.buffer.Unpooled.copiedBuffer;
 
 import java.net.InetSocketAddress;
+import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +32,9 @@ import com.jeancoder.root.io.http.JCHttpResponse;
 import com.jeancoder.root.manager.JCVMDelegator;
 import com.jeancoder.root.server.comm.ws.WebSocketHandler;
 import com.jeancoder.root.server.inet.JCServer;
+import com.jeancoder.root.server.state.GlobalStateHolder;
+import com.jeancoder.root.server.state.RequestStateHolder;
+import com.jeancoder.root.server.state.RequestStateModel;
 import com.jeancoder.root.server.state.ServerHolder;
 
 import io.netty.buffer.ByteBuf;
@@ -64,6 +75,8 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 	private static final String FAVICON_ICO = "/favicon.ico";
 	private static final String ERROR = "error";
 	private static final String SUCCESS = "success";
+	
+	private RequestStateModel requestModel;
 	
 	@Override
 	public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
@@ -110,6 +123,8 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 			stand_request.setRemoteHost(remote);
 			stand_response = new JCHttpResponse(response);
 			JCVMDelegator.delegate().getVM().dispatch(stand_request, stand_response);
+			requestModel.setResTime(Calendar.getInstance().getTimeInMillis());
+			requestModel.setStatusCode(200);
 		} catch(Exception e) {
 			logger.error("so should send msg by socket to center server:" + e.getMessage(), e);
 			processHandlerException(e, stand_request, stand_response);
@@ -125,6 +140,27 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
                 ctx.write(stand_response.delegateObj());
 			}
 		}
+    }
+	
+	protected JCHttpResponse messageReceivedAsync(ChannelHandlerContext ctx, HttpRequest requestObj) {
+		FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
+		
+		InetSocketAddress remote = (InetSocketAddress)ctx.channel().remoteAddress();
+		JCHttpRequest stand_request = null; JCHttpResponse stand_response = null;
+		try {
+			stand_request = new JCHttpRequest((FullHttpRequest)request);
+			stand_request.setRemoteHost(remote);
+			stand_response = new JCHttpResponse(response);
+			JCVMDelegator.delegate().getVM().dispatch(stand_request, stand_response);
+			requestModel.setResTime(Calendar.getInstance().getTimeInMillis());
+			requestModel.setStatusCode(200);
+		} catch(Exception e) {
+			logger.error("so should send msg by socket to center server:" + e.getMessage(), e);
+			processHandlerException(e, stand_request, stand_response);
+		} finally {
+			JCVMDelegator.releaseContext();
+		}
+		return stand_response;
     }
 	
 	private void writeResponse(ChannelHandlerContext ctx, HttpResponseStatus status, String msg, boolean forceClose) {
@@ -232,6 +268,8 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 		new_response.headers().set(CONTENT_LENGTH, buf.readableBytes());
 		new_response.setStatus(HttpResponseStatus.BAD_REQUEST);
 		res.replaceDelegateObj(new_response);
+		requestModel.setStatusCode(HttpResponseStatus.BAD_REQUEST.code());
+		requestModel.setErrInfo(error_buffer.toString());
 	}
 
 	@Override
@@ -363,9 +401,85 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 				}
 			}
 		}
-		JCVMDelegator.bindContext(ChannelContextWrapper.newone(ctx));
-		headers = request.headers();
-		messageReceived(ctx, request);
-	}
 		
+		requestModel = new RequestStateModel(request); InetSocketAddress remote = (InetSocketAddress)ctx.channel().remoteAddress();
+		requestModel.init(request, remote);
+		headers = request.headers();
+		
+//		JCVMDelegator.bindContext(ChannelContextWrapper.newone(ctx));
+//		messageReceived(ctx, request);
+		
+		//** new one
+		JCHttpResponse stand_response = null;  FullHttpResponse response = null;
+        boolean keepAlive = HttpUtil.isKeepAlive(request);
+		
+		FutureTask<JCHttpResponse> future = new FutureTask<JCHttpResponse>(new VisCall(ChannelContextWrapper.newone(ctx), request, this));
+		
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(future); //执行
+        
+        try {
+        	if(GlobalStateHolder.internalExecuteTimeout!=null && GlobalStateHolder.internalExecuteTimeout>0L) {
+        		stand_response = future.get(GlobalStateHolder.internalExecuteTimeout, TimeUnit.MILLISECONDS); //取得结果，设置超时时间
+        	} else {
+        		stand_response = future.get();		//其他情况，同步返回
+        	}
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            future.cancel(true);
+            requestModel.setResTime(Calendar.getInstance().getTimeInMillis());
+			requestModel.setStatusCode(HttpResponseStatus.REQUEST_TIMEOUT.code());
+            //timeout
+            logger.info("request timeout:" + request.uri() + " and exhausted=" + (requestModel.getResTime() - requestModel.getReqTime())/1000);
+            String msg = "timeout:" + GlobalStateHolder.internalExecuteTimeout/1000 + "s==" + (requestModel.getResTime() - requestModel.getReqTime())/1000 + "s";
+			ByteBuf buf = copiedBuffer(msg, CharsetUtil.UTF_8);
+			response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.REQUEST_TIMEOUT, buf);
+
+			response.headers().set(CONTENT_TYPE, "text/plain" + "; charset=UTF-8");
+			response.headers().set(CONTENT_LENGTH, buf.readableBytes());
+        } finally {
+            executor.shutdown();
+            RequestStateHolder INSTANCE = RequestStateHolder.INSTANCE;
+            INSTANCE.add(requestModel);
+            
+            if(!keepAlive) {
+				if(stand_response!=null&&stand_response.delegateObj()!=null) {
+					ctx.writeAndFlush(stand_response.delegateObj()).addListener(ChannelFutureListener.CLOSE);
+				}
+				else {
+					if(response==null)
+						ctx.flush();
+					else 
+						ctx.writeAndFlush(response);
+				}
+			} else {
+				if(stand_response!=null&&stand_response.delegateObj()!=null) {
+					stand_response.delegateObj().headers().set(CONNECTION, KEEP_ALIVE);
+					ctx.write(stand_response.delegateObj());
+				} else {
+					if(response!=null)
+						ctx.write(response);
+				}
+			}
+        }
+	}
+	
+	class VisCall implements Callable<JCHttpResponse> {
+
+		ChannelContextWrapper context = null;
+		DispatcherHandler handler = null;
+		HttpRequest request = null;
+		
+		VisCall(ChannelContextWrapper context, HttpRequest request, DispatcherHandler handler) {
+			this.context = context;
+			this.handler = handler;
+			this.request = request;
+		}
+		
+		@Override
+		public JCHttpResponse call() throws Exception {
+			JCVMDelegator.bindContext(context);
+			return handler.messageReceivedAsync(context.getContext(), request);
+		}
+		
+	}
 }

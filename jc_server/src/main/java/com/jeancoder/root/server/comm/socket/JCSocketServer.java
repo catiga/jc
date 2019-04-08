@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jc.proto.conf.ServerMod;
 import com.jeancoder.root.server.channels.AcceptorIdleStateTrigger;
+import com.jeancoder.root.server.coder.MsgProtoDecoder;
 import com.jeancoder.root.server.inet.JCServer;
 import com.jeancoder.root.server.inet.ServerCode;
 import com.jeancoder.root.server.inet.ServerImpl;
@@ -24,7 +25,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.serialization.ClassResolvers;
-import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
@@ -95,7 +95,8 @@ public class JCSocketServer extends ServerImpl implements JCServer {
 
 							pipeline.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 2));
 							pipeline.addLast(new ObjectEncoder());
-							pipeline.addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
+//							pipeline.addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
+							pipeline.addLast(new MsgProtoDecoder(ClassResolvers.cacheDisabled(null)));
 							pipeline.addLast(new GeneralLiveHandler());
 						}
 					});

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.jc.proto.msg.AskMsg;
 import com.jc.proto.msg.GeneralMsg;
 import com.jc.proto.msg.LoginMsg;
+import com.jc.proto.msg.MsgProto;
 import com.jc.proto.msg.MsgType;
 import com.jc.proto.msg.PingMsg;
 import com.jc.proto.msg.ReplyClientBody;
@@ -20,7 +21,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.ReferenceCountUtil;
 
-public class GeneralLiveHandler extends SimpleChannelInboundHandler<GeneralMsg> {
+public class GeneralLiveHandler extends SimpleChannelInboundHandler<MsgProto> {
 
 	private static Logger logger = LoggerFactory.getLogger(GeneralLiveHandler.class.getName());
 	
@@ -57,7 +58,15 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 	}
 	
 	@Override
-	protected void channelRead0(ChannelHandlerContext ctx, GeneralMsg baseMsg) throws Exception {
+	protected void channelRead0(ChannelHandlerContext ctx, MsgProto msgProto) throws Exception {
+		String version = msgProto.version();		//消息版本号
+		String digest = msgProto.digest();			//根据消息摘要判断是哪个版本的消息
+		String msg_id = msgProto.getUnionid();
+		String instance_id = msgProto.getClientId();
+		//这两个数据留待下一个版本的容器升级使用
+		logger.info("client_id:" + instance_id + ", msg_id=" + msg_id + ", version=" + version + ", digest=" + digest);
+		
+		GeneralMsg baseMsg = (GeneralMsg)msgProto;
 		logger.info("server receive message=" + baseMsg + " and from client_id:::" + baseMsg.getClientId());
 		if (MsgType.LOGIN.equals(baseMsg.getType())) {
 			LoginMsg loginMsg = (LoginMsg) baseMsg;

@@ -9,47 +9,46 @@ public class JCLHealper {
 	
 	public static final JCLHealper INSTENSE = new JCLHealper();
 	
-	//private final static String LICENSE_PATH = "license.jc";
- 
-	//private static String signkey;
+	public String getPub_key_file() {
+		return pub_key_file;
+	}
+
+	private JCLHealper() {
+		//读取证书文件
+		StringBuffer buff = new StringBuffer();
+		try {
+			// 本地读取配置文件
+			InputStream ins = JCLHealper.class.getClassLoader().getResourceAsStream("com/jeancoder/root/server/key/jc.pub");
+			BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
+			String lineContent = null;
+			while ((lineContent = reader.readLine()) != null) {
+				buff.append(lineContent);
+			}
+		} catch (Exception e) {
+		}
+		this.pub_key_file = buff.toString();
+		
+		//读取license文件
+		buff = new StringBuffer();
+		try {
+			// 本地读取配置文件
+			InputStream ins = JCLHealper.class.getClassLoader().getResourceAsStream("com/jeancoder/root/server/key/license.jc");
+			BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
+			String lineContent = null;
+			while ((lineContent = reader.readLine()) != null) {
+				buff.append(lineContent);
+			}
+		} catch (Exception e) {
+		}
+		this.license = buff.toString();
+	}
+	
+	private String pub_key_file = null;
 	
 	private String license = null;
 	
 	private boolean loaded = false;
 	private boolean foundkey = true;
-	
- 
-//	public static String getKey() {
-//		StringBuffer buff = new StringBuffer();
-//		try {
-//			// 本地读取配置文件
-//			InputStream ins = JCLHealper.class.getClassLoader().getResourceAsStream("com/jeancoder/root/server/key/license.jc");
-//			BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
-//			String lineContent = null;
-//			while ((lineContent = reader.readLine()) != null) {
-//				buff.append(lineContent);
-//			}
-//		} catch (Exception e) {
-//		}
-//		return buff.toString();
-//	}
-//	
-//	
-//	private static void init() {
-//		StringBuffer buff = new StringBuffer();
-//		try {
-//			// 本地读取配置文件
-//			InputStream ins = JCLHealper.class.getClassLoader().getResourceAsStream("com/jeancoder/root/server/key/license.jc");
-//			BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
-//			String lineContent = null;
-//			while ((lineContent = reader.readLine()) != null) {
-//				buff.append(lineContent);
-//			}
-//		} catch (Exception e) {
-//		}
-//	}
-	
-	
 	
 	public boolean isLoaded() {
 		return loaded;
@@ -60,8 +59,12 @@ public class JCLHealper {
 	}
 	
 	public boolean checkLicenseText(String sourceText) {
+		String default_pub_key = publicKey;
+		if(pub_key_file!=null&&!pub_key_file.equals("")) {
+			default_pub_key = pub_key_file;
+		}
 		try {
-			RSA.decryptByPublic(sourceText, publicKey);
+			RSA.decryptByPublic(sourceText, default_pub_key);
 			return true;
 		}catch(Exception e) {
 			return false;
@@ -69,26 +72,32 @@ public class JCLHealper {
 	}
 	
 	public  String encryptByPublic(String sourceText) {
-		return RSA.encryptByPublic(sourceText, publicKey);
+		String default_pub_key = publicKey;
+		if(pub_key_file!=null&&!pub_key_file.equals("")) {
+			default_pub_key = pub_key_file;
+		}
+		return RSA.encryptByPublic(sourceText, default_pub_key);
 	}
 	
 	public  String decryptByPublic(String sourceText) {
-		return RSA.decryptByPublic(sourceText, publicKey);
+		String default_pub_key = publicKey;
+		if(pub_key_file!=null&&!pub_key_file.equals("")) {
+			default_pub_key = pub_key_file;
+		}
+		return RSA.decryptByPublic(sourceText, default_pub_key);
 	}
 	
-	@SuppressWarnings("static-access")
 	public  String getMerchantsCode() {
 		String license = decryptByPublic(JCLHealper.INSTENSE.getLicense());
 		return license.split("/")[1];
 	}
 	
-	@SuppressWarnings("static-access")
 	public  String getInstanceNum() {
 		String license = decryptByPublic(JCLHealper.INSTENSE.getLicense());
 		return license.split("/")[2];
 	}
 
-	private static String getLicense() {
+	public String getLicense() {
 		if (JCLHealper.INSTENSE.license == null)  {
 			StringBuffer buff = new StringBuffer();
 			try {
@@ -107,10 +116,11 @@ public class JCLHealper {
 	}
 	
 	public static void main(String[] agr) {
-//		File ifle = new File("/Users/huangjie/git/jc_parent/jc_server/target/classes/com/jeancoder/root/server/key/license");
-//		System.out.println(getKey());
-//		JCLHealper jch = new JCLHealper();
-//		jch.decryptByPublic("aJj5MlHwMSMGvgFwQFjQ9opvYjt72PKqAJ2QCtUnIXUvE1HTGtDzpmhs2j3WYlNYWiU0ZbqeY8n5agdZUtjw3a7otV1APykAZ1V2Lk6Ha2V2qrZu5E17MUWd3NkSzeR03zFaFKZ434SDmHhRNzqXJlHe7SOFjU0XiGF4VHXmep0=");
+		String license = JCLHealper.INSTENSE.getLicense();
+		String pub_key = JCLHealper.INSTENSE.getPub_key_file();
+		
+		System.out.println(license);
+		System.out.println(pub_key);
 	}
 	
 }

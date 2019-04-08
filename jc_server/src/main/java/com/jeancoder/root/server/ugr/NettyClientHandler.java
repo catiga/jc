@@ -23,6 +23,7 @@ import com.jc.proto.msg.ct.InstallMsg;
 import com.jc.proto.msg.ct.UninstallMsg;
 import com.jc.proto.msg.ct.UpgradeMsg;
 import com.jc.proto.msg.ct.VmContainerMsg;
+import com.jc.proto.msg.monit.ReqHandler;
 import com.jc.proto.msg.qd.DataHandler;
 import com.jc.proto.msg.qd.SelectHandler;
 import com.jc.proto.msg.qd.TablesHandler;
@@ -30,6 +31,7 @@ import com.jeancoder.core.power.DatabasePower;
 import com.jeancoder.core.power.result.JeancoderResultSet;
 import com.jeancoder.root.container.ContainerMaps;
 import com.jeancoder.root.container.JCAppContainer;
+import com.jeancoder.root.server.state.RequestStateHolder;
 import com.jeancoder.root.server.util.RemoteUtil;
 import com.jeancoder.root.server.util.ZipUtil;
 import com.jeancoder.root.vm.JCVM;
@@ -161,6 +163,13 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 			fireGeneralMsg(channelHandlerContext, msg, msg);
 		}
 			break;
+		
+		case MONIT_REQ: {
+			ReqHandler msg = (ReqHandler)baseMsg;
+			Object data = RequestStateHolder.INSTANCE.trigger();
+			msg.setData(data);
+			fireGeneralMsg(channelHandlerContext, msg, msg);
+		}
 		default:
 			break;
 		}

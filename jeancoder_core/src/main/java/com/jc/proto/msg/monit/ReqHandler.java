@@ -1,10 +1,10 @@
 package com.jc.proto.msg.monit;
 
-import com.jc.proto.msg.GeneralMsg;
 import com.jc.proto.msg.MsgType;
+import com.jc.proto.msg.SyncMsg;
 
 @SuppressWarnings("serial")
-public class ReqHandler extends GeneralMsg {
+public class ReqHandler extends SyncMsg {
 	
 	Object data;
 
@@ -19,6 +19,11 @@ public class ReqHandler extends GeneralMsg {
 
 	public void setData(Object data) {
 		this.data = data;
+	}
+
+	@Override
+	public Object getResData() {
+		return null;
 	}
 	
 }

@@ -1,10 +1,13 @@
 package com.jc.proto.msg;
 
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.UUID;
 
 @SuppressWarnings("serial")
-public abstract class GeneralMsg  implements Serializable {
+public abstract class GeneralMsg  implements MsgProto, Serializable {
 	
 	public static final EmptyMsg EMPTY = new EmptyMsg();
 	
@@ -14,7 +17,7 @@ public abstract class GeneralMsg  implements Serializable {
     
     //必须唯一，否者会出现channel调用混乱
     private String clientId;
-
+    
     //初始化客户端id和消息全局ID
     public GeneralMsg() {
         this.clientId = Constants.getClientId();
@@ -64,4 +67,41 @@ public abstract class GeneralMsg  implements Serializable {
     public Object getResData() {
     	return null;
     }
+    
+	@Override
+	public String digest() {
+		return null;
+	}
+
+	@Override
+	public String version() {
+		return null;
+	}
+
+	// test method
+    public static void main(String[] argc) throws Exception {
+    	InetAddress ia = InetAddress.getLocalHost();
+		System.out.println(ia);
+    }
+    
+    public String LocalMacByIa(InetAddress ia) throws SocketException {
+		//获取网卡，获取地址
+		byte[] mac = NetworkInterface.getByInetAddress(ia).getHardwareAddress();
+		StringBuffer sb = new StringBuffer("");
+		for(int i=0; i<mac.length; i++) {
+			if(i!=0) {
+				sb.append("-");
+			}
+			//字节转换为整数
+			int temp = mac[i]&0xff;
+			String str = Integer.toHexString(temp);
+			System.out.println("每8位:"+str);
+			if(str.length()==1) {
+				sb.append("0"+str);
+			}else {
+				sb.append(str);
+			}
+		}
+		return sb.toString();
+	}
 }
