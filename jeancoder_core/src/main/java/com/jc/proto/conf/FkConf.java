@@ -6,6 +6,8 @@ public class FkConf {
 
 	Ins ins;
 	
+	//InsPerf ins_perf;
+	
 	List<ServerMod> servers;
 	
 	public Ins getIns() {
