@@ -89,6 +89,7 @@ public class JCLHealper {
 		if(pub_key_file!=null&&!pub_key_file.equals("")) {
 			default_pub_key = pub_key_file;
 		}
+		logger.info("source_text:" + sourceText);
 		logger.info("decrypt pub key:" + this.pub_key_file);
 		return RSA.decryptByPublic(sourceText, default_pub_key);
 	}
@@ -127,6 +128,8 @@ public class JCLHealper {
 		
 		System.out.println(license);
 		System.out.println(pub_key);
+		
+		System.out.println(JCLHealper.INSTENSE.getMerchantsCode());
 		
 		String lic = "GvaRZSVEHP1N6omCUFuGsXz2vFNprc9aQW1ah0FPnr/Hj5goVlugGdkl70e/4hYUevIys/bjqHmgoyhAEkbCagqtK9mdwaDXSsNj0cafojCSNOmRvHr+gghYelmI8cxTsjpghjOfrGtRv1FmDtooegXbgooFP8p91ugdTFDB+8E=";
 		
