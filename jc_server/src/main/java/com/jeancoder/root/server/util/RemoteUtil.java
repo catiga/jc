@@ -13,6 +13,9 @@ import com.jeancoder.root.server.mixture.StringResults;
 public class RemoteUtil {
 	
 	private static String singkey = null; 
+	
+	private static final String domain = "http://jcloudapp.pdr365.com";
+//	private static final String domain = "http://e.local:8080";
 		
 	/**
 	 * 获取配置信息
@@ -24,7 +27,7 @@ public class RemoteUtil {
 		Map<String,String> paramsMap = new TreeMap<String,String>();
 		paramsMap.put("m_code", JCLHealper.INSTENSE.getMerchantsCode());
 		paramsMap.put("m_instance", JCLHealper.INSTENSE.getInstanceNum());
-		String  rsaResultsJson = HttpsRequesUtil.connection("http://jcloudapp.pdr365.com/server/api/personal/common/getConfigList", HttpsRequesUtil.getParams(paramsMap, getSignKey()));
+		String  rsaResultsJson = HttpsRequesUtil.connection(domain + "/server/api/personal/common/getConfigList", HttpsRequesUtil.getParams(paramsMap, getSignKey()));
 		return rsaResultsJson;
 	}
 	
@@ -51,8 +54,9 @@ public class RemoteUtil {
 		}
 		Map<String,String> params = new TreeMap<String,String>();
 		params.put("m_code", JCLHealper.INSTENSE.getMerchantsCode());
+		params.put("m_instance", JCLHealper.INSTENSE.getInstanceNum());
 		String parameter = HttpsRequesUtil.getParameter(params);
-		String rsaResultsJson = HttpsRequesUtil.connection("http://jcloudapp.pdr365.com/server/api/sys/getSignKey", "parameter=" + encryptByPublic(parameter));
+		String rsaResultsJson = HttpsRequesUtil.connection(domain + "/server/api/sys/getSignKey", "parameter=" + encryptByPublic(parameter));
 		rsaResultsJson = decryptByPublic(rsaResultsJson);
 		StringResults strResult = JackSonBeanMapper.fromJson(rsaResultsJson, StringResults.class);
 		

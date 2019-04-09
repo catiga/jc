@@ -123,17 +123,23 @@ public class JCLHealper {
 	}
 	
 	public static void main(String[] agr) {
-		String license = JCLHealper.INSTENSE.getLicense();
-		String pub_key = JCLHealper.INSTENSE.getPub_key_file();
+//		String license = JCLHealper.INSTENSE.getLicense();
+//		String pub_key = JCLHealper.INSTENSE.getPub_key_file();
+//		
+//		System.out.println(license);
+//		System.out.println(pub_key);
+//		
+//		System.out.println(JCLHealper.INSTENSE.getMerchantsCode());
 		
-		System.out.println(license);
-		System.out.println(pub_key);
+		String code = "v1.0/jcweb/0000/20200211/1529992261836";
 		
-		System.out.println(JCLHealper.INSTENSE.getMerchantsCode());
+		String pr = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAIs1uYqX3+AufsF5//G1SSyELVbKstktGlcJwVhHWBCLSKxaxkFOJwLh58E6SQ0bev7W57SC+25T+2NEQUZ/hjsdoocZvm00I6Uw142MzlgtHAsWqtRKxDIPiuPh65rWW15quvbhHQeKWdO+dCbpn9RjSzbW905QVAE9jQY0Br7TAgMBAAECgYBcYhbzpr5no/Nyqmf0G/6nkEAWbQYrogbs5AhvcUk8EXL1DnirNhYlj42hafC4xhflrvCtlo8NNKaLxewbwN1uuzG8A2jd+ROEXlx5HDh2ZluhtHzL/SmNcJXo684xAl2pCNVBjDcW48PcIBijke/sTVHTDsDCukLKDPUOM/mKIQJBAL96k4+jBscazsJiuZ6C3RFDVtRRDpf1dMgLgxcx63bAXkA2Arau0J49IAYmSVJoDXqDoJKWdXJVh9vHSkhN/48CQQC6Hk1/G0Y0nOylf6NOp0oMgc0A+etnwxHKqwtctPKjEYcJx2fzALzTtCoySLYXX7gLnPIQXpQBTUysG5skBKp9AkEAiSQm6fqu0Q4fRlRlc+VwpnufhgPkOuw/z0OHiaZkajJPjxfgC63bl2paNG1ZmJ8UAEqkSDlhNxmRa9UqG+1ZewJASaQxz6gwCCNLM1SkfjuM/hPh1JAOh9jUUleJQF5MXx9RSho/VBQnorB3vbutaOQzw0yPLtDtSPKX8sVdhkveVQJAIDsJP5X8Tey6zXTUISor7PF0TSiKdE4k0IwKoy9y8HmQ+AU8+xyr/iOt5lvaGxKlBK8N/7yCw5H4qHnJaHT+Bg==";
 		
-		String lic = "GvaRZSVEHP1N6omCUFuGsXz2vFNprc9aQW1ah0FPnr/Hj5goVlugGdkl70e/4hYUevIys/bjqHmgoyhAEkbCagqtK9mdwaDXSsNj0cafojCSNOmRvHr+gghYelmI8cxTsjpghjOfrGtRv1FmDtooegXbgooFP8p91ugdTFDB+8E=";
+		System.out.println(RSA.encryptByPrivate(code, pr));
 		
-		String pb = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCSdHxp9fi6oF86fzV7Pt2Mel1Yiy2UN2CVUUfpXCGwk9f/TrFEme5KW8gxqNSABx1h/FdhRUP4bsFCc4bsArrl3pdsnVws0I1DwpuZRiw4stLLOxD4JS1RBT+vVghuvHRp7LRB/9e8T/o/RUiw1hbLmYz62En3cnmqMKsiqM7uDwIDAQAB";
+		String lic = "WcfoKfyr3ph3J2I6U8Fp5PVqSXyf7aPdo0afahBX0ZWbXRxcIbe/uUVv0LuDrLpddv/HXO+1BxULJw4BJwZyTLWzEsTyc9BPnFvjcXoImCimhDKXAqdJQl90DXyKomeVoGzeAGd9T5XhXhDu86g/pEQoKnvKJGnRFP5j2fbkxZk=";
+		
+		String pb = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCLNbmKl9/gLn7Bef/xtUkshC1WyrLZLRpXCcFYR1gQi0isWsZBTicC4efBOkkNG3r+1ue0gvtuU/tjREFGf4Y7HaKHGb5tNCOlMNeNjM5YLRwLFqrUSsQyD4rj4eua1ltearr24R0HilnTvnQm6Z/UY0s21vdOUFQBPY0GNAa+0wIDAQAB";
 		
 		String s = RSA.decryptByPublic(lic, pb);
 		System.out.println(s);
