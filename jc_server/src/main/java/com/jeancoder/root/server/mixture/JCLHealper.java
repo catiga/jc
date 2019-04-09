@@ -4,13 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class JCLHealper {
 	private final String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCLNbmKl9/gLn7Bef/xtUkshC1WyrLZLRpXCcFYR1gQi0isWsZBTicC4efBOkkNG3r+1ue0gvtuU/tjREFGf4Y7HaKHGb5tNCOlMNeNjM5YLRwLFqrUSsQyD4rj4eua1ltearr24R0HilnTvnQm6Z/UY0s21vdOUFQBPY0GNAa+0wIDAQAB";
-	
-	private static Logger logger = LoggerFactory.getLogger(JCLHealper.class);
 	
 	public static final JCLHealper INSTENSE = new JCLHealper();
 	
@@ -89,8 +84,6 @@ public class JCLHealper {
 		if(pub_key_file!=null&&!pub_key_file.equals("")) {
 			default_pub_key = pub_key_file;
 		}
-		logger.info("source_text:" + sourceText);
-		logger.info("decrypt pub key:" + this.pub_key_file);
 		return RSA.decryptByPublic(sourceText, default_pub_key);
 	}
 	
