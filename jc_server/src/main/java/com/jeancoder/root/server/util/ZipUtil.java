@@ -17,7 +17,7 @@ public class ZipUtil {
 		if (appFile.exists()) {
 			FileUtil.deletefile(appFile);
 		}
-		appFile.mkdir();
+		appFile.mkdirs();
 //		entry = inputStream.getNextEntry();
 		while (((entry = inputStream.getNextEntry()) != null)) {
 			String entryName = entry.getName();

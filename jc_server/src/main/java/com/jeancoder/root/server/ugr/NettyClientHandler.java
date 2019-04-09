@@ -102,10 +102,11 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
+					JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
 					try {
 						InputStream ins = RemoteUtil.installation(appinfo.getFetch_address(),new Long(appinfo.getApp_id()));
+						jcvm.uninstallApp(appinfo.to());
 						ZipUtil.unzip(appinfo.getApp_base(), new ZipInputStream(ins));
-						JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
 						jcvm.updateApp(appinfo.to());
 					} catch (Exception e) {
 						logger.error("", e);
@@ -120,10 +121,11 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
+					JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
 					try {
 						InputStream ins = RemoteUtil.installation(appinfo.getFetch_address(),new Long(appinfo.getApp_id()));
+						jcvm.uninstallApp(appinfo.to());
 						ZipUtil.unzip(appinfo.getApp_base(), new ZipInputStream(ins));
-						JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
 						jcvm.installApp(appinfo.to());
 					} catch (Exception e) {
 						logger.error("", e);
