@@ -203,7 +203,11 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 
 	@Override
 	public void onDestroy() {
-		
+		this.offTask();
+		appins = null;
+		interceptorMap = null;
+		configs = null;
+		rootLoader = null;
 	}
 
 	protected void throwCause(String msg) {
