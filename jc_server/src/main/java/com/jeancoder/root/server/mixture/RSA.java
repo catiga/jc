@@ -17,11 +17,17 @@ import java.util.Map;
 
 import javax.crypto.Cipher;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 1、公钥加密，私钥解密用于信息加密
  * 2、私钥加密，公钥解密用于数字签名
  */
 public class RSA {
+	
+	private static Logger logger = LoggerFactory.getLogger(RSA.class);
+	
     /**
      * 测试方法
      */
@@ -228,6 +234,9 @@ public class RSA {
             // 返回UTF-8编码的解密信息
             return new String(cipher.doFinal(data), "UTF-8");  
         } catch (Exception e) {  
+        	logger.error("encode_str=" + encryptedStr);
+        	logger.error("public_key=" + publicKeyStr);
+        	logger.error("decrypt error:", e);
         	throw new RuntimeException(e.getMessage());
         }
     }
