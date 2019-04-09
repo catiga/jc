@@ -131,15 +131,14 @@ public class CentralServerStart extends ExternalStarter {
 								continue;
 							}
 							for (AppMod mod : sm.getApps()) {
+								logger.info(mod.getApp_id() + ":::" + mod.getApp_code() + ":::" + mod.getApp_base() + ":::" + mod.getFetch_address());
 								try {
-									InputStream ins = RemoteUtil.installation(mod.getFetch_address(),
-											new Long(mod.getApp_id()));
+									InputStream ins = RemoteUtil.installation(mod.getFetch_address(), new Long(mod.getApp_id()));
 									ZipUtil.unzip(mod.getApp_base(), new ZipInputStream(ins));
 									JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
 									jcvm.installApp(mod.to());
 								} catch (Exception e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
+									logger.error("install app error:" + mod.getApp_code() + ", directory:" + mod.getApp_base(), e);
 								}
 							}
 						}
