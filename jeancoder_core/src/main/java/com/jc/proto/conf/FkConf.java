@@ -6,7 +6,7 @@ public class FkConf {
 
 	Ins ins;
 	
-	//InsPerf ins_perf;
+	InsPerf ins_perf;
 	
 	List<ServerMod> servers;
 	
@@ -24,6 +24,14 @@ public class FkConf {
 
 	public void setServers(List<ServerMod> servers) {
 		this.servers = servers;
+	}
+
+	public InsPerf getIns_perf() {
+		return ins_perf;
+	}
+
+	public void setIns_perf(InsPerf ins_perf) {
+		this.ins_perf = ins_perf;
 	}
 
 }
