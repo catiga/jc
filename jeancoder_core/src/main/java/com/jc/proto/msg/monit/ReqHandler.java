@@ -23,7 +23,7 @@ public class ReqHandler extends SyncMsg {
 
 	@Override
 	public Object getResData() {
-		return null;
+		return data;
 	}
 	
 }

@@ -33,6 +33,7 @@ import com.jeancoder.core.power.DatabasePower;
 import com.jeancoder.core.power.result.JeancoderResultSet;
 import com.jeancoder.root.container.ContainerMaps;
 import com.jeancoder.root.container.JCAppContainer;
+import com.jeancoder.root.server.state.GlobalStateHolder;
 import com.jeancoder.root.server.state.RequestStateHolder;
 import com.jeancoder.root.server.util.RemoteUtil;
 import com.jeancoder.root.server.util.ZipUtil;
@@ -180,7 +181,9 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 			if(baseMsg!=null && (baseMsg instanceof ParamHandler)) {
 				ParamHandler msg = (ParamHandler)baseMsg;
 				ParamMod mod = msg.getParams();
-				
+				GlobalStateHolder.INSTANCE.reset(mod);
+				msg.success();
+				fireGeneralMsg(channelHandlerContext, msg, msg);
 			} else {
 				logger.error("msg type not match:" + MsgType.INSPARAD.name());
 			}
