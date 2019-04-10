@@ -31,38 +31,9 @@ public class CentralServerStart extends ExternalStarter {
 		centralServerStart();
 	}
 	/**
-	 * 中央服务器启动测试环境å
+	 * 中央服务器启动
 	 */
-//	public static void centralServerStart() {
-//		String json = loadLocal();
-//		if (json == null) {
-//			logger.error("配置文件不存在");
-//			System.exit(-1);
-//			return;
-//		}
-//		FkConf fk_con = null;
-//		try {
-//			Gson gson = new Gson();
-//			fk_con = gson.fromJson(json, FkConf.class);
-//			if (fk_con == null || fk_con.getServers() == null || fk_con.getServers().isEmpty()) {
-//				throw new RuntimeException("EMPTY");
-//			}
-//		} catch (Exception e) {
-//			logger.error("start error:", e);
-//			System.exit(-1);
-//		}
-//		for (ServerMod sm : fk_con.getServers()) {
-//			JCServer server = ServerFactory.generate(sm);
-//			ServerHolder.getHolder().add(server);
-//			new Thread(new Runnable() {
-//
-//				@Override
-//				public void run() {
-//					server.start();
-//				}
-//			}).start();
-//		}
-//	}
+
 	public static void centralServerStart() {
 		String json = null;
 		try {
@@ -79,7 +50,7 @@ public class CentralServerStart extends ExternalStarter {
 		} catch (Exception e) {
 		}
 		if (json == null) {
-			logger.error("配置文件不存在");
+			logger.error("本地初始化配置文件未找到.");
 			System.exit(-1);
 			return;
 		}
@@ -108,7 +79,7 @@ public class CentralServerStart extends ExternalStarter {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				logger.error("线程启动");
+				logger.info("$$$$$$ 中央服务线程启动中 $$$$$$");
 				try {
 					Thread.sleep(15000);
 					String json = "";
@@ -116,12 +87,12 @@ public class CentralServerStart extends ExternalStarter {
 						String rules = RemoteUtil.getConfigList();
 						ByteResults byteResults = JackSonBeanMapper.fromJson(rules, ByteResults.class);
 						if (!"0000".equals(byteResults.getStatus())) {
-							logger.info("获取配置失败 status:" + byteResults.getStatus() + " msg:" + byteResults.getMsg());
+							logger.error("****** 配置文件解析错误:" + byteResults.getStatus() + " msg:" + byteResults.getMsg());
 							return;
 						}
 						json = new String(byteResults.getResults());
 					} catch (Exception e) {
-						logger.error("网络加载配置文件错误", e);
+						logger.error("****** 网络配置文件加载失败:", e);
 					}
 					try {
 						Gson gson = new Gson();
