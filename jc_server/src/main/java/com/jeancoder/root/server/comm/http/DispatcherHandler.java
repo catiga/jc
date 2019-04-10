@@ -440,9 +440,10 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(future); //执行
         
+        
         try {
-        	if(GlobalStateHolder.internalExecuteTimeout!=null && GlobalStateHolder.internalExecuteTimeout>0L) {
-        		stand_response = future.get(GlobalStateHolder.internalExecuteTimeout, TimeUnit.MILLISECONDS); //async timeout setting
+        	if(GlobalStateHolder.INSTANCE.inExCallTimeout()!=null && GlobalStateHolder.INSTANCE.inExCallTimeout()>0L) {
+        		stand_response = future.get(GlobalStateHolder.INSTANCE.inExCallTimeout(), TimeUnit.MILLISECONDS); //async timeout setting
         	} else {
         		stand_response = future.get();		//sync get back response
         	}
@@ -450,7 +451,7 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
             future.cancel(true);
 			requestModel.setStatusCode(HttpResponseStatus.REQUEST_TIMEOUT.code());
             logger.info("request timeout:" + request.uri() + " and exhausted=" + (requestModel.getResTime() - requestModel.getReqTime())/1000);
-            String msg = "timeout:" + GlobalStateHolder.internalExecuteTimeout/1000 + "s==" + (requestModel.getResTime() - requestModel.getReqTime())/1000 + "s";
+            String msg = "timeout:" + GlobalStateHolder.INSTANCE.inExCallTimeout()/1000 + "s==" + (requestModel.getResTime() - requestModel.getReqTime())/1000 + "s";
 			ByteBuf buf = copiedBuffer(msg, CharsetUtil.UTF_8);
 			response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.REQUEST_TIMEOUT, buf);
 			response.headers().set(CONTENT_TYPE, "text/plain" + "; charset=UTF-8");

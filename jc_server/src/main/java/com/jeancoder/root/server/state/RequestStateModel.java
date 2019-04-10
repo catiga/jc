@@ -29,7 +29,6 @@ public class RequestStateModel implements Serializable {
 		this.uri = request.uri();
 		this.reqTime = Calendar.getInstance().getTimeInMillis();
 		this.userAgent = JackSonBeanMapper.toJson(request.headers());
-		
 	}
 
 	public String getUri() {

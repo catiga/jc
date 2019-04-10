@@ -12,4 +12,7 @@ public enum MsgType {
 	EXCHANGE,
 	
 	MONIT_REQ,
+	
+	//instance param debug
+	INSPARAD
 }

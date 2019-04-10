@@ -18,7 +18,7 @@ public class RequestStateHolder {
 		synchronized (_list_) {
 			totalDataLength += obj.length();
 			_list_.add(obj);
-			if(totalDataLength>GlobalStateHolder.MAX_SIZE) {
+			if(totalDataLength>GlobalStateHolder.INSTANCE.cachedMaxSize()) {
 				//TODO 清空，暂时这么处理
 				_list_.clear();
 			}

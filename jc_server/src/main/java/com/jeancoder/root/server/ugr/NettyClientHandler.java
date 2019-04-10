@@ -24,6 +24,8 @@ import com.jc.proto.msg.ct.UninstallMsg;
 import com.jc.proto.msg.ct.UpgradeMsg;
 import com.jc.proto.msg.ct.VmContainerMsg;
 import com.jc.proto.msg.monit.ReqHandler;
+import com.jc.proto.msg.paramdebug.ParamHandler;
+import com.jc.proto.msg.paramdebug.ParamMod;
 import com.jc.proto.msg.qd.DataHandler;
 import com.jc.proto.msg.qd.SelectHandler;
 import com.jc.proto.msg.qd.TablesHandler;
@@ -172,6 +174,18 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 			msg.setData(data);
 			fireGeneralMsg(channelHandlerContext, msg, msg);
 		}
+			break;
+			
+		case INSPARAD: {
+			if(baseMsg!=null && (baseMsg instanceof ParamHandler)) {
+				ParamHandler msg = (ParamHandler)baseMsg;
+				ParamMod mod = msg.getParams();
+				
+			} else {
+				logger.error("msg type not match:" + MsgType.INSPARAD.name());
+			}
+		}
+			break;
 		default:
 			break;
 		}
