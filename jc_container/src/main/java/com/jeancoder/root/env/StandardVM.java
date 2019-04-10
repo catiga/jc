@@ -95,7 +95,6 @@ public class StandardVM extends DefaultVm implements JCVM {
 	
 	@Override
 	public void installApp(JCAPP jcapp) {
-		uninstallApp(jcapp);
 		BootContainer bc = new BootContainer(jcapp);
 		bc.bindBaseEnv(rootLoader);
 		bc.onInit();

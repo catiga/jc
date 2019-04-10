@@ -6,9 +6,14 @@ import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jeancoder.core.util.FileUtil;
 
 public class ZipUtil {
+	
+	private static Logger logger = LoggerFactory.getLogger(ZipUtil.class);
 	
 	public static void  unzip(String path, ZipInputStream inputStream) throws Exception {
 		ZipEntry entry = inputStream.getNextEntry();
@@ -17,11 +22,16 @@ public class ZipUtil {
 		if (appFile.exists()) {
 			FileUtil.deletefile(appFile);
 		}
-		appFile.mkdir();
+		appFile.mkdirs();
 //		entry = inputStream.getNextEntry();
 		while (((entry = inputStream.getNextEntry()) != null)) {
 			String entryName = entry.getName();
-			entryName = entryName.substring(name.length(),entryName.length());
+			try {
+				entryName = entryName.substring(name.length(),entryName.length());
+			}catch(Exception e) {
+				logger.error(entryName + " NOT FOUND, WILL BE IGNORED.");
+				continue;
+			}
 			File file = new File(path + File.separator + entryName);
 			if (entry.isDirectory()) {
 				file.mkdirs();
