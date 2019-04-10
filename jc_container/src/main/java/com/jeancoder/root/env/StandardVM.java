@@ -107,7 +107,7 @@ public class StandardVM extends DefaultVm implements JCVM {
 	public void uninstallApp(JCAPP jcapp) {
 		Enumeration<JCAppContainer> appContainer  = VM_CONTAINERS.getByCode(jcapp.getCode());
 		
-		if(appContainer==null || appContainer.hasMoreElements()) {
+		if(appContainer==null || !appContainer.hasMoreElements()) {
 			return;
 		}
 		JCAppContainer container = appContainer.nextElement();
