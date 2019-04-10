@@ -25,7 +25,7 @@ public class RequestStateHolder {
 		synchronized (_list_) {
 			totalDataLength += obj.length();
 			_list_.add(obj);
-			if(totalDataLength>1024L) {
+			if(totalDataLength>GlobalStateHolder.INSTANCE.cachedMinSize()) {
 				final List<RequestStateModel> upload_date = new LinkedList<>(_list_);
 				_list_.clear();
 				//直接进行上传操作
@@ -40,7 +40,8 @@ public class RequestStateHolder {
 						}
 					}
 				}, 0, TimeUnit.MILLISECONDS);
-			} else if(totalDataLength>GlobalStateHolder.INSTANCE.cachedMaxSize()) {
+			}
+			if(totalDataLength>GlobalStateHolder.INSTANCE.cachedMaxSize()) {
 				//TODO 清空，暂时这么处理
 				_list_.clear();
 			}

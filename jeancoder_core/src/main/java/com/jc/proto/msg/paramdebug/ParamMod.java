@@ -7,6 +7,8 @@ public class ParamMod implements Serializable {
 
 	Long totalCachedMaxSize = 50*1024*1024L;	//default value
 	
+	Long totalCachedMinSize = 1*1024*1024L;	//default value
+	
 	Long internalTimeout = 0L;					//default value, not handled
 
 	public Long getTotalCachedMaxSize() {
@@ -23,6 +25,14 @@ public class ParamMod implements Serializable {
 
 	public void setInternalTimeout(Long internalTimeout) {
 		this.internalTimeout = internalTimeout;
+	}
+
+	public Long getTotalCachedMinSize() {
+		return totalCachedMinSize;
+	}
+
+	public void setTotalCachedMinSize(Long totalCachedMinSize) {
+		this.totalCachedMinSize = totalCachedMinSize;
 	}
 	
 }
