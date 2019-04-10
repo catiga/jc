@@ -84,26 +84,27 @@ public class RequestStateModel implements Serializable {
 	public int length() {
 		int len = 0;
 		if(uri!=null) {
-			len += uri.length();
+			len += uri.getBytes().length;
 		}
 		if(reqTime!=null) {
-			len += reqTime.toString().length();
+			len += Long.SIZE>>>3;
 		}
 		if(resTime!=null) {
-			len += resTime.toString().length();
+			len += Long.SIZE>>>3;
 		}
 		if(statusCode!=null) {
-			len += statusCode.toString().length();
+			len += Integer.SIZE>>>3;
 		}
 		if(remoteAddr!=null) {
-			len += remoteAddr.length();
+			len += remoteAddr.getBytes().length;
 		}
 		if(userAgent!=null) {
-			len += userAgent.length();
+			len += userAgent.getBytes().length;
 		}
 		if(errInfo!=null) {
-			len += errInfo.length();
+			len += errInfo.getBytes().length;
 		}
 		return len;
 	}
+	
 }

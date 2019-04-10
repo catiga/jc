@@ -26,6 +26,10 @@ import com.jc.proto.msg.ReplyMsg;
 import com.jc.proto.msg.ReplyServerBody;
 import com.jc.proto.msg.ct.UpgradeMsg;
 import com.jeancoder.root.env.ChannelContextWrapper;
+import com.jeancoder.root.exception.Code404Exception;
+import com.jeancoder.root.exception.Code500Exception;
+import com.jeancoder.root.exception.CompileException;
+import com.jeancoder.root.exception.PrivilegeException;
 import com.jeancoder.root.exception.RunningException;
 import com.jeancoder.root.io.http.JCHttpRequest;
 import com.jeancoder.root.io.http.JCHttpResponse;
@@ -123,7 +127,7 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 			stand_request.setRemoteHost(remote);
 			stand_response = new JCHttpResponse(response);
 			JCVMDelegator.delegate().getVM().dispatch(stand_request, stand_response);
-			requestModel.setResTime(Calendar.getInstance().getTimeInMillis());
+			//requestModel.setResTime(Calendar.getInstance().getTimeInMillis());
 			requestModel.setStatusCode(200);
 		} catch(Exception e) {
 			logger.error("so should send msg by socket to center server:" + e.getMessage(), e);
@@ -152,7 +156,6 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 			stand_request.setRemoteHost(remote);
 			stand_response = new JCHttpResponse(response);
 			JCVMDelegator.delegate().getVM().dispatch(stand_request, stand_response);
-			requestModel.setResTime(Calendar.getInstance().getTimeInMillis());
 			requestModel.setStatusCode(200);
 		} catch(Exception e) {
 			logger.error("so should send msg by socket to center server:" + e.getMessage(), e);
@@ -241,21 +244,29 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 //	}
 	
 	protected void processHandlerException(Throwable e, JCHttpRequest req, JCHttpResponse res) {
+		StringBuffer err_for_master = new StringBuffer();
 		StringBuffer error_buffer = new StringBuffer();
+		
 		error_buffer.append("VM ID:" + JCVMDelegator.delegate().delegatedId() + "\r\n\r\n");
+		err_for_master.append("VM ID:" + JCVMDelegator.delegate().delegatedId() + "\r\n");
 		if(e instanceof RunningException) {
 			RunningException rex = (RunningException)e;
 			logger.error(rex.getApp() + "..." + rex.getPath() + "&&&" + rex.getRes());
 			error_buffer.append("JCAPP CODE:" + rex.getApp() + "\r\n");
 			error_buffer.append("JCAPP PATH:" + rex.getPath() + "\r\n");
 			error_buffer.append("JCAPP RES:" + rex.getRes() + "\r\n\r\n");
+			
+			err_for_master.append("JCAPP CODE:" + rex.getApp() + "\r\n");
+			err_for_master.append("JCAPP PATH:" + rex.getPath() + "\r\n");
+			err_for_master.append("JCAPP RES:" + rex.getRes() + "\r\n");
 		}
 		error_buffer.append(e.getMessage() + "\r\n\r\n");
 		for(StackTraceElement ste : e.getCause()==null?e.getStackTrace():e.getCause().getStackTrace()) {
 			if(ste.getClassName().indexOf("io.netty.")>-1) {
 				break;
 			}
-			error_buffer.append("	at " + ste.getClassName() + "(" + ste.getFileName() + ":" + ste.getLineNumber() + ")\r\n\r\n");
+			error_buffer.append("  at " + ste.getClassName() + "(" + ste.getFileName() + ":" + ste.getLineNumber() + ")\r\n\r\n");
+			err_for_master.append("	at " + ste.getClassName() + "(" + ste.getFileName() + ":" + ste.getLineNumber() + ")\r\n");
 		}
 		ByteBuf buf = copiedBuffer(error_buffer.toString().getBytes());
 		FullHttpResponse new_response = null;
@@ -266,10 +277,21 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 		}
 		new_response.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
 		new_response.headers().set(CONTENT_LENGTH, buf.readableBytes());
-		new_response.setStatus(HttpResponseStatus.BAD_REQUEST);
+		
+		HttpResponseStatus res_code = HttpResponseStatus.BAD_REQUEST;
+		if(e instanceof Code404Exception) {
+			res_code = HttpResponseStatus.NOT_FOUND;
+		} else if(e instanceof Code500Exception) {
+			res_code = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+		} else if(e instanceof PrivilegeException) {
+			res_code = HttpResponseStatus.FORBIDDEN;
+		} else if(e instanceof CompileException) {
+			res_code = HttpResponseStatus.BAD_REQUEST;
+		}
+		new_response.setStatus(res_code);
 		res.replaceDelegateObj(new_response);
-		requestModel.setStatusCode(HttpResponseStatus.BAD_REQUEST.code());
-		requestModel.setErrInfo(error_buffer.toString());
+		requestModel.setStatusCode(res_code.code());
+		requestModel.setErrInfo(err_for_master.toString());
 	}
 
 	@Override
@@ -420,23 +442,21 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
         
         try {
         	if(GlobalStateHolder.internalExecuteTimeout!=null && GlobalStateHolder.internalExecuteTimeout>0L) {
-        		stand_response = future.get(GlobalStateHolder.internalExecuteTimeout, TimeUnit.MILLISECONDS); //取得结果，设置超时时间
+        		stand_response = future.get(GlobalStateHolder.internalExecuteTimeout, TimeUnit.MILLISECONDS); //async timeout setting
         	} else {
-        		stand_response = future.get();		//其他情况，同步返回
+        		stand_response = future.get();		//sync get back response
         	}
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             future.cancel(true);
-            requestModel.setResTime(Calendar.getInstance().getTimeInMillis());
 			requestModel.setStatusCode(HttpResponseStatus.REQUEST_TIMEOUT.code());
-            //timeout
             logger.info("request timeout:" + request.uri() + " and exhausted=" + (requestModel.getResTime() - requestModel.getReqTime())/1000);
             String msg = "timeout:" + GlobalStateHolder.internalExecuteTimeout/1000 + "s==" + (requestModel.getResTime() - requestModel.getReqTime())/1000 + "s";
 			ByteBuf buf = copiedBuffer(msg, CharsetUtil.UTF_8);
 			response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.REQUEST_TIMEOUT, buf);
-
 			response.headers().set(CONTENT_TYPE, "text/plain" + "; charset=UTF-8");
 			response.headers().set(CONTENT_LENGTH, buf.readableBytes());
         } finally {
+        	requestModel.setResTime(Calendar.getInstance().getTimeInMillis());		//set response timestamp
             executor.shutdown();
             RequestStateHolder INSTANCE = RequestStateHolder.INSTANCE;
             INSTANCE.add(requestModel);
