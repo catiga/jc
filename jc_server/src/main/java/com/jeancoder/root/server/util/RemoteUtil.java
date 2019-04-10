@@ -3,12 +3,14 @@ package com.jeancoder.root.server.util;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import com.jeancoder.core.util.JackSonBeanMapper;
 import com.jeancoder.root.server.mixture.JCLHealper;
 import com.jeancoder.root.server.mixture.StringResults;
+import com.jeancoder.root.server.state.RequestStateModel;
 
 public class RemoteUtil {
 	
@@ -45,6 +47,15 @@ public class RemoteUtil {
 		paramsMap.put("m_instance", JCLHealper.INSTENSE.getInstanceNum());
 		InputStream  zis = HttpsRequesUtil.connectionStream(fetch_address, HttpsRequesUtil.getParams(paramsMap,  getSignKey()));
 		return zis;
+	}
+	
+	public static String uploadPerfData(List<RequestStateModel> data) throws Exception {
+		Map<String,String> paramsMap = new TreeMap<String,String>();
+		paramsMap.put("m_code", JCLHealper.INSTENSE.getMerchantsCode());
+		paramsMap.put("m_instance", JCLHealper.INSTENSE.getInstanceNum());
+		paramsMap.put("pfdata", JackSonBeanMapper.listToJson(data));
+		String  rsaResultsJson = HttpsRequesUtil.connection(domain + "/server/api/personal/common/perf_data", HttpsRequesUtil.getParams(paramsMap, getSignKey()));
+		return rsaResultsJson;
 	}
 	
 	
