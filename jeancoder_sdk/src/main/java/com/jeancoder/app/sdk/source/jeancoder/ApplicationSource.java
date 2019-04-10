@@ -115,20 +115,6 @@ public class ApplicationSource extends SysSource {
 		LOGGER.info("spp:" + appCode + " uninstalled security success.");
 	}
 	
-//	public static List<NamerApplicationDto> getApplicationAll() {
-//		List<NamerApplication>  list = ApplicationHolder.getInstance().getAll();
-//		List<NamerApplicationDto> dtoList = new ArrayList<NamerApplicationDto>();
-//		for (NamerApplication item: list) {
-//			NamerApplicationDto dto = new NamerApplicationDto();
-//			dto.setAppCode(item.getAppCode());
-//			dto.setAppName(item.getAppName());
-//			dto.setDescribe(item.getDescribe());
-//			dto.setIndex(item.getIndex());
-//			dtoList.add(dto);
-//		}
-//		return dtoList;
-//	}
-	
 	public static List<NamerApplicationDto> getApplicationAll() {
 		VMDelegate wd = JCVMDelegatorGroup.instance().getDelegator();	
 		ContainerMaps cm = wd.getVM().getContainers();
