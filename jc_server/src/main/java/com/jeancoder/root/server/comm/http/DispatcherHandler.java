@@ -107,7 +107,7 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 	
 	@Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable e) throws Exception {
-    	logger.error(e.getMessage(),e);
+    	logger.error(e.getMessage(), e);
     	ctx.channel().close();
     }
 	
@@ -440,7 +440,6 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(future); //执行
         
-        
         try {
         	if(GlobalStateHolder.INSTANCE.inExCallTimeout()!=null && GlobalStateHolder.INSTANCE.inExCallTimeout()>0L) {
         		stand_response = future.get(GlobalStateHolder.INSTANCE.inExCallTimeout(), TimeUnit.MILLISECONDS); //async timeout setting
@@ -457,10 +456,14 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 			response.headers().set(CONTENT_TYPE, "text/plain" + "; charset=UTF-8");
 			response.headers().set(CONTENT_LENGTH, buf.readableBytes());
         } finally {
-        	requestModel.setResTime(Calendar.getInstance().getTimeInMillis());		//set response timestamp
-            executor.shutdown();
-            RequestStateHolder INSTANCE = RequestStateHolder.INSTANCE;
-            INSTANCE.add(requestModel);
+        	try {
+	        	requestModel.setResTime(Calendar.getInstance().getTimeInMillis());		//set response timestamp
+	            executor.shutdown();
+	            RequestStateHolder INSTANCE = RequestStateHolder.INSTANCE;
+	            INSTANCE.add(requestModel);
+        	}catch(Exception e) {
+        		logger.error("DISPATCH_SHUTDOWN_EXCEPTION:", e);
+        	}
             
             if(!keepAlive) {
 				if(stand_response!=null&&stand_response.delegateObj()!=null) {
