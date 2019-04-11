@@ -27,7 +27,7 @@ public class RequestStateHolder {
 	}
 	
 	public void add(RequestStateModel obj) {
-		logger.info("准备上送数据");
+		logger.info("准备上送数据:" + GlobalStateHolder.INSTANCE.cachedMinSize() + "," + GlobalStateHolder.INSTANCE.cachedMaxSize() + "," + GlobalStateHolder.INSTANCE.inExCallTimeout());
 		synchronized (_list_) {
 			totalDataLength += obj.length();
 			_list_.add(obj);
