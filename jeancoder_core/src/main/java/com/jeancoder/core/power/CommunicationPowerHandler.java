@@ -241,7 +241,7 @@ public class CommunicationPowerHandler extends PowerHandler implements Communica
 			RunnerResult<Result> runnerResult = jcAppContainer.execute(path);
 			return JackSonBeanMapper.toJson(runnerResult.getResult().getData());
 		} catch (Exception e) {
-			Logger.error("",e);
+			Logger.error("EXCEPTION_CODE:" + this.getId(), e);
 			throw e;
 		} finally {
 //			JCThreadLocal.setResult(result);
