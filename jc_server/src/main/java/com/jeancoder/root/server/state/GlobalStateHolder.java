@@ -21,7 +21,7 @@ public class GlobalStateHolder {
 	private GlobalStateHolder() {}
 	
 	public void reset(ParamMod mod) {
-		logger.info("接收了指定重置调试参数：" + JackSonBeanMapper.toJson(mod));
+		logger.debug("ACCP_REPAR:" + JackSonBeanMapper.toJson(mod));
 		if(mod!=null) {
 			if(mod.getInternalTimeout()!=null&&mod.getInternalTimeout()>=0l) {
 				this.internalExecuteTimeout = mod.getInternalTimeout();

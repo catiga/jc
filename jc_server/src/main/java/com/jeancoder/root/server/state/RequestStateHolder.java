@@ -27,8 +27,8 @@ public class RequestStateHolder {
 	}
 	
 	public void add(RequestStateModel obj) {
-		logger.info("PREPARE_UD=" + GlobalStateHolder.INSTANCE.cachedMinSize() + "," + GlobalStateHolder.INSTANCE.cachedMaxSize() + "," + GlobalStateHolder.INSTANCE.inExCallTimeout());
-		logger.info("EX_DATE_SIZE=" + totalDataLength + ", MIN_SIZE=" + GlobalStateHolder.INSTANCE.cachedMinSize());
+		logger.debug("PREPARE_UD=" + GlobalStateHolder.INSTANCE.cachedMinSize() + "," + GlobalStateHolder.INSTANCE.cachedMaxSize() + "," + GlobalStateHolder.INSTANCE.inExCallTimeout());
+		logger.debug("EX_DATE_SIZE=" + totalDataLength + ", MIN_SIZE=" + GlobalStateHolder.INSTANCE.cachedMinSize());
 		synchronized (_list_) {
 			totalDataLength += obj.length();
 			_list_.add(obj);
@@ -36,7 +36,6 @@ public class RequestStateHolder {
 				final List<RequestStateModel> upload_date = new LinkedList<>(_list_);
 				_list_.clear();
 				totalDataLength = 0l;
-				logger.info("_list_" + _list_.size());
 				//直接进行上传操作
 				scheduExec.schedule(new Runnable() {
 					
