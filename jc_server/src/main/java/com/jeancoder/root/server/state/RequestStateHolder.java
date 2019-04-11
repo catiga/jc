@@ -6,9 +6,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jeancoder.root.server.util.RemoteUtil;
 
 public class RequestStateHolder {
+	
+	protected static Logger logger = LoggerFactory.getLogger(RequestStateHolder.class);
 	
 	private static List<RequestStateModel> _list_ = new LinkedList<>();
 	
@@ -22,6 +27,7 @@ public class RequestStateHolder {
 	}
 	
 	public void add(RequestStateModel obj) {
+		logger.info("准备上送数据");
 		synchronized (_list_) {
 			totalDataLength += obj.length();
 			_list_.add(obj);

@@ -1,8 +1,14 @@
 package com.jeancoder.root.server.state;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jc.proto.msg.paramdebug.ParamMod;
+import com.jeancoder.core.util.JackSonBeanMapper;
 
 public class GlobalStateHolder {
+	
+	protected static Logger logger = LoggerFactory.getLogger(GlobalStateHolder.class);
 
 	private Long internalExecuteTimeout = 0L;	//UNLIMITED
 	
@@ -15,6 +21,7 @@ public class GlobalStateHolder {
 	private GlobalStateHolder() {}
 	
 	public void reset(ParamMod mod) {
+		logger.info("接收了指定重置调试参数：" + JackSonBeanMapper.toJson(mod));
 		if(mod!=null) {
 			if(mod.getInternalTimeout()!=null&&mod.getInternalTimeout()>=0l) {
 				this.internalExecuteTimeout = mod.getInternalTimeout();
