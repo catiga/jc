@@ -12,9 +12,11 @@ public class GlobalStateHolder {
 
 	private Long internalExecuteTimeout = 0L;	//UNLIMITED
 	
-	private Long MAX_SIZE = 50*1024*1024L;	//50MB
+	private Long MAX_SIZE = 50*1024*1024L;	//50MB	最大缓存数据
 	
-	private Long MIN_SIZE = 1*1024*1024L;
+	private Long MIN_SIZE = 10*1024L;	//50K	一次上传的最小数据
+	
+	private Long upTimeDiff = 5*60*1000L;
 	
 	final static public GlobalStateHolder INSTANCE = new GlobalStateHolder();
 	
@@ -34,6 +36,9 @@ public class GlobalStateHolder {
 				if(mod.getTotalCachedMinSize() < mod.getTotalCachedMaxSize()) {
 					this.MIN_SIZE = mod.getTotalCachedMinSize();
 				}
+			}
+			if(mod.getUpTimeDiff()!=null && mod.getUpTimeDiff()>0l) {
+				this.upTimeDiff = mod.getUpTimeDiff();
 			}
 		}
 	}
@@ -57,5 +62,9 @@ public class GlobalStateHolder {
 			return 0L;		//not cached;
 		}
 		return this.MIN_SIZE;
+	}
+	
+	public Long upTimeDiff() {
+		return this.upTimeDiff;
 	}
 }

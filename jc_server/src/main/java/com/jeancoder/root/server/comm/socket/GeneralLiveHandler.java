@@ -37,7 +37,8 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<MsgProto> {
 	
 	@Override
 	public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-		logger.info("服务端接收数据完毕..");
+		//logger.info("服务端接收数据完毕..");
+		
 		//需要关闭的时候按照如下方法处理
 		
 		// 第一种方法：写一个空的buf，并刷新写出区域。完成后关闭sock channel连接。
@@ -53,7 +54,7 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<MsgProto> {
 	 */
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		logger.error("exception:" + cause.getMessage());
+		logger.error("exception:" + cause.getMessage(), cause);
 		//ctx.close();
 	}
 	
@@ -64,10 +65,10 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<MsgProto> {
 		String msg_id = msgProto.getUnionid();
 		String instance_id = msgProto.getClientId();
 		//这两个数据留待下一个版本的容器升级使用
-		logger.info("client_id:" + instance_id + ", msg_id=" + msg_id + ", version=" + version + ", digest=" + digest);
+		logger.debug("client_id:" + instance_id + ", msg_id=" + msg_id + ", version=" + version + ", digest=" + digest);
 		
 		GeneralMsg baseMsg = (GeneralMsg)msgProto;
-		logger.info("server receive message=" + baseMsg + " and from client_id:::" + baseMsg.getClientId());
+		logger.debug("server receive message=" + baseMsg + " and from client_id:::" + baseMsg.getClientId());
 		if (MsgType.LOGIN.equals(baseMsg.getType())) {
 			LoginMsg loginMsg = (LoginMsg) baseMsg;
 			if ("jclogin".equals(loginMsg.getUserName()) && "jcpass".equals(loginMsg.getPassword())) {	//暂存的处理方式

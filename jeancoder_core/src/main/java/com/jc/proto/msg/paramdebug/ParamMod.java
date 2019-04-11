@@ -10,6 +10,8 @@ public class ParamMod implements Serializable {
 	Long totalCachedMinSize = 1*1024*1024L;	//default value
 	
 	Long internalTimeout = 0L;					//default value, not handled
+	
+	Long upTimeDiff = 5*60*1000L;			//默认上传时间五分钟
 
 	public Long getTotalCachedMaxSize() {
 		return totalCachedMaxSize;
@@ -33,6 +35,14 @@ public class ParamMod implements Serializable {
 
 	public void setTotalCachedMinSize(Long totalCachedMinSize) {
 		this.totalCachedMinSize = totalCachedMinSize;
+	}
+
+	public Long getUpTimeDiff() {
+		return upTimeDiff;
+	}
+
+	public void setUpTimeDiff(Long upTimeDiff) {
+		this.upTimeDiff = upTimeDiff;
 	}
 	
 }
