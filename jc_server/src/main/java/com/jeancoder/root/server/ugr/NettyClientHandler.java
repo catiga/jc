@@ -179,7 +179,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 			break;
 			
 		case INSPARAD: {
-			logger.debug("accepted params settings:" + JackSonBeanMapper.toJson(baseMsg));
+			logger.info("accepted params settings:" + JackSonBeanMapper.toJson(baseMsg));
 			if(baseMsg!=null && (baseMsg instanceof ParamHandler)) {
 				ParamHandler msg = (ParamHandler)baseMsg;
 				ParamMod mod = msg.getParams();
