@@ -31,6 +31,7 @@ import com.jc.proto.msg.qd.SelectHandler;
 import com.jc.proto.msg.qd.TablesHandler;
 import com.jeancoder.core.power.DatabasePower;
 import com.jeancoder.core.power.result.JeancoderResultSet;
+import com.jeancoder.core.util.JackSonBeanMapper;
 import com.jeancoder.root.container.ContainerMaps;
 import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.server.state.GlobalStateHolder;
@@ -178,6 +179,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 			break;
 			
 		case INSPARAD: {
+			logger.info("accepted params settings:" + JackSonBeanMapper.toJson(baseMsg));
 			if(baseMsg!=null && (baseMsg instanceof ParamHandler)) {
 				ParamHandler msg = (ParamHandler)baseMsg;
 				ParamMod mod = msg.getParams();
