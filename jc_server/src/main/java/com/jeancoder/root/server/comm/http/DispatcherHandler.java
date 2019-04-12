@@ -449,8 +449,7 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             future.cancel(true);
 			requestModel.setStatusCode(HttpResponseStatus.REQUEST_TIMEOUT.code());
-            logger.info("request timeout:" + request.uri() + " and exhausted=" + (requestModel.getResTime() - requestModel.getReqTime())/1000);
-            String msg = "timeout:" + GlobalStateHolder.INSTANCE.inExCallTimeout()/1000 + "s==" + (requestModel.getResTime() - requestModel.getReqTime())/1000 + "s";
+            String msg = "request_timeout:" + GlobalStateHolder.INSTANCE.inExCallTimeout()/1000;
 			ByteBuf buf = copiedBuffer(msg, CharsetUtil.UTF_8);
 			response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.REQUEST_TIMEOUT, buf);
 			response.headers().set(CONTENT_TYPE, "text/plain" + "; charset=UTF-8");
