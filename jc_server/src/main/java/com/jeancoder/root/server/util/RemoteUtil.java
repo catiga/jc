@@ -7,12 +7,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jeancoder.core.util.JackSonBeanMapper;
 import com.jeancoder.root.server.mixture.JCLHealper;
 import com.jeancoder.root.server.mixture.StringResults;
 import com.jeancoder.root.server.state.RequestStateModel;
 
 public class RemoteUtil {
+	static Logger logger = LoggerFactory.getLogger(RemoteUtil.class);
 	
 	private static String singkey = null; 
 	
@@ -29,6 +33,9 @@ public class RemoteUtil {
 		Map<String,String> paramsMap = new TreeMap<String,String>();
 		paramsMap.put("m_code", JCLHealper.INSTENSE.getMerchantsCode());
 		paramsMap.put("m_instance", JCLHealper.INSTENSE.getInstanceNum());
+		logger.info(domain + "/server/api/personal/common/getConfigList");
+		logger.info("m_code:::" + JCLHealper.INSTENSE.getMerchantsCode());
+		logger.info("m_instance:::" + JCLHealper.INSTENSE.getInstanceNum());
 		String  rsaResultsJson = HttpsRequesUtil.connection(domain + "/server/api/personal/common/getConfigList", HttpsRequesUtil.getParams(paramsMap, getSignKey()));
 		return rsaResultsJson;
 	}
@@ -67,7 +74,10 @@ public class RemoteUtil {
 		params.put("m_code", JCLHealper.INSTENSE.getMerchantsCode());
 		params.put("m_instance", JCLHealper.INSTENSE.getInstanceNum());
 		String parameter = HttpsRequesUtil.getParameter(params);
+		logger.info("check sign key:::" + domain + "/server/api/sys/getSignKey");
+		logger.info("parameter=" + encryptByPublic(parameter));
 		String rsaResultsJson = HttpsRequesUtil.connection(domain + "/server/api/sys/getSignKey", "parameter=" + encryptByPublic(parameter));
+		logger.info("check sign key result:::" + rsaResultsJson);;
 		rsaResultsJson = decryptByPublic(rsaResultsJson);
 		StringResults strResult = JackSonBeanMapper.fromJson(rsaResultsJson, StringResults.class);
 		
