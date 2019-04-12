@@ -458,8 +458,8 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
         	try {
 	        	requestModel.setResTime(Calendar.getInstance().getTimeInMillis());		//set response timestamp
 	            executor.shutdown();
-	            RequestStateHolder INSTANCE = RequestStateHolder.INSTANCE;
-	            INSTANCE.add(requestModel);
+//	            RequestStateHolder INSTANCE = RequestStateHolder.INSTANCE;
+//	            INSTANCE.add(requestModel);
         	}catch(Exception e) {
         		logger.error("DISPATCH_SHUTDOWN_EXCEPTION:", e);
         	}
