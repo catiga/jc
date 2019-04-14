@@ -290,7 +290,9 @@ public abstract class DefaultContainer extends QContainer implements JCAppContai
 	@Override
 	public final <T extends Result> RunnerResult<T> callEntry(JCHttpRequest req, JCHttpResponse res) {
 		String servlet_path = req.getPathInfo();
-		logger.info("servlet_path======" + servlet_path + ", and appins===" + (appins==null));
+		if(appins==null) {
+			logger.error("SERVLET_PATH=" + servlet_path + ", AND APPINS::::::" + appins);
+		}
 		if(servlet_path.startsWith("/" + appins.getSta_base())) {
 			//说明是静态资源
 			Result result = new Result().setStaticName(servlet_path.substring(("/" + appins.getSta_base()).length() + 1));
