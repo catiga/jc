@@ -60,7 +60,7 @@ public class GlobalStateHolder {
 	}
 
 	public void setInternalExecuteTimeout(Long internalExecuteTimeout) {
-		if(internalExecuteTimeout!=null && internalExecuteTimeout>0l) {
+		if(internalExecuteTimeout!=null && internalExecuteTimeout>=0l) {
 			this.internalExecuteTimeout = internalExecuteTimeout;
 		} else {
 			logger.error("EX_TIMEOUT PARAM NOT OK.");

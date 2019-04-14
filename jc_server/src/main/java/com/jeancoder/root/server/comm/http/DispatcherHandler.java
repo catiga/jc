@@ -449,7 +449,7 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             future.cancel(true);
 			requestModel.setStatusCode(HttpResponseStatus.REQUEST_TIMEOUT.code());
-            String msg = "request_timeout";
+            String msg = "request_interrupted_for_timeout";
 			ByteBuf buf = copiedBuffer(msg, CharsetUtil.UTF_8);
 			response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.REQUEST_TIMEOUT, buf);
 			response.headers().set(CONTENT_TYPE, "text/plain" + "; charset=UTF-8");
@@ -459,7 +459,8 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 	        	requestModel.setResTime(Calendar.getInstance().getTimeInMillis());		//set response timestamp
 	            executor.shutdown();
 	            RequestStateHolder INSTANCE = RequestStateHolder.getInstance();
-	            INSTANCE.add(requestModel);
+//	            INSTANCE.add(requestModel);
+	            INSTANCE.addNew(requestModel);
         	}catch(Exception e) {
         		logger.error("DISPATCH_SHUTDOWN_EXCEPTION:", e);
         	}

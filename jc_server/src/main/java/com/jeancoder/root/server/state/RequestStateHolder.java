@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,7 @@ import com.jeancoder.root.server.queue.VsConsumer;
 
 public class RequestStateHolder {
 	
-	public static final Integer _DEFA_SIZE_ = 200*1024*1024;	//默认队列大小
+	public static final Integer _DEFA_SIZE_ = 100*1000;	//默认队列大小 10万条
 	
 	protected static Logger logger = LoggerFactory.getLogger(RequestStateHolder.class);
 	
@@ -23,9 +24,7 @@ public class RequestStateHolder {
 	
 	private static RequestStateHolder INSTANCE = null;;
 	
-	private Long totalDataLength = 0L;
-	
-	private volatile Long nowCapacity = 0L;
+	private volatile AtomicInteger nowCapacity = new AtomicInteger(0);
 	
 	private RequestStateHolder() {
 		VSQUEUE = new LinkedBlockingQueue<>(_DEFA_SIZE_);
@@ -51,10 +50,14 @@ public class RequestStateHolder {
 		} catch (InterruptedException e) {
 			logger.error("TAKE QUEUE INTERRUPTED:", e);
 		}	//阻塞
+		if(p!=null) {
+			nowCapacity.decrementAndGet();
+		}
 		return p;
 	}
 	
 	public void add(RequestStateModel obj) {
+		logger.error("REQUEST HELPER ADD OP ------ HAD NOT BEEN SUPPORTED!");
 //		logger.debug("PREPARE_UD=" + GlobalStateHolder.INSTANCE.cachedMinSize() + "," + GlobalStateHolder.INSTANCE.cachedMaxSize() + "," + GlobalStateHolder.INSTANCE.inExCallTimeout());
 //		logger.debug("EX_DATE_SIZE=" + totalDataLength + ", MIN_SIZE=" + GlobalStateHolder.INSTANCE.cachedMinSize());
 //		synchronized (VSQUEUE) {
@@ -76,8 +79,7 @@ public class RequestStateHolder {
 		logger.info("PREPARE_VSSWITCH=" + GlobalStateHolder.INSTANCE.getVsSwitch() + ", VSEXETIMEOUT=" + GlobalStateHolder.INSTANCE.getInternalExecuteTimeout());
 		boolean add_result = VSQUEUE.offer(obj);	//会丢失元素，无所谓
 		if(add_result) {
-			totalDataLength += obj.length();
-			nowCapacity++;
+			nowCapacity.incrementAndGet();
 		}
 //		if(nowCapacity>_DEFA_SIZE_) {
 //			//TODO 清空，暂时这么处理
@@ -90,15 +92,14 @@ public class RequestStateHolder {
 		return VSQUEUE;
 	}
 	
-	public Long length() {
-		return totalDataLength;
+	public Integer capacity() {
+		return nowCapacity.get();
 	}
 	
 	public List<RequestStateModel> trigger() {
 		synchronized (VSQUEUE) {
 			List<RequestStateModel> str_1 = new LinkedList<RequestStateModel>(VSQUEUE);
 			VSQUEUE.clear();
-			totalDataLength = 0L;
 			return str_1;
 		}
 	}
