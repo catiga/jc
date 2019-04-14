@@ -441,15 +441,15 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
         executor.execute(future); //执行
         
         try {
-        	if(GlobalStateHolder.INSTANCE.inExCallTimeout()!=null && GlobalStateHolder.INSTANCE.inExCallTimeout()>0L) {
-        		stand_response = future.get(GlobalStateHolder.INSTANCE.inExCallTimeout(), TimeUnit.MILLISECONDS); //async timeout setting
+        	if(GlobalStateHolder.INSTANCE.getInternalExecuteTimeout()!=null && GlobalStateHolder.INSTANCE.getInternalExecuteTimeout()>0L) {
+        		stand_response = future.get(GlobalStateHolder.INSTANCE.getInternalExecuteTimeout(), TimeUnit.MILLISECONDS); //async timeout setting
         	} else {
         		stand_response = future.get();		//sync get back response
         	}
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             future.cancel(true);
 			requestModel.setStatusCode(HttpResponseStatus.REQUEST_TIMEOUT.code());
-            String msg = "request_timeout:" + GlobalStateHolder.INSTANCE.inExCallTimeout()/1000;
+            String msg = "request_timeout";
 			ByteBuf buf = copiedBuffer(msg, CharsetUtil.UTF_8);
 			response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.REQUEST_TIMEOUT, buf);
 			response.headers().set(CONTENT_TYPE, "text/plain" + "; charset=UTF-8");
@@ -458,8 +458,8 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
         	try {
 	        	requestModel.setResTime(Calendar.getInstance().getTimeInMillis());		//set response timestamp
 	            executor.shutdown();
-//	            RequestStateHolder INSTANCE = RequestStateHolder.INSTANCE;
-//	            INSTANCE.add(requestModel);
+	            RequestStateHolder INSTANCE = RequestStateHolder.getInstance();
+	            INSTANCE.add(requestModel);
         	}catch(Exception e) {
         		logger.error("DISPATCH_SHUTDOWN_EXCEPTION:", e);
         	}

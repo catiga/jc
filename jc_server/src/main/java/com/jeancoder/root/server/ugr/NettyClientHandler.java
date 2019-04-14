@@ -23,6 +23,8 @@ import com.jc.proto.msg.ct.InstallMsg;
 import com.jc.proto.msg.ct.UninstallMsg;
 import com.jc.proto.msg.ct.UpgradeMsg;
 import com.jc.proto.msg.ct.VmContainerMsg;
+import com.jc.proto.msg.ctparam.CtParamHandler;
+import com.jc.proto.msg.ctparam.CtParamMod;
 import com.jc.proto.msg.monit.ReqHandler;
 import com.jc.proto.msg.paramdebug.ParamHandler;
 import com.jc.proto.msg.paramdebug.ParamMod;
@@ -73,6 +75,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 		ctx.writeAndFlush(sendMsg);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void channelRead0(ChannelHandlerContext channelHandlerContext, GeneralMsg baseMsg) throws Exception {
 		MsgType msgType = baseMsg.getType();
@@ -172,14 +175,14 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 		
 		case MONIT_REQ: {
 			ReqHandler msg = (ReqHandler)baseMsg;
-			Object data = RequestStateHolder.INSTANCE.trigger();
+			Object data = RequestStateHolder.getInstance().trigger();
 			msg.setData(data);
 			fireGeneralMsg(channelHandlerContext, msg, msg);
 		}
 			break;
 			
 		case INSPARAD: {
-			logger.info("accepted params settings:" + JackSonBeanMapper.toJson(baseMsg));
+			logger.info("accepted params settings:" + JackSonBeanMapper.toJson(baseMsg) + ". AND WILL DO NOTHING.");
 			if(baseMsg!=null && (baseMsg instanceof ParamHandler)) {
 				ParamHandler msg = (ParamHandler)baseMsg;
 				ParamMod mod = msg.getParams();
@@ -188,6 +191,20 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 				fireGeneralMsg(channelHandlerContext, msg, msg);
 			} else {
 				logger.error("msg type not match:" + MsgType.INSPARAD.name());
+			}
+		}
+			break;
+			
+		case CTINSPARAM: {
+			logger.info("ACCEPTED NEW PARAM MODELS:" + JackSonBeanMapper.toJson(baseMsg));
+			if(baseMsg!=null && (baseMsg instanceof CtParamHandler)) {
+				CtParamHandler msg = (CtParamHandler)baseMsg;
+				CtParamMod mod = msg.getParams();
+				GlobalStateHolder.INSTANCE.resetNT(mod);
+				msg.success();
+				fireGeneralMsg(channelHandlerContext, msg, msg);
+			} else {
+				logger.error("msg type not match:" + MsgType.CTINSPARAM.name());
 			}
 		}
 			break;

@@ -12,66 +12,78 @@ import com.jeancoder.root.server.queue.VsConsumer;
 
 public class RequestStateHolder {
 	
+	public static final Integer _DEFA_SIZE_ = 200*1024*1024;	//默认队列大小
+	
 	protected static Logger logger = LoggerFactory.getLogger(RequestStateHolder.class);
 	
 	//public final Queue<RequestStateModel> VSQUEUE = new LinkedList<>();
-	public final Queue<RequestStateModel> VSQUEUE = new LinkedBlockingQueue<RequestStateModel>();
+	//public final Queue<RequestStateModel> VSQUEUE = new ArrayBlockingQueue<RequestStateModel>(_DEFA_SIZE_);
 	
-	public final static RequestStateHolder INSTANCE = new RequestStateHolder();
+	private LinkedBlockingQueue<RequestStateModel> VSQUEUE = null; //new LinkedBlockingQueue<>(_DEFA_SIZE_);
 	
-	private Long totalDataLength = 0l;
+	private static RequestStateHolder INSTANCE = null;;
+	
+	private Long totalDataLength = 0L;
+	
+	private volatile Long nowCapacity = 0L;
 	
 	private RequestStateHolder() {
+		VSQUEUE = new LinkedBlockingQueue<>(_DEFA_SIZE_);
 		Thread thread = new Thread(new VsConsumer());
 		thread.start();
 	}
 	
-	public RequestStateModel popup() {
-		synchronized(VSQUEUE) {
-			RequestStateModel p = VSQUEUE.poll();
-			if(p!=null) {
-				totalDataLength = totalDataLength - p.length();
+	public static final RequestStateHolder getInstance() {
+		if(INSTANCE==null) {
+			synchronized (RequestStateHolder.class) {
+				if(INSTANCE==null) {
+					INSTANCE = new RequestStateHolder();
+				}
 			}
-			return p;
 		}
+		return INSTANCE;
+	}
+	
+	public RequestStateModel popup() {
+		RequestStateModel p = null;
+		try {
+			p = VSQUEUE.take();
+		} catch (InterruptedException e) {
+			logger.error("TAKE QUEUE INTERRUPTED:", e);
+		}	//阻塞
+		return p;
 	}
 	
 	public void add(RequestStateModel obj) {
-		logger.debug("PREPARE_UD=" + GlobalStateHolder.INSTANCE.cachedMinSize() + "," + GlobalStateHolder.INSTANCE.cachedMaxSize() + "," + GlobalStateHolder.INSTANCE.inExCallTimeout());
-		logger.debug("EX_DATE_SIZE=" + totalDataLength + ", MIN_SIZE=" + GlobalStateHolder.INSTANCE.cachedMinSize());
-		synchronized (VSQUEUE) {
-//			VSQUEUE.add(obj);
-			boolean add_result = VSQUEUE.offer(obj);
-			if(add_result) {
-				//if the queue has been full, not insert again
-				totalDataLength += obj.length();
-			}
-			
-			
-			
-//			if(totalDataLength>GlobalStateHolder.INSTANCE.cachedMinSize()) {
-//				final List<RequestStateModel> upload_date = new LinkedList<>(_list_);
-//				_list_.clear();
-//				totalDataLength = 0l;
-//				//直接进行上传操作
-//				scheduExec.schedule(new Runnable() {
-//					
-//					@Override
-//					public void run() {
-//						try {
-//							RemoteUtil.uploadPerfData(upload_date);
-//						}catch(Exception e) {
-//							e.printStackTrace();
-//						}
-//					}
-//				}, 0, TimeUnit.MILLISECONDS);
+//		logger.debug("PREPARE_UD=" + GlobalStateHolder.INSTANCE.cachedMinSize() + "," + GlobalStateHolder.INSTANCE.cachedMaxSize() + "," + GlobalStateHolder.INSTANCE.inExCallTimeout());
+//		logger.debug("EX_DATE_SIZE=" + totalDataLength + ", MIN_SIZE=" + GlobalStateHolder.INSTANCE.cachedMinSize());
+//		synchronized (VSQUEUE) {
+////			VSQUEUE.add(obj);
+//			boolean add_result = VSQUEUE.offer(obj);
+//			if(add_result) {
+//				//if the queue has been full, not insert again
+//				totalDataLength += obj.length();
 //			}
-			if(totalDataLength>GlobalStateHolder.INSTANCE.cachedMaxSize()) {
-				//TODO 清空，暂时这么处理
-				VSQUEUE.clear();
-				totalDataLength = 0L;
-			}
+//			if(totalDataLength>GlobalStateHolder.INSTANCE.cachedMaxSize()) {
+//				//TODO 清空，暂时这么处理
+//				VSQUEUE.clear();
+//				totalDataLength = 0L;
+//			}
+//		}
+	}
+	
+	public void addNew(RequestStateModel obj) {
+		logger.info("PREPARE_VSSWITCH=" + GlobalStateHolder.INSTANCE.getVsSwitch() + ", VSEXETIMEOUT=" + GlobalStateHolder.INSTANCE.getInternalExecuteTimeout());
+		boolean add_result = VSQUEUE.offer(obj);	//会丢失元素，无所谓
+		if(add_result) {
+			totalDataLength += obj.length();
+			nowCapacity++;
 		}
+//		if(nowCapacity>_DEFA_SIZE_) {
+//			//TODO 清空，暂时这么处理
+//			VSQUEUE.clear();
+//			totalDataLength = 0L;
+//		}
 	}
 	
 	public Queue<RequestStateModel> requests() {

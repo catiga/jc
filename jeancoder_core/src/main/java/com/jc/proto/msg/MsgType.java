@@ -14,5 +14,5 @@ public enum MsgType {
 	MONIT_REQ,
 	
 	//instance param debug
-	INSPARAD
+	INSPARAD, CTINSPARAM
 }
