@@ -17,6 +17,7 @@ import com.jeancoder.root.server.inet.JCServer;
 import com.jeancoder.root.server.inet.ServerCode;
 import com.jeancoder.root.server.inet.ServerFactory;
 import com.jeancoder.root.server.mixture.ByteResults;
+import com.jeancoder.root.server.state.GlobalStateHolder;
 import com.jeancoder.root.server.state.ServerHolder;
 import com.jeancoder.root.server.util.RemoteUtil;
 import com.jeancoder.root.server.util.ZipUtil;
@@ -64,6 +65,14 @@ public class LocalStarter extends ExternalStarter {
 			fk_con = gson.fromJson(json, FkConf.class);
 			if (fk_con == null || fk_con.getServers() == null || fk_con.getServers().isEmpty()) {
 				throw new RuntimeException("EMPTY");
+			}
+			if(fk_con.getIns_perf()!=null) {
+				if(fk_con.getIns_perf().getVs_switch()!=null) {
+					GlobalStateHolder.INSTANCE.setVsSwitch(fk_con.getIns_perf().getVs_switch());
+				}
+				if(fk_con.getIns_perf().getReq_handle_timeout()!=null) {
+					GlobalStateHolder.INSTANCE.setInternalExecuteTimeout(fk_con.getIns_perf().getReq_handle_timeout());
+				}
 			}
 		} catch (Exception e) {
 			logger.error("start error:", e);
