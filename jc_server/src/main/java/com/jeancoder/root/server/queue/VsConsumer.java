@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jeancoder.root.server.state.GlobalStateHolder;
 import com.jeancoder.root.server.state.RequestStateHolder;
 import com.jeancoder.root.server.state.RequestStateModel;
 import com.jeancoder.root.server.util.RemoteUtil;
@@ -23,9 +24,12 @@ public class VsConsumer implements Runnable {
 			try {
 				RequestStateModel e = RequestStateHolder.getInstance().popup();
 				if(e!=null) {
-					data.add(e);
-					RemoteUtil.uploadPerfData(data);
-					data.clear();
+					if(GlobalStateHolder.INSTANCE.getVsSwitch().equals(1)) {
+						//上报
+						data.add(e);
+						RemoteUtil.uploadPerfData(data);
+						data.clear();
+					}
 				}
 			} catch(Exception e) {
 				logger.error("CONSUME VSDATA EXCEPTION:", e);
