@@ -5,6 +5,10 @@
         "ins_auth_key": "cert key",
         "ins_ver": "ver number"
     },
+    "ins_perf": {
+    	"req_handle_timeout":0,
+    	"vs_switch":0
+    },
     "servers": [
         {
             "id": "master002",
