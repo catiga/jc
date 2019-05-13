@@ -53,13 +53,12 @@ public class JCRequest {
 	public JCRequest(HttpServletRequest request) {
 		this.request = request;
 		session = new JCSession(request.getSession());
-		if (request.getCookies() == null || request.getCookies().length == 0) {
-			return;
+		if (request.getCookies() != null && request.getCookies().length > 0) {
+			cookies = new JCCookie[request.getCookies().length];
+			for (int i = 0; i < request.getCookies().length; i++) {
+				cookies[i] = new JCCookie(request.getCookies()[i]);
+			}
 		} 
-		cookies = new JCCookie[request.getCookies().length];
-		for (int i = 0; i < request.getCookies().length; i++) {
-			cookies[i] = new JCCookie(request.getCookies()[i]);
-		}
 		
 		_parameters_ = ((JCHttpRequest)request).getParameterMap();
 		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
