@@ -17,6 +17,10 @@ public class JCAPP implements Serializable {
 	
 	String ver;
 	
+	String install_id;
+	
+	String ver_id;
+	
 	String source_type;
 	
 	String lans;
@@ -112,6 +116,9 @@ public class JCAPP implements Serializable {
 	}
 
 	public String getApp_base() {
+		if(install_id!=null) {
+			return app_base + "/" + install_id;
+		}
 		return app_base;
 	}
 
@@ -173,6 +180,22 @@ public class JCAPP implements Serializable {
 
 	public void setSource_base(String source_base) {
 		this.source_base = source_base;
+	}
+
+	public String getInstall_id() {
+		return install_id;
+	}
+
+	public void setInstall_id(String install_id) {
+		this.install_id = install_id;
+	}
+
+	public String getVer_id() {
+		return ver_id;
+	}
+
+	public void setVer_id(String ver_id) {
+		this.ver_id = ver_id;
 	}
 
 }

@@ -5,6 +5,11 @@ import java.io.Serializable;
 import com.jeancoder.root.env.JCAPP;
 import com.jeancoder.root.env.JCAppConfig;
 
+/**
+ * Empty or Old Version App Message Exchanges
+ * @author jackielee
+ *
+ */
 @SuppressWarnings("serial")
 public class AppMod implements Serializable {
 
