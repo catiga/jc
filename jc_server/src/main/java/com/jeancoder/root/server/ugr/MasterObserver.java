@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jc.proto.msg.LoginMsg;
 import com.jeancoder.root.server.channels.ChannelHandlerHolder;
+import com.jeancoder.root.server.util.LoginConnect;
 
 /**
  * Created by Administrator on 2016/9/22.
@@ -103,7 +104,8 @@ public abstract class MasterObserver extends ChannelInboundHandlerAdapter implem
 					f.channel().pipeline().fireChannelInactive();
 				} else {
 					masterChannel = (SocketChannel)future.channel();
-					LoginMsg loginMsg = new LoginMsg();
+					//LoginMsg loginMsg = new LoginMsg();
+					LoginMsg loginMsg = LoginConnect.buildLoginMsg();
 					String client_id = keeper.info().getId();
 					loginMsg.setClientId(client_id);
 					masterChannel.writeAndFlush(loginMsg);

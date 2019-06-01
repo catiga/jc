@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jc.proto.msg.Constants;
 import com.jc.proto.msg.LoginMsg;
+import com.jeancoder.root.server.util.LoginConnect;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -70,7 +71,8 @@ public class NettyClientBootstrap {
 		Constants.setClientId("001");
 		NettyClientBootstrap bootstrap = new NettyClientBootstrap(8091, "localhost");
 
-		LoginMsg loginMsg = new LoginMsg();
+		//LoginMsg loginMsg = new LoginMsg();
+		LoginMsg loginMsg = LoginConnect.buildLoginMsg();
 		loginMsg.setPassword("yao");
 		loginMsg.setUserName("robin");
 		bootstrap.socketChannel.writeAndFlush(loginMsg);

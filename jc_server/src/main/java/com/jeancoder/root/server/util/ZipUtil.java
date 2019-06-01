@@ -9,21 +9,35 @@ import java.util.zip.ZipInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jc.proto.conf.AppMod;
 import com.jeancoder.core.util.FileUtil;
 
 public class ZipUtil {
 	
+	final public static String RUNNING_PATH = "rn";
+	
 	private static Logger logger = LoggerFactory.getLogger(ZipUtil.class);
 	
-	public static void  unzip(String path, ZipInputStream inputStream) throws Exception {
+	/**
+	 * @param mod  为当前要安装的app配置信息对象
+	 * @param inputStream
+	 * @throws Exception
+	 */
+	public static void init_install(AppMod mod, ZipInputStream inputStream) throws Exception {
+		String path = mod.getApp_base();
 		ZipEntry entry = inputStream.getNextEntry();
 		String name = entry.getName();
 		File appFile = new File(path);
 		if (appFile.exists()) {
 			FileUtil.deletefile(appFile);
 		}
+		if(mod.getApp_ver()!=null) {
+			path += "/" + mod.getApp_ver();
+		} else {
+			path += "/" + RUNNING_PATH;
+		}
+		appFile = new File(path);
 		appFile.mkdirs();
-//		entry = inputStream.getNextEntry();
 		while (((entry = inputStream.getNextEntry()) != null)) {
 			String entryName = entry.getName();
 			try {

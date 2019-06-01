@@ -1,12 +1,10 @@
 package com.jeancoder.root.env;
 
-import java.io.File;
 import java.util.Enumeration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jeancoder.core.util.FileUtil;
 import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.container.core.BCID;
 import com.jeancoder.root.container.loader.BootClassLoader;
@@ -67,17 +65,36 @@ public class StandardVM extends DefaultVm implements JCVM {
 
 	@Override
 	public void updateApp(JCAPP jcapp) {
-		BootContainer bc = new BootContainer(jcapp);
+		BootContainer bc = new BootContainer(jcapp);	//默认容器是 ready 状态
 		bc.bindBaseEnv(rootLoader);
 		bc.onInit();
-		bc.onStart();
 		
 		Enumeration<JCAppContainer> appContainer  = VM_CONTAINERS.getByCode(jcapp.getCode());
-		JCAppContainer container = appContainer.nextElement();
-		if (container == null) {
+		
+		if (appContainer==null || !appContainer.hasMoreElements()) {
 			VM_CONTAINERS.put(bc.id(), bc);
 			return;
 		}
+		while(appContainer.hasMoreElements()) {
+			JCAppContainer container = appContainer.nextElement();
+//			if (bc.id().equals(container.id())) {
+//				VM_CONTAINERS.put(bc.id(), bc);
+//			} else {
+//				VM_CONTAINERS.remove(container.id());
+//				VM_CONTAINERS.put(bc.id(), bc);
+//			}
+			container.onStop();		//至于停止状态
+		}
+		VM_CONTAINERS.put(bc.id(), bc);
+		bc.onStart();
+		
+		//删除
+		while(appContainer.hasMoreElements()) {
+			JCAppContainer container = appContainer.nextElement();
+			container.onDestroy();
+		}
+		
+		/*
 		if (bc.id().equals(container.id())) {
 			VM_CONTAINERS.put(bc.id(), bc);
 		} else {
@@ -91,15 +108,19 @@ public class StandardVM extends DefaultVm implements JCVM {
 		if (!container.getApp().getApp_base().equals(jcapp.getApp_base())) {
 			FileUtil.deletefile(new File(app_base));
 		}
+		*/
 	}
 	
 	@Override
 	public void installApp(JCAPP jcapp) {
+		/*
 		BootContainer bc = new BootContainer(jcapp);
 		bc.bindBaseEnv(rootLoader);
 		bc.onInit();
 		bc.onStart();
 		VM_CONTAINERS.put(bc.id(), bc);
+		*/
+		this.updateApp(jcapp);
 		logger.info("app : " +jcapp.code +" is install success" );
 	}
 
@@ -115,11 +136,11 @@ public class StandardVM extends DefaultVm implements JCVM {
 			return;
 		}
 		VM_CONTAINERS.remove(BCID.generateKey(jcapp.id, jcapp.code));
-		String app_base = container.getApp().getApp_base();
 		container.onStop();
 		container.onDestroy();
 		logger.info("app : " +jcapp.code +" is uninstall success" );
-		FileUtil.deletefile(new File(app_base));
+		//String app_base = container.getApp().getApp_base();
+		//FileUtil.deletefile(new File(app_base));
 	}
 	
 	

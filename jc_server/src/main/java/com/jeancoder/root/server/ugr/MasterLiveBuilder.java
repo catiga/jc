@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jc.proto.conf.ServerMod;
 import com.jc.proto.msg.LoginMsg;
+import com.jeancoder.root.server.util.LoginConnect;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -108,7 +109,8 @@ public class MasterLiveBuilder {
 							logger.info("connec againing");
 							if(future.isSuccess()) {
 								masterChannel = (SocketChannel)future.channel();
-								LoginMsg loginMsg = new LoginMsg();
+								//LoginMsg loginMsg = new LoginMsg();
+								LoginMsg loginMsg = LoginConnect.buildLoginMsg();
 								loginMsg.setClientId(this.cenjcs.getId());
 								masterChannel.writeAndFlush(loginMsg);
 								break;
@@ -120,7 +122,8 @@ public class MasterLiveBuilder {
 				} else {
 					//直接进行登陆校验
 					masterChannel = (SocketChannel)future.channel();
-					LoginMsg loginMsg = new LoginMsg();
+					//LoginMsg loginMsg = new LoginMsg();
+					LoginMsg loginMsg = LoginConnect.buildLoginMsg();
 					loginMsg.setClientId(this.cenjcs.getId());
 					masterChannel.writeAndFlush(loginMsg);
 				}

@@ -110,7 +110,7 @@ public class LocalStart extends ExternalStarter {
 									System.out.println("开始下载");
 									InputStream ins = RemoteUtil.installation(mod.getFetch_address(),new Long(mod.getApp_id()));
 									System.out.println("下载");
-									ZipUtil.unzip(mod.getApp_base(), new ZipInputStream(ins));
+									ZipUtil.init_install(mod, new ZipInputStream(ins));
 								}
 							} catch (Exception e) {
 								e.printStackTrace();

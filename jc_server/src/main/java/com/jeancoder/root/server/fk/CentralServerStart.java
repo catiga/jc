@@ -116,7 +116,7 @@ public class CentralServerStart extends ExternalStarter {
 								try {
 									InputStream ins = RemoteUtil.installation(mod.getFetch_address(), new Long(mod.getApp_id()));
 									jcvm.uninstallApp(mod.to());
-									ZipUtil.unzip(mod.getApp_base(), new ZipInputStream(ins));
+									ZipUtil.init_install(mod, new ZipInputStream(ins));
 									jcvm.installApp(mod.to());
 								} catch (Exception e) {
 									logger.error("install app error:" + mod.getApp_code() + ", directory:" + mod.getApp_base(), e);

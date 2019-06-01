@@ -1,5 +1,7 @@
 package com.jeancoder.root.env;
 
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,10 +17,12 @@ import com.jeancoder.core.power.PowerHandlerFactory;
 import com.jeancoder.core.power.PowerName;
 import com.jeancoder.core.power.QiniuPowerHandler;
 import com.jeancoder.core.result.Result;
+import com.jeancoder.core.util.FileUtil;
 import com.jeancoder.root.container.ContainerContextEnv;
 import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.container.core.BCID;
 import com.jeancoder.root.container.core.DefaultContainer;
+import com.jeancoder.root.container.core.LifecycleZa;
 import com.jeancoder.root.container.loader.BootClassLoader;
 import com.jeancoder.root.container.loader.TypeDefClassLoader;
 import com.jeancoder.root.exception.Code404Exception;
@@ -198,16 +202,21 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 	@Override
 	public void onStop() {
 		//close thread task
+		this.state = LifecycleZa.STATE_STOPING;
 		this.offTask();
+		this.state = LifecycleZa.STATE_STOPED;
 	}
 
 	@Override
 	public void onDestroy() {
+		String app_base = this.getApp()==null?null:this.getApp().getApp_base();
 		this.offTask();
 		appins = null;
 		interceptorMap = null;
 		configs = null;
 		rootLoader = null;
+		//删除本地文件系统
+		this.deleteUnnessaryAppFiles(app_base);
 	}
 
 	protected void throwCause(String msg) {
@@ -215,5 +224,14 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 			msg = "CONTAINER STATUS INVALID";
 		}
 		throw new RuntimeException(msg);
+	}
+	
+	protected void deleteUnnessaryAppFiles(String app_path) {
+		if(app_path!=null) {
+			File f = new File(app_path);
+			if(f.exists()) {
+				FileUtil.deletefile(f);
+			}
+		}
 	}
 }

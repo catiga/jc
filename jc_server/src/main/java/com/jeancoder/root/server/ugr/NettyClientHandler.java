@@ -38,6 +38,7 @@ import com.jeancoder.root.container.ContainerMaps;
 import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.server.state.GlobalStateHolder;
 import com.jeancoder.root.server.state.RequestStateHolder;
+import com.jeancoder.root.server.util.LoginConnect;
 import com.jeancoder.root.server.util.RemoteUtil;
 import com.jeancoder.root.server.util.ZipUtil;
 import com.jeancoder.root.vm.JCVM;
@@ -67,6 +68,13 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 	// }
 	// }
 	// }
+
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		// TODO Auto-generated method stub
+		super.exceptionCaught(ctx, cause);
+		logger.error("", cause);
+	}
 	
 	protected void fireGeneralMsg(ChannelHandlerContext ctx, GeneralMsg revMsg, GeneralMsg sendMsg) {
 		if(revMsg instanceof SyncMsg) {
@@ -82,7 +90,8 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 		switch (msgType) {
 		case LOGIN: {
 			// 向服务器发起登录
-			LoginMsg loginMsg = new LoginMsg();
+			// LoginMsg loginMsg = new LoginMsg();
+			LoginMsg loginMsg = LoginConnect.buildLoginMsg();
 			channelHandlerContext.writeAndFlush(loginMsg);
 		}
 			break;
@@ -112,8 +121,9 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 					JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
 					try {
 						InputStream ins = RemoteUtil.installation(appinfo.getFetch_address(),new Long(appinfo.getApp_id()));
-						jcvm.uninstallApp(appinfo.to());
-						ZipUtil.unzip(appinfo.getApp_base(), new ZipInputStream(ins));
+						//jcvm.uninstallApp(appinfo.to());
+						//ZipUtil.unzip(appinfo.getApp_base(), new ZipInputStream(ins));
+						ZipUtil.init_install(appinfo, new ZipInputStream(ins));
 						jcvm.updateApp(appinfo.to());
 					} catch (Exception e) {
 						logger.error("", e);
@@ -131,8 +141,9 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 					JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
 					try {
 						InputStream ins = RemoteUtil.installation(appinfo.getFetch_address(),new Long(appinfo.getApp_id()));
-						jcvm.uninstallApp(appinfo.to());
-						ZipUtil.unzip(appinfo.getApp_base(), new ZipInputStream(ins));
+						//jcvm.uninstallApp(appinfo.to());
+						//ZipUtil.unzip(appinfo.getApp_base(), new ZipInputStream(ins));
+						ZipUtil.init_install(appinfo, new ZipInputStream(ins));
 						jcvm.installApp(appinfo.to());
 					} catch (Exception e) {
 						logger.error("", e);
