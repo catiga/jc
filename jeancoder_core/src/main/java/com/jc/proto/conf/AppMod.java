@@ -103,7 +103,7 @@ public class AppMod implements Serializable {
 		return app_base;
 	}
 
-	protected void setApp_base(String app_base) {
+	public void setApp_base(String app_base) {
 		this.app_base = app_base;
 	}
 
