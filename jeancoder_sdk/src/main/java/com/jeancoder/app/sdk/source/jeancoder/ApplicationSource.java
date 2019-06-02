@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 
 import com.jc.channel.SlaveCli;
 import com.jc.proto.conf.AppMod;
@@ -72,6 +73,7 @@ public class ApplicationSource extends SysSource {
 	 * 初始应用相关的上下文
 	 * 
 	 */
+	@Deprecated
 	public static void installation(String appCode,String developerCode,
 			String devLang,String fetchWay, String appName, String index, String describe, String fetchAddress) {
 		DevSysConfigProp sysConfig = (DevSysConfigProp)JeancoderConfigurer.fetchDefault(PropType.SYS, "appcode");
@@ -108,12 +110,15 @@ public class ApplicationSource extends SysSource {
 	}
 	
 	// 卸载
+	@Deprecated
 	public static void uninstall(String appCode) {
 		ApplicationHolder.getInstance().removeApp(appCode);
 		JCInterceptorStack.removeJCInterceptor(appCode);
 		ApplicationContextPool.removeApplicationContext(appCode);
 		LOGGER.info("spp:" + appCode + " uninstalled security success.");
 	}
+	
+	
 	
 	public static List<NamerApplicationDto> getApplicationAll() {
 		VMDelegate wd = JCVMDelegatorGroup.instance().getDelegator();	
@@ -141,18 +146,13 @@ public class ApplicationSource extends SysSource {
 		return dtoList;
 	}
 
-
-	
-	
 	public static  List<String> getOnlineList() {
 		return SlaveCli.instance().slaveServers();
 	}
 	
 	public static Enumeration<ShellServer>  getSlaveServers() {
 		return SlaveCli.instance().localServers();
-		
 	}
-	
 	
 	public static void upgradeApp(String client_instance_id, String modJson) {
 		AppMod appmode = JackSonBeanMapper.fromJson(modJson, AppMod.class);
@@ -168,4 +168,37 @@ public class ApplicationSource extends SysSource {
 		AppMod appmode = JackSonBeanMapper.fromJson(modJson, AppMod.class);
 		SlaveCli.instance().uninstallApp(client_instance_id, appmode);
 	}
+	
+	/******************************** New Method Start **********************************/
+	/**
+	 * client_instance 实际存储的是实例对象的数据模型
+	 * keys:
+	 * 	instance_id : Long
+	 *  instance_ver: String
+	 *  instance_name:String
+	 *     
+	 * @param client_instance
+	 * @param modJson
+	 */
+	public static void upgradeAppRich(Map<String, Object> client_instance, String modJson) {
+		String client_instance_id = client_instance.get("instance_id") + "";
+		
+		AppMod appmode = JackSonBeanMapper.fromJson(modJson, AppMod.class);
+		SlaveCli.instance().upgradeApp(client_instance_id, appmode);
+	}
+	
+	public static void installAppRich(Map<String, Object> client_instance, String modJson) {
+		String client_instance_id = client_instance.get("instance_id") + "";
+		
+		AppMod appmode = JackSonBeanMapper.fromJson(modJson, AppMod.class);
+		SlaveCli.instance().installApp(client_instance_id, appmode);
+	}
+	
+	public static  void uninstallAppRich(Map<String, Object> client_instance, String modJson) {
+		String client_instance_id = client_instance.get("instance_id") + "";
+		
+		AppMod appmode = JackSonBeanMapper.fromJson(modJson, AppMod.class);
+		SlaveCli.instance().uninstallApp(client_instance_id, appmode);
+	}
+	
 }
