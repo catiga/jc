@@ -48,9 +48,11 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 
 	volatile String state = STATE_READY;
 	
+	volatile BCID id = null;
+	
 	@Override
 	public BCID id() {
-		return BCID.generateKey(appins.getId(), appins.getCode());
+		return id;
 	}
 
 	public String state() {
@@ -60,6 +62,7 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 	protected BootContainer(JCAPP appins) {
 		//bindBaseEnv();
 		this.appins = appins;
+		this.id = BCID.generateKey(appins.getId(), appins.getCode());
 //		this.onInit();
 //		this.onStart();
 	}
