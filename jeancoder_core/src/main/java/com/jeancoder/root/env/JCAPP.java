@@ -116,9 +116,9 @@ public class JCAPP implements Serializable {
 	}
 
 	public String getApp_base() {
-		if(install_id!=null) {
-			return app_base + "/" + install_id;
-		}
+//		if(this.ver!=null) {
+//			return app_base + "/" + this.ver;
+//		}
 		return app_base;
 	}
 
