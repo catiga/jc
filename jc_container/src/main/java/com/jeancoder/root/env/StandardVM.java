@@ -66,33 +66,33 @@ public class StandardVM extends DefaultVm implements JCVM {
 	@Override
 	public void updateApp(JCAPP jcapp) {
 		BootContainer bc = new BootContainer(jcapp);	//默认容器是 ready 状态
+		BCID new_bcid = bc.id();
 		bc.bindBaseEnv(rootLoader);
 		bc.onInit();
 		
 		Enumeration<JCAppContainer> appContainer  = VM_CONTAINERS.getByCode(jcapp.getCode());
 		
 		if (appContainer==null || !appContainer.hasMoreElements()) {
-			VM_CONTAINERS.put(bc.id(), bc);
+			bc.onStart();
+			VM_CONTAINERS.put(new_bcid, bc);
 			return;
 		}
 		while(appContainer.hasMoreElements()) {
 			JCAppContainer container = appContainer.nextElement();
-//			if (bc.id().equals(container.id())) {
-//				VM_CONTAINERS.put(bc.id(), bc);
-//			} else {
-//				VM_CONTAINERS.remove(container.id());
-//				VM_CONTAINERS.put(bc.id(), bc);
-//			}
-			container.onStop();		//至于停止状态
+//				if (bc.id().equals(container.id())) {
+//					VM_CONTAINERS.put(bc.id(), bc);
+//				} else {
+//					VM_CONTAINERS.remove(container.id());
+//					VM_CONTAINERS.put(bc.id(), bc);
+//				}
+			container.onStop();		//所有同code切换至停止状态
 		}
-		VM_CONTAINERS.put(bc.id(), bc);
+		VM_CONTAINERS.put(new_bcid, bc);
 		bc.onStart();
 		
 		//删除
-		while(appContainer.hasMoreElements()) {
-			JCAppContainer container = appContainer.nextElement();
-			container.onDestroy();
-		}
+		VM_CONTAINERS.destroy(new_bcid);
+		
 		
 		/*
 		if (bc.id().equals(container.id())) {
@@ -131,14 +131,17 @@ public class StandardVM extends DefaultVm implements JCVM {
 		if(appContainer==null || !appContainer.hasMoreElements()) {
 			return;
 		}
-		JCAppContainer container = appContainer.nextElement();
-		if (container == null) {
-			return;
+		while(appContainer.hasMoreElements()) {
+			JCAppContainer container = appContainer.nextElement();
+			container.onStop();
+			VM_CONTAINERS.destroy(container.id());
+			
 		}
-		VM_CONTAINERS.remove(BCID.generateKey(jcapp.id, jcapp.code));
-		container.onStop();
-		container.onDestroy();
+//		VM_CONTAINERS.remove(BCID.generateKey(jcapp.id, jcapp.code));
+//		
+//		container.onDestroy();
 		logger.info("app : " +jcapp.code +" is uninstall success" );
+		
 		//String app_base = container.getApp().getApp_base();
 		//FileUtil.deletefile(new File(app_base));
 	}
