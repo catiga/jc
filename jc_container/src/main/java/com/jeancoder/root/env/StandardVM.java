@@ -91,7 +91,7 @@ public class StandardVM extends DefaultVm implements JCVM {
 		bc.onStart();
 		
 		//删除
-		VM_CONTAINERS.destroy(new_bcid);
+		VM_CONTAINERS.hotreload(new_bcid);
 		
 		
 		/*
@@ -134,7 +134,7 @@ public class StandardVM extends DefaultVm implements JCVM {
 		while(appContainer.hasMoreElements()) {
 			JCAppContainer container = appContainer.nextElement();
 			container.onStop();
-			VM_CONTAINERS.destroy(container.id());
+			VM_CONTAINERS.hotremove(container.id());
 			
 		}
 //		VM_CONTAINERS.remove(BCID.generateKey(jcapp.id, jcapp.code));

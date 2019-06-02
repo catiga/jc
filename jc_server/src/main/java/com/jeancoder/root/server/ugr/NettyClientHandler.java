@@ -36,6 +36,7 @@ import com.jeancoder.core.power.result.JeancoderResultSet;
 import com.jeancoder.core.util.JackSonBeanMapper;
 import com.jeancoder.root.container.ContainerMaps;
 import com.jeancoder.root.container.JCAppContainer;
+import com.jeancoder.root.env.JCAPP;
 import com.jeancoder.root.server.state.GlobalStateHolder;
 import com.jeancoder.root.server.state.RequestStateHolder;
 import com.jeancoder.root.server.util.LoginConnect;
@@ -115,6 +116,13 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 		case APPUPGRADE: {
 			UpgradeMsg unmsg = (UpgradeMsg)baseMsg;
 			AppMod appinfo = unmsg.getAppins();
+			JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
+			InputStream ins = RemoteUtil.installation(appinfo.getFetch_address(),new Long(appinfo.getApp_id()));
+			String new_path = ZipUtil.re_install(appinfo, new ZipInputStream(ins));
+			JCAPP jcapp = appinfo.to();
+			jcapp.setApp_base(new_path);
+			jcvm.updateApp(jcapp);
+			/*
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
@@ -130,11 +138,19 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 					}
 				}
 			}).start();
+			*/
 		}
 			break;
 		case APPINSTALL: {
 			InstallMsg unmsg = (InstallMsg)baseMsg;
 			AppMod appinfo = unmsg.getAppins();
+			JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
+			InputStream ins = RemoteUtil.installation(appinfo.getFetch_address(),new Long(appinfo.getApp_id()));
+			String new_path = ZipUtil.re_install(appinfo, new ZipInputStream(ins));
+			JCAPP jcapp = appinfo.to();
+			jcapp.setApp_base(new_path);
+			jcvm.installApp(jcapp);
+			/*
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
@@ -150,6 +166,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 					}
 				}
 			}).start();
+			*/
 
 		}
 			break;

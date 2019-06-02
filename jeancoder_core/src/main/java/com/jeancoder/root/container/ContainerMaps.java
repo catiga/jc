@@ -46,12 +46,29 @@ public class ContainerMaps implements Serializable {
 		VM_CONTAINERS.remove(id);
 	}
 	
-	public void destroy(BCID newid) {
+	public void hotreload(BCID newid) {
 		Iterator<BCID> exist_its = VM_CONTAINERS.keySet().iterator();
 		List<BCID> need_remove_bcids = new ArrayList<BCID>();
 		while(exist_its.hasNext()) {
 			BCID exist_bcid = exist_its.next();
 			if(exist_bcid!=newid && exist_bcid.code().equals(newid.code())) {
+				need_remove_bcids.add(exist_bcid);
+			}
+		}
+		if(!need_remove_bcids.isEmpty()) {
+			for(BCID bcid : need_remove_bcids) {
+				VM_CONTAINERS.get(bcid).onDestroy();
+				VM_CONTAINERS.remove(bcid);
+			}
+		}
+	}
+	
+	public void hotremove(BCID newid) {
+		Iterator<BCID> exist_its = VM_CONTAINERS.keySet().iterator();
+		List<BCID> need_remove_bcids = new ArrayList<BCID>();
+		while(exist_its.hasNext()) {
+			BCID exist_bcid = exist_its.next();
+			if(exist_bcid==newid || exist_bcid.code().equals(newid.code())) {
 				need_remove_bcids.add(exist_bcid);
 			}
 		}

@@ -23,7 +23,7 @@ public class ZipUtil {
 	 * @param inputStream
 	 * @throws Exception
 	 */
-	public static void init_install(AppMod mod, ZipInputStream inputStream) throws Exception {
+	public static String init_install(AppMod mod, ZipInputStream inputStream) throws Exception {
 		String path = mod.getApp_base();
 		ZipEntry entry = inputStream.getNextEntry();
 		String name = entry.getName();
@@ -33,9 +33,8 @@ public class ZipUtil {
 		}
 		if(mod.getApp_ver()!=null) {
 			path += "/" + mod.getApp_ver();
-		} else {
-			path += "/" + RUNNING_PATH;
 		}
+		
 		appFile = new File(path);
 		appFile.mkdirs();
 		while (((entry = inputStream.getNextEntry()) != null)) {
@@ -63,6 +62,55 @@ public class ZipUtil {
 				out.close();
 			}
 		}
+		return path;
+	}
+	
+	public static String re_install(AppMod mod, ZipInputStream inputStream) throws Exception {
+		String path = mod.getApp_base();
+		ZipEntry entry = inputStream.getNextEntry();
+		String name = entry.getName();
+		
+		/*
+		File appFile = new File(path);
+		if (appFile.exists()) {
+			FileUtil.deletefile(appFile);
+		}
+		*/
+		
+		if(mod.getApp_ver()!=null) {
+			path += "/" + mod.getApp_ver();
+		}
+		//针对path加上当前时间戳
+		path = path + "_" + System.currentTimeMillis();	//留作后期改名
+		
+		File appFile = new File(path);
+		appFile.mkdirs();
+		while (((entry = inputStream.getNextEntry()) != null)) {
+			String entryName = entry.getName();
+			try {
+				entryName = entryName.substring(name.length(),entryName.length());
+			}catch(Exception e) {
+				logger.error(entryName + " NOT FOUND, WILL BE IGNORED.");
+				continue;
+			}
+			File file = new File(path + File.separator + entryName);
+			if (entry.isDirectory()) {
+				file.mkdirs();
+			} else {
+				if(!file.getParentFile().exists()) {
+					file.getParentFile().mkdirs();
+				}
+				file.createNewFile();
+				OutputStream out = new FileOutputStream(file);
+				int len;
+				byte[] _byte = new byte[1024];
+				while ((len = inputStream.read(_byte)) > 0) {
+					out.write(_byte, 0, len);
+				}
+				out.close();
+			}
+		}
+		return path;
 	}
 	
 }
