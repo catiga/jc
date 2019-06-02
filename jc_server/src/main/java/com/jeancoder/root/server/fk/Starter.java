@@ -81,7 +81,8 @@ public class Starter extends ExternalStarter {
 							if (mod.getFetch_address() != null) {
 								InputStream ins = RemoteUtil.installation(mod.getFetch_address(), new Long(mod.getApp_id()));
 								logger.info("synced apps config." + mod.getApp_code());
-								ZipUtil.init_install(mod, new ZipInputStream(ins));
+								String new_path = ZipUtil.init_install(mod, new ZipInputStream(ins));
+								mod.setApp_base(new_path);
 							}
 						} catch (Exception e) {
 							logger.error(mod.getApp_code() + " config error, will be continued.", e);

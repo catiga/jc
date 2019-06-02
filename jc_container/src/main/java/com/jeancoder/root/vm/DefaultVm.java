@@ -20,6 +20,7 @@ import com.jeancoder.root.container.JCAppContainer;
 import com.jeancoder.root.container.core.BCID;
 import com.jeancoder.root.container.core.LifecycleZa;
 import com.jeancoder.root.env.JCAPP;
+import com.jeancoder.root.env.Lifecycle;
 import com.jeancoder.root.env.RunnerResult;
 import com.jeancoder.root.handler.RunnerResultListener;
 import com.jeancoder.root.io.http.JCHttpRequest;
@@ -131,6 +132,10 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 			String app_code = app.code();
 			if(app_context_path.equals("/" + app_code)) {
 				JCAppContainer runner = getContainers().get(app);
+				String state = runner.state();
+				if(!state.equals(Lifecycle.STATE_RUNNING)) {
+					continue;
+				}
 				RunnerResult<T> ret = runner.callEntry(wrapped, res);
 				ret.addListener(new RunnerResultListener<Result>());
 				return ret;
