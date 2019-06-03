@@ -100,6 +100,9 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<MsgProto> {
 					}
 					tables.add(data_i);
 				}
+				if(tables.isEmpty()) {
+					tables = null;
+				}
 				return tables;
 			} catch(Exception e) {
 				throw new RuntimeException(e);
@@ -136,7 +139,7 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<MsgProto> {
 				if(instance_data.size()>1) {
 					//说明配置错误，需要打印日志并提醒
 					logger.error("LOGIN_CONFIG_ERROR:client_id:" + instance_id + " and merchant_code=" + user_name + " and instance_code=" + password + " was repeated, please check...");
-				} else {
+				} else if(instance_data.size()==1) {
 					Map<String, String> instance_obj = instance_data.get(0);
 					String instance_obj_id = instance_obj.get("id").toString();			// 一定不是null
 					String instance_obj_name = instance_obj.get("name")==null ? null : instance_obj.get("name").toString();
