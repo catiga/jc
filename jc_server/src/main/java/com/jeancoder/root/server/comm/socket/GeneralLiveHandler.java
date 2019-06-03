@@ -76,9 +76,17 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<MsgProto> {
 		JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
 		ContainerMaps conts = jcvm.getContainers();
 		
+		JCAppContainer container = null;
+		try {
+			container = conts.getByCode("server").nextElement();		//这里就是找中央服务的code对应的容器
+		} catch(Exception e) {
+		}
+		if(container==null) {
+			return null;
+		}
 		List<Map<String, String>> tables = new LinkedList<Map<String, String>>();
 		try {
-			JCAppContainer container = conts.getByCode("server").nextElement();		//这里就是找中央服务的code对应的容器
+			
 			DatabasePower db_pow = container.getCaps().getDatabase();
 			String sql = "select id, name, ver_install_id, now_ver_id, now_ver_num from j_instance where code='" + instance_code + "' and m_id in (select id from j_merchants where merchants_code='" + merchant_code + "')";
 			JeancoderResultSet result = null;
@@ -135,6 +143,7 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<MsgProto> {
 			List<Map<String, String>> instance_data = this.findInstanceByMerchantAndInstanceCode(user_name, password);
 			if(instance_data==null) {
 				ctx.channel().close();
+				return;
 			}
 			SocketChannel need_save_channel = null;
 			if(!instance_data.isEmpty()) {
