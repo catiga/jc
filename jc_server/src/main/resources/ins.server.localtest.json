@@ -18,8 +18,8 @@
             "port": 8091,
             "proxy_entry": "entry",
             "proxy_path": "/",
-            "logs": "/home/jeancoder-server/jclogs",
-            "libs": "/home/jeancoder-server/jclibs",
+            "logs": "/Users/jackielee/Desktop/logs",
+            "libs": "/Users/jackielee/Desktop/logs",
             "apps": []
         },
         {
@@ -33,7 +33,7 @@
             "logs": "/Users/jackielee/Desktop/logs",
             "domain_visit":"/server/index",
             "libs": "/Users/jackielee/Desktop/logs",
-            "master": "jcs://jcloudapp.pdr365.com:8091/",
+            "master": "jcs://e.local:8091/",
             "apps": [
                 {
                     "app_id": "99019928",
