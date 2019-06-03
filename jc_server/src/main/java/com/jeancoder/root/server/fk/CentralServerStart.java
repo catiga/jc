@@ -1,6 +1,7 @@
 package com.jeancoder.root.server.fk;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.zip.ZipInputStream;
@@ -76,6 +77,22 @@ public class CentralServerStart extends ExternalStarter {
 			System.exit(-1);
 		}
 		for (ServerMod sm : fk_con.getServers()) {
+			if(sm.getScheme().equalsIgnoreCase("http")) {
+				//这里需要在初始化启动的时候修改一下基础路径
+				for(AppMod server_app : sm.getApps()) {
+					if(server_app.getApp_code().equals("server")) {
+						String base_path = server_app.getApp_base();
+						File f = new File(base_path);
+						if(f.isDirectory()) {
+							for(File file_item : f.listFiles()) {
+								String real_path = file_item.getPath();
+								logger.info("APP:::SERVER base path will be relocated to===" + real_path);
+								server_app.setApp_base(real_path);
+							}
+						}
+					}
+				}
+			}
 			JCServer server = ServerFactory.generate(sm);
 			ServerHolder.getHolder().add(server);
 			new Thread(new Runnable() {
