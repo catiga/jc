@@ -13,6 +13,7 @@ import com.jc.proto.conf.AppMod;
 import com.jc.proto.conf.FkConf;
 import com.jc.proto.conf.ServerMod;
 import com.jeancoder.core.util.JackSonBeanMapper;
+import com.jeancoder.root.env.JCAPP;
 import com.jeancoder.root.server.inet.JCServer;
 import com.jeancoder.root.server.inet.ServerCode;
 import com.jeancoder.root.server.inet.ServerFactory;
@@ -113,13 +114,15 @@ public class CentralServerStart extends ExternalStarter {
 							}
 							for (AppMod mod : sm.getApps()) {
 								logger.info(mod.getApp_id() + ":::" + mod.getApp_code() + ":::" + mod.getApp_base() + ":::" + mod.getFetch_address());
+								JCAPP app = mod.to();
 								try {
 									InputStream ins = RemoteUtil.installation(mod.getFetch_address(), new Long(mod.getApp_id()));
-									jcvm.uninstallApp(mod.to());
-									ZipUtil.init_install(mod, new ZipInputStream(ins));
-									jcvm.installApp(mod.to());
+									jcvm.uninstallApp(app);
+									String new_path = ZipUtil.init_install(mod, new ZipInputStream(ins));
+									app.setApp_base(new_path);
+									jcvm.installApp(app);
 								} catch (Exception e) {
-									logger.error("install app error:" + mod.getApp_code() + ", directory:" + mod.getApp_base(), e);
+									logger.error("install app error:" + mod.getApp_code() + ", directory:" + app.getApp_base(), e);
 								}
 							}
 						}
