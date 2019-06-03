@@ -82,6 +82,9 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 		Class<?> executor = null;
 		try {
 			executor = this.transferPathToIns(req);
+			if(executor==null) {
+				throw new ClassNotFoundException();
+			}
 			Binding context = new Binding();
 			// Constructor<?> constructor =
 			// executor.getConstructor(Binding.class);
