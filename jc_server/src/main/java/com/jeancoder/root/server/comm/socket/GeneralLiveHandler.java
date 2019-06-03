@@ -75,16 +75,17 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<MsgProto> {
 	protected List<Map<String, String>> findInstanceByMerchantAndInstanceCode(String merchant_code, String instance_code) {
 		JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
 		ContainerMaps conts = jcvm.getContainers();
-		JCAppContainer container = conts.getByCode("server").nextElement();		//这里就是找中央服务的code对应的容器
 		
+		List<Map<String, String>> tables = new LinkedList<Map<String, String>>();
 		try {
+			JCAppContainer container = conts.getByCode("server").nextElement();		//这里就是找中央服务的code对应的容器
 			DatabasePower db_pow = container.getCaps().getDatabase();
 			String sql = "select id, name, ver_install_id, now_ver_id, now_ver_num from j_instance where code='" + instance_code + "' and m_id in (select id from j_merchants where merchants_code='" + merchant_code + "')";
 			JeancoderResultSet result = null;
 			try {
 				result = db_pow.doQuery(sql);
 				ResultSet rs = result.getResultSet();
-				List<Map<String, String>> tables = new LinkedList<Map<String, String>>();
+				
 				while(rs.next()) {
 					Map<String, String> data_i = new HashMap<String, String>();
 					ResultSetMetaData metadata = rs.getMetaData();
@@ -100,10 +101,6 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<MsgProto> {
 					}
 					tables.add(data_i);
 				}
-				if(tables.isEmpty()) {
-					tables = null;
-				}
-				return tables;
 			} catch(Exception e) {
 				throw new RuntimeException(e);
 			} finally {
@@ -113,8 +110,10 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<MsgProto> {
 			}
 		} catch(Exception e) {
 			logger.error("", e);
+			//做一个特殊的返回null，说明需要关闭当前channel，然后等待重连
 			return null;
 		}
+		return tables;
 	}
 	
 	@Override
@@ -134,8 +133,11 @@ public class GeneralLiveHandler extends SimpleChannelInboundHandler<MsgProto> {
 			String password = loginMsg.getPassword();	//这里应该是 instance_code
 			
 			List<Map<String, String>> instance_data = this.findInstanceByMerchantAndInstanceCode(user_name, password);
+			if(instance_data==null) {
+				ctx.channel().close();
+			}
 			SocketChannel need_save_channel = null;
-			if(instance_data!=null) {
+			if(!instance_data.isEmpty()) {
 				if(instance_data.size()>1) {
 					//说明配置错误，需要打印日志并提醒
 					logger.error("LOGIN_CONFIG_ERROR:client_id:" + instance_id + " and merchant_code=" + user_name + " and instance_code=" + password + " was repeated, please check...");
