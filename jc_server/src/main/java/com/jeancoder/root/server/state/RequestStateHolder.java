@@ -76,8 +76,8 @@ public class RequestStateHolder {
 	}
 	
 	public void addNew(RequestStateModel obj) {
-		logger.info("PREPARE_VSSWITCH=" + GlobalStateHolder.INSTANCE.getVsSwitch() + ", VSEXETIMEOUT=" + GlobalStateHolder.INSTANCE.getInternalExecuteTimeout());
-		boolean add_result = VSQUEUE.offer(obj);	//会丢失元素，无所谓
+		logger.debug("PREPARE_VSSWITCH=" + GlobalStateHolder.INSTANCE.getVsSwitch() + ", VSEXETIMEOUT=" + GlobalStateHolder.INSTANCE.getInternalExecuteTimeout());
+		boolean add_result = VSQUEUE.offer(obj);	//会丢失元素，不过无所谓
 		if(add_result) {
 			nowCapacity.incrementAndGet();
 		}
