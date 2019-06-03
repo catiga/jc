@@ -11,18 +11,6 @@
     },
     "servers": [
         {
-            "id": "master002",
-            "name": "",
-            "scheme": "socket",
-            "host": "",
-            "port": 8091,
-            "proxy_entry": "entry",
-            "proxy_path": "/",
-            "logs": "/home/jeancoder-server/jclogs",
-            "libs": "/home/jeancoder-server/jclibs",
-            "apps": []
-        },
-        {
             "id": "12",
             "name": "",
             "scheme": "http",
@@ -52,6 +40,18 @@
                 }
                 
             ]
+        },
+        {
+            "id": "master002",
+            "name": "",
+            "scheme": "socket",
+            "host": "",
+            "port": 8091,
+            "proxy_entry": "entry",
+            "proxy_path": "/",
+            "logs": "/home/jeancoder-server/jclogs",
+            "libs": "/home/jeancoder-server/jclibs",
+            "apps": []
         }
     ]
 }
