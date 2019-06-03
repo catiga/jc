@@ -148,7 +148,14 @@ public abstract class DefaultContainer extends QContainer implements JCAppContai
 	
 	protected Class<?>  transferPathToIns(JCHttpRequest req) throws ClassNotFoundException {
 		String class_name = transferPathToClz(req);
-		Class<?> executor = containClassLoader.getAppClassLoader().findClass(class_name);
+		Class<?> executor = null;
+		try {
+			executor = containClassLoader.getAppClassLoader().findClass(class_name);
+		} catch(ClassNotFoundException clz_not_ex) {
+			logger.error("CLASS_NOT_FOUND_ERROR:::" + class_name);
+		} catch(Exception e) {
+			logger.error("FATAL_EXCEPTION:::", e);
+		}
 		return executor;
 	}
 	
