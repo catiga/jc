@@ -45,7 +45,11 @@ public class SqlParser {
 			int next_j = i;
 			for(;next_j<frs.length; next_j++) {
 				String tmp_frs = frs[next_j];
-				if(isKeyWord(tmp_frs)) {
+				String preContext = null;
+				if(next_j>0) {
+					preContext = frs[next_j - 1];
+				}
+				if(isKeyWord(preContext, tmp_frs)) {
 					break;
 				}
 				targbuf.append(tmp_frs + " ");
@@ -57,7 +61,11 @@ public class SqlParser {
 	}
 	
 	protected int indexKeys(int i, String[] frs, StringBuffer actions) {
-		if(i>=frs.length||!isKeyWord(frs[i].trim())) { return i; }
+		String preContext = null;
+		if(i>0) {
+			preContext = frs[i-1];
+		}
+		if(i>=frs.length||!isKeyWord(preContext, frs[i].trim())) { return i; }
 		String tmp = frs[i].trim();
 		actions.append(" " + tmp.toUpperCase());
 		return indexKeys(i+1, frs, actions);
@@ -96,6 +104,26 @@ public class SqlParser {
 	}
 	
 	protected boolean isKeyWord(String s) {
+		s = s.toUpperCase();
+		for(Token t : Token.values()) {
+			if(s.equals(t.name)) {
+				return true;
+			}
+		}
+		for(Symbol t : Symbol.values()) {
+			if(!s.equals("*")&&s.startsWith(t.name)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	protected boolean isKeyWord(String preContext, String s) {
+		if(preContext!=null) {
+			if(preContext.equalsIgnoreCase("FROM") || preContext.equalsIgnoreCase("UPDATE")) {
+				return false;
+			}
+		}
 		s = s.toUpperCase();
 		for(Token t : Token.values()) {
 			if(s.equals(t.name)) {
