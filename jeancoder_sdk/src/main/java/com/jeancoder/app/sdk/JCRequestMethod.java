@@ -14,6 +14,10 @@ public class JCRequestMethod implements JCMethod {
 		return get().getParameter(name);
 	}
 	
+	public static Object getAttribute(String name) {
+		return get().getAttribute(name);
+	}
+	
 	public static Object read() {
 		try {
 			return get().wsdata().content();
