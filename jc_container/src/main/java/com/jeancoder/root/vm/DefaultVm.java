@@ -110,7 +110,7 @@ public abstract class DefaultVm extends LifecycleZa implements JCVM {
 //				afterTriggered(req, res, after);
 //			}
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
+			//logger.error(e.getMessage(), e);
 			throw e;
 		} finally {
 			JCThreadLocal.clearRequest();
