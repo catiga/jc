@@ -158,7 +158,7 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 			JCVMDelegator.delegate().getVM().dispatch(stand_request, stand_response);
 			requestModel.setStatusCode(200);
 		} catch(Exception e) {
-			logger.error("so should send msg by socket to center server:" + e.getMessage(), e);
+			logger.error("so should send msg by socket to center server:" + e.getMessage());
 			processHandlerException(e, stand_request, stand_response);
 		} finally {
 			JCVMDelegator.releaseContext();
