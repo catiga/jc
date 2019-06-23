@@ -23,7 +23,7 @@
             "apps": []
         },
         {
-            "id": "12",
+            "id": "16",
             "name": "",
             "scheme": "http",
             "host": "",
@@ -33,7 +33,7 @@
             "logs": "/Users/jackielee/Desktop/logs",
             "domain_visit":"/server/index",
             "libs": "/Users/jackielee/Desktop/logs",
-            "master": "jcs://e.local:8091/",
+            "master": "jcs://jcloudapp.pdr365.com:8091/",
             "apps": [
                 {
                     "app_id": "99019928",
@@ -44,7 +44,7 @@
                     "app_ver": "1.0",
                     "source_type": "binary",
                     "lans": "groovy",
-                    "app_base":"/Users/jackielee/Documents/server_workspace_ui/app_jeancoder_server",
+                    "app_base":"/Users/jackielee/Documents/server_workspace/jeancoder_server",
                     "config": {
                         "description": "管理系统基础配置",
                         "index":"index"
