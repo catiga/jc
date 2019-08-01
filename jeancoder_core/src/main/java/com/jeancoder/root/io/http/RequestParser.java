@@ -98,53 +98,66 @@ public class RequestParser {
 		HttpMethod method = fullReq.method();
 		if (HttpMethod.POST == method) {
 			// 是POST请求
-			HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(fullReq);
-			decoder.offer(fullReq);
-			List<InterfaceHttpData> parmList = decoder.getBodyHttpDatas();
-			for (InterfaceHttpData parm : parmList) {
-				HttpDataType data_type = parm.getHttpDataType();
-				if (data_type == HttpDataType.FileUpload) {
-					MixedFileUpload fileUpload = (MixedFileUpload) parm;
-					String fileName = fileUpload.getFilename();
-					String contentType = fileUpload.getContentType();
-					String formField = fileUpload.getName();
-					Long file_size = -1l;
-					if(!fileUpload.isInMemory()) {
-						file_size = fileUpload.getFile().length();
-					} else {
-						file_size = fileUpload.length();
-					}
-					if (fileUpload.isCompleted()) {
-						// 暂存到磁盘
-						String tmp_dir = System.getProperty("java.io.tmpdir");
-						//tmp_dir = "/Users/jackielee/Desktop/test";
-						tmp_dir = tmp_dir + File.separator + "tmp" + File.separator + Thread.currentThread().getId() + File.separator + System.currentTimeMillis() + "/";
-						File parent_path = new File(tmp_dir);
-						if(!parent_path.exists()) {
-							boolean create_path_result = parent_path.setWritable(true);
-							if(!create_path_result) {
-								logger.error(tmp_dir + " permission not efficient");
+			HttpPostRequestDecoder decoder = null;
+			try {
+				decoder = new HttpPostRequestDecoder(fullReq);
+				
+				//decoder.offer(fullReq);	// Not nessary code
+				List<InterfaceHttpData> parmList = decoder.getBodyHttpDatas();
+				for (InterfaceHttpData parm : parmList) {
+					HttpDataType data_type = parm.getHttpDataType();
+					if (data_type == HttpDataType.FileUpload) {
+						MixedFileUpload fileUpload = (MixedFileUpload) parm;
+						String fileName = fileUpload.getFilename();
+						String contentType = fileUpload.getContentType();
+						String formField = fileUpload.getName();
+						Long file_size = -1l;
+						if(!fileUpload.isInMemory()) {
+							file_size = fileUpload.getFile().length();
+						} else {
+							file_size = fileUpload.length();
+						}
+						if (fileUpload.isCompleted()) {
+							// 暂存到磁盘
+							String tmp_dir = System.getProperty("java.io.tmpdir");
+							//tmp_dir = "/Users/jackielee/Desktop/test";
+							tmp_dir = tmp_dir + File.separator + "tmp" + File.separator + Thread.currentThread().getId() + File.separator + System.currentTimeMillis() + "/";
+							File parent_path = new File(tmp_dir);
+							if(!parent_path.exists()) {
+								boolean create_path_result = parent_path.setWritable(true);
+								if(!create_path_result) {
+									logger.error(tmp_dir + " permission not efficient");
+								}
+								parent_path.mkdirs();
 							}
-							parent_path.mkdirs();
+							File attch_file = new File(tmp_dir + "/" + fileName);
+							boolean att_up_result = fileUpload.renameTo(attch_file);
+							if(att_up_result) {
+								UploadFile item = new UploadFile(formField, contentType, true, fileName, file_size, attch_file);
+								files.add(item);
+							}
 						}
-						File attch_file = new File(tmp_dir + "/" + fileName);
-						boolean att_up_result = fileUpload.renameTo(attch_file);
-						if(att_up_result) {
-							UploadFile item = new UploadFile(formField, contentType, true, fileName, file_size, attch_file);
-							files.add(item);
+						//TODO build file object
+					} else {
+						// normal post to merge params
+						Attribute data = (Attribute) parm;
+						if(parameters.containsKey(data.getName())) {
+							String[] values = parameters.get(data.getName());
+							Vector<String> vs = new Vector<String>(Arrays.asList(values));
+							vs.add(data.getValue());
+							parameters.put(data.getName(), vs.toArray(new String[vs.size()]));
+						} else {
+							parameters.put(data.getName(), new String[]{data.getValue()});
 						}
 					}
-					//TODO build file object
-				} else {
-					// normal post to merge params
-					Attribute data = (Attribute) parm;
-					if(parameters.containsKey(data.getName())) {
-						String[] values = parameters.get(data.getName());
-						Vector<String> vs = new Vector<String>(Arrays.asList(values));
-						vs.add(data.getValue());
-						parameters.put(data.getName(), vs.toArray(new String[vs.size()]));
-					} else {
-						parameters.put(data.getName(), new String[]{data.getValue()});
+				}
+			} finally {
+				if(decoder!=null) {
+					try {
+						// Release Memory manually
+						decoder.destroy();
+					} catch(Exception e) {
+						logger.error("Http_Post_Decoder memory release error:", e);
 					}
 				}
 			}
