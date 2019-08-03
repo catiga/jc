@@ -71,12 +71,15 @@ public class RemoteUtil {
 			return singkey;
 		}
 		Map<String,String> params = new TreeMap<String,String>();
-		params.put("m_code", JCLHealper.INSTENSE.getMerchantsCode());
-		params.put("m_instance", JCLHealper.INSTENSE.getInstanceNum());
+		String m_code = JCLHealper.INSTENSE.getMerchantsCode();
+		String ins_code = JCLHealper.INSTENSE.getInstanceNum();
+		params.put("m_code", m_code);
+		params.put("m_instance", ins_code);
 		String parameter = HttpsRequesUtil.getParameter(params);
 		logger.info("check sign key:::" + domain + "/server/api/sys/getSignKey");
-		logger.info("parameter=" + encryptByPublic(parameter));
-		String rsaResultsJson = HttpsRequesUtil.connection(domain + "/server/api/sys/getSignKey", "parameter=" + encryptByPublic(parameter));
+		String enc_param = encryptByPublic(parameter);
+		logger.info("parameter=" + enc_param);
+		String rsaResultsJson = HttpsRequesUtil.connection(domain + "/server/api/sys/getSignKey", "parameter=" + enc_param + "&m_code=" + m_code + "&ins_code=" + ins_code);
 		logger.info("check sign key result:::" + rsaResultsJson);;
 		rsaResultsJson = decryptByPublic(rsaResultsJson);
 		StringResults strResult = JackSonBeanMapper.fromJson(rsaResultsJson, StringResults.class);

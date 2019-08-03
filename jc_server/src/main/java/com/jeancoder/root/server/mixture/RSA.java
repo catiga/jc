@@ -59,6 +59,12 @@ public class RSA {
 //        boolean status = verify(enStr2, publicKey, sign);
 //        System.out.println("状态:"+status);
         
+        
+        String micode = "PnYirFiX1iVap3ZuXomooVjUkw7mnlfLPrUuOra6FWlxHidaRkR+NZRjOOY/K4iKVywgP1ISSoZYVfh9J7bxRVtbjaZAAKvY1Ij0dG6A0GN2jUMOazsRuCTcHTX/Rd2Tqox5O+j7X1YXC9T03EfHA6eg8c3tRIZs50gbmr8kXyU=";
+        String mi_key = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCLNbmKl9/gLn7Bef/xtUkshC1WyrLZLRpXCcFYR1gQi0isWsZBTicC4efBOkkNG3r+1ue0gvtuU/tjREFGf4Y7HaKHGb5tNCOlMNeNjM5YLRwLFqrUSsQyD4rj4eua1ltearr24R0HilnTvnQm6Z/UY0s21vdOUFQBPY0GNAa+0wIDAQAB";
+        
+        String result = RSA.decryptByPublic(micode, mi_key);
+        System.out.println(result);
     }
     
     //定义加密方式
