@@ -22,9 +22,9 @@ public class DataRendering<T extends Result> extends DefaultRendering<T> impleme
 		if(result.getData() instanceof String) {
 			data_obj = result.getData();
 			if(data_obj!=null)
-				this.writeJsonResponse(result.getData().toString(), true);
+				this.writeHtmlResponse(result.getData().toString(), true);
 			else
-				this.writeJsonResponse("{}", true);
+				this.writeHtmlResponse("", true);
 		} else {
 			data_obj = JackSonBeanMapper.toJson(result.getData());
 			this.writeJsonResponse(data_obj.toString(), true);
