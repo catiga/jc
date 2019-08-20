@@ -120,21 +120,42 @@ public class DefaultRendering<T extends Result> implements Rendering {
 	}
 	
 	protected void writeStreamResponse(byte[] bytes, String content_type, boolean forceClose) {
+		if(content_type==null) {
+			content_type = "application/octet-stream";
+		}
+		String default_content_dispo = "attachment";
+		if(content_type.indexOf("image")>-1 || content_type.indexOf("text")>-1) {
+			default_content_dispo = "inline";
+		}
+		
 		ByteBuf buf = copiedBuffer(bytes);
 		FullHttpResponse new_response = response.delegateObj().replace(buf);
 		new_response.headers().set(CONTENT_TYPE, content_type + "; charset=UTF-8");
 		new_response.headers().set(CONTENT_LENGTH, buf.readableBytes());
-		new_response.headers().set("Content-Disposition", "attachment; filename=nihao");
+		new_response.headers().set("Content-Disposition", default_content_dispo + "; filename=hiJC");
 		new_response.setStatus(HttpResponseStatus.OK);
 		this.response.replaceDelegateObj(new_response);
 	}
 	
 	protected void writeStreamResponse(byte[] bytes, String content_type, String filename, boolean forceClose) {
+		if(content_type==null) {
+			content_type = "application/octet-stream";
+		}
+		if(filename==null) {
+			filename = "hiJC";
+		}
+		String default_content_dispo = "attachment";
+		if(content_type.indexOf("image")>-1 || content_type.indexOf("text")>-1) {
+			default_content_dispo = "inline";
+		}
 		ByteBuf buf = copiedBuffer(bytes);
 		FullHttpResponse new_response = response.delegateObj().replace(buf);
 		new_response.headers().set(CONTENT_TYPE, content_type + "; charset=UTF-8");
-		new_response.headers().set(CONTENT_LENGTH, buf.readableBytes());
-		new_response.headers().set("Content-Disposition", "attachment; filename=" + filename);
+		new_response.headers().set(CONTENT_LENGTH, bytes.length);
+		//new_response.headers().set("Content-Disposition", "attachment; filename=" + filename);
+		
+		new_response.headers().set("Content-Disposition", default_content_dispo + "; filename=" + filename);
+		
 		new_response.setStatus(HttpResponseStatus.OK);
 		this.response.replaceDelegateObj(new_response);
 	}
