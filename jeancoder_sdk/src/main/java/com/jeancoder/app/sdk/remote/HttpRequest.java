@@ -62,7 +62,7 @@ public class HttpRequest {
 		}
 	}
 	
-	public byte[] getResponseStringAsStream(String url, String param, HttpMethod method, RequestCert cert) {
+	public InputStream getResponseStringAsStream(String url, String param, HttpMethod method, RequestCert cert) {
 		if(cert==null) {
 			return doRequestAsStream(url, param, method);
 		} else {
@@ -209,7 +209,7 @@ public class HttpRequest {
 	
 	
 	
-	private byte[] doRequestAsStream(String uri, String params, HttpMethod method, RequestCert cert) throws Exception {
+	private InputStream doRequestAsStream(String uri, String params, HttpMethod method, RequestCert cert) throws Exception {
 		String cert_type = cert.cert_type;
 		String cert_file = cert.cert_file_path;
 		String cert_pass = cert.cert_passwd;
@@ -246,15 +246,15 @@ public class HttpRequest {
 		if (entity != null) {
 			Logger.info("Response content length: " + entity.getContentLength());
 			InputStream inStream = entity.getContent();
-			byte[] data = readInputStream(inStream);
+			//byte[] data = readInputStream(inStream);
 			
-			return data;
+			return inStream;
 		}
 		return null;
 	}
 	
 	
-	private byte[] doRequestAsStream(String uri, String params, HttpMethod method) {
+	private InputStream doRequestAsStream(String uri, String params, HttpMethod method) {
 		String fullUrl = uri;
 		InputStream remote_ret = null;
 		try {
@@ -319,10 +319,10 @@ public class HttpRequest {
 					remote_ret = ((HttpsURLConnection)conn).getErrorStream();
 				}
 			}
+			//String content_type = HttpURLConnection.guessContentTypeFromStream(remote_ret);
+			//byte[] data = readInputStream(remote_ret);
 			
-			byte[] data = readInputStream(remote_ret);
-			
-			return data;
+			return remote_ret;
 		}catch(Exception e){
 			Logger.error(e.getMessage(), e);
 			throw new SdkRuntimeException(e.getMessage(), e);
