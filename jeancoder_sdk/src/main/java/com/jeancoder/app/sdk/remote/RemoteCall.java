@@ -18,8 +18,23 @@ public class RemoteCall {
 		return obj;
 	}
 	
+	// DEFAULT POST METHOD
 	public static String http_call(String url, String param, RequestCert cert) {
 		String ret = HttpRequest.instance().getResponseString(url, param, HttpMethod.POST, cert);
 		return ret;
+	}
+	
+	public static byte[] http_call_stream(String url, String params, RequestCert cert) {
+		return HttpRequest.instance().getResponseStringAsStream(url, params, HttpMethod.POST, cert);
+	}
+	
+	//SUPPORT METHOD SWITCH
+	public static String http_call(String url, String param, RequestCert cert, HttpMethod method) {
+		String ret = HttpRequest.instance().getResponseString(url, param, method, cert);
+		return ret;
+	}
+	
+	public static byte[] http_call_stream(String url, String params, RequestCert cert, HttpMethod method) {
+		return HttpRequest.instance().getResponseStringAsStream(url, params, method, cert);
 	}
 }
