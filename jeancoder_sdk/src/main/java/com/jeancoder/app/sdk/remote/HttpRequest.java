@@ -36,6 +36,7 @@ public class HttpRequest {
 	
 	static {
 		System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
+		DisableSSLCertificateCheckUtil.disableChecks();
 	}
 	
 	private final static HttpRequest _instance_ = new HttpRequest();
