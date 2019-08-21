@@ -123,8 +123,8 @@ public class DefaultRendering<T extends Result> implements Rendering {
 		if(content_type==null) {
 			content_type = "application/octet-stream";
 		}
-		String default_content_dispo = "attachment";
-		if(content_type.indexOf("image")>-1 || content_type.indexOf("text")>-1) {
+		String default_content_dispo = "attachment";	//默认作为附件下载
+		if(content_type.toLowerCase().indexOf("image")>-1 || content_type.toLowerCase().indexOf("text")>-1) {
 			default_content_dispo = "inline";
 		}
 		
@@ -144,8 +144,8 @@ public class DefaultRendering<T extends Result> implements Rendering {
 		if(filename==null) {
 			filename = "hiJC";
 		}
-		String default_content_dispo = "attachment";
-		if(content_type.indexOf("image")>-1 || content_type.indexOf("text")>-1) {
+		String default_content_dispo = "attachment";	//默认作为附件下载
+		if(content_type.toLowerCase().indexOf("image")>-1 || content_type.toLowerCase().indexOf("text")>-1) {
 			default_content_dispo = "inline";
 		}
 		ByteBuf buf = copiedBuffer(bytes);
