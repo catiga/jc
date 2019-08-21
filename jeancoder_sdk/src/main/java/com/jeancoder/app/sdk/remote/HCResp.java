@@ -13,8 +13,8 @@ public class HCResp {
 	public int getContent_length() {
 		return content==null?0:content.length;
 	}
-
-	public String getContent_type() {
+	
+	public String getOrgContentType() {
 		byte[] head = new byte[3];
 		if(content!=null&&content.length>3) {
 			for(int i=0; i<3; i++) {
@@ -26,7 +26,12 @@ public class HCResp {
 			head[2] = 0;
 		}
 		String content_type = bytesToHexString(head).toUpperCase();
-		return CheckStreamType.codeToMimeType(content_type);
+		return content_type;
+	}
+
+	public String getContent_type() {
+		
+		return CheckStreamType.codeToMimeType(getOrgContentType());
 	}
 
 	
