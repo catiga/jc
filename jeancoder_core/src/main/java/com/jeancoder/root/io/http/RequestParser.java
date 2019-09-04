@@ -157,7 +157,7 @@ public class RequestParser {
 						// Release Memory manually
 						decoder.destroy();
 					} catch(Exception e) {
-						logger.error("Http_Post_Decoder memory release error:", e);
+						logger.error("Http_Post_Decoder memory release error:" + e.toString());
 					}
 				}
 			}
