@@ -1,11 +1,17 @@
 package com.jeancoder.app.sdk;
 
+import java.util.Map;
+
 import com.jeancoder.app.sdk.remote.HCResp;
 import com.jeancoder.app.sdk.remote.HttpMethod;
 import com.jeancoder.app.sdk.remote.RemoteCall;
 import com.jeancoder.app.sdk.remote.RequestCert;
 
 public class JCRemoteMethod implements JCMethod {
+	
+	public static void http_header_prop(Map<String, Object> properties) {
+		RemoteCall.http_header_set(properties);
+	}
 
 	public static <T> T http_call(final Class<T> claz, String url, String params) {
 		return RemoteCall.http_call(claz, url, params);

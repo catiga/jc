@@ -2,6 +2,7 @@ package com.jeancoder.app.sdk.remote;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.Map;
 
 import com.jeancoder.core.util.JackSonBeanMapper;
 
@@ -13,7 +14,15 @@ public class RemoteCall {
 		System.out.println(hp.getContent_type());
 	}
 	
+	private static ThreadLocal<Map<String, Object>> _ADMINER_ = new ThreadLocal<Map<String, Object>>();
 	
+	public static void http_header_set(Map<String, Object> properties) {
+		_ADMINER_.set(properties);
+	}
+	
+	public static Map<String, Object> http_header_get() {
+		return _ADMINER_.get();
+	}
 	
 	public static <T> T http_call(final Class<T> claz, String url, String param) {
 		return http_call(claz, url, param, null);

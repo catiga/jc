@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.KeyStore;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -155,6 +156,16 @@ public class HttpRequest {
 			// 注意 cookie 必须在设置 setRequestMethod 之前先设置
 			//conn.setRequestProperty("mode", "NETWORK");
 			//conn.setRequestProperty("Host", ua.getHost());
+			
+			Map<String, Object> _header_ = RemoteCall.http_header_get();
+			if(_header_!=null && !_header_.isEmpty()) {
+				for(String k : _header_.keySet()) {
+					Object v = _header_.get(k);
+					if(v!=null) {
+						conn.setRequestProperty(k, v.toString());
+					}
+				}
+			}
 			
 			if(method==HttpMethod.POST) {
 				conn.setRequestMethod("POST");
