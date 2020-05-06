@@ -18,7 +18,8 @@ public class ForwardingRendering<T extends Result> extends DefaultRendering<T> i
 	@Override
 	public Object process(HttpServletRequest request, HttpServletResponse response) {
 		super.process(request, response);
-		this.writeResponse(HttpResponseStatus.OK, (JCHttpResponse)response, true);
+		//TODO need to justify
+		this.writeResponse(HttpResponseStatus.MULTIPLE_CHOICES, (JCHttpResponse)response, true);
 		Result result = this.runningResult.getResult();
 		return result;
 	}

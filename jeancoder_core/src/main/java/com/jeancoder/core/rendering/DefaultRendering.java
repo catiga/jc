@@ -90,7 +90,9 @@ public class DefaultRendering<T extends Result> implements Rendering {
 		FullHttpResponse new_response = response.delegateObj().replace(buf);
 		new_response.headers().set(CONTENT_TYPE, "text/html; charset=UTF-8");
 		new_response.headers().set(CONTENT_LENGTH, buf.readableBytes());
-		new_response.setStatus(HttpResponseStatus.OK);
+		
+		//需要把这段代码注释掉，response code状态交给应用业务代码开发指定
+		//new_response.setStatus(HttpResponseStatus.OK);
 		this.response.replaceDelegateObj(new_response);
 		
 		//getContext().channel().writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
@@ -108,7 +110,9 @@ public class DefaultRendering<T extends Result> implements Rendering {
 		FullHttpResponse new_response = response.delegateObj().replace(buf);
 		new_response.headers().set(CONTENT_TYPE, "text/json; charset=UTF-8");
 		new_response.headers().set(CONTENT_LENGTH, buf.readableBytes());
-		new_response.setStatus(HttpResponseStatus.OK);
+		
+		//需要把这段代码注释掉，response code状态交给应用业务代码开发指定
+		//new_response.setStatus(HttpResponseStatus.OK);
 		this.response.replaceDelegateObj(new_response);
 		
 		//getContext().channel().writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
@@ -133,7 +137,9 @@ public class DefaultRendering<T extends Result> implements Rendering {
 		new_response.headers().set(CONTENT_TYPE, content_type + "; charset=UTF-8");
 		new_response.headers().set(CONTENT_LENGTH, buf.readableBytes());
 		new_response.headers().set("Content-Disposition", default_content_dispo + "; filename=hiJC");
-		new_response.setStatus(HttpResponseStatus.OK);
+		
+		//需要把这段代码注释掉，response code状态交给应用业务代码开发指定
+		//new_response.setStatus(HttpResponseStatus.OK);
 		this.response.replaceDelegateObj(new_response);
 	}
 	
@@ -156,7 +162,8 @@ public class DefaultRendering<T extends Result> implements Rendering {
 		
 		new_response.headers().set("Content-Disposition", default_content_dispo + "; filename=" + filename);
 		
-		new_response.setStatus(HttpResponseStatus.OK);
+		//需要把这段代码注释掉，response code状态交给应用业务代码开发指定
+		//new_response.setStatus(HttpResponseStatus.OK);
 		this.response.replaceDelegateObj(new_response);
 	}
 }

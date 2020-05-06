@@ -51,6 +51,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -115,7 +116,13 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 	
 	protected void messageReceived(ChannelHandlerContext ctx, HttpRequest requestObj) {
 		boolean keepAlive = HttpUtil.isKeepAlive(requestObj);
-		FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
+		
+		HttpResponseStatus default_res_status = HttpResponseStatus.OK;
+		HttpMethod METHOD = requestObj.method();
+		if(METHOD==HttpMethod.OPTIONS) {
+			default_res_status = HttpResponseStatus.NO_CONTENT;
+		}
+		FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, default_res_status);
 		
 		InetSocketAddress remote = (InetSocketAddress)ctx.channel().remoteAddress();
 		JCHttpRequest stand_request = null; JCHttpResponse stand_response = null;
@@ -147,7 +154,12 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
     }
 	
 	protected JCHttpResponse messageReceivedAsync(ChannelHandlerContext ctx, HttpRequest requestObj) {
-		FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
+		HttpResponseStatus default_res_status = HttpResponseStatus.OK;
+		HttpMethod METHOD = requestObj.method();
+		if(METHOD==HttpMethod.OPTIONS) {
+			default_res_status = HttpResponseStatus.NO_CONTENT;
+		}
+		FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, default_res_status);
 		
 		InetSocketAddress remote = (InetSocketAddress)ctx.channel().remoteAddress();
 		JCHttpRequest stand_request = null; JCHttpResponse stand_response = null;

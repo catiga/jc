@@ -26,7 +26,8 @@ public class RedirectRendering<T extends Result> extends DefaultRendering<T> imp
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.writeResponse(HttpResponseStatus.OK, (JCHttpResponse)response, true);
+		//TODO need to justify
+		this.writeResponse(HttpResponseStatus.MULTIPLE_CHOICES, (JCHttpResponse)response, true);
 		return null;
 	}
 

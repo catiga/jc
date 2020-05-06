@@ -211,6 +211,9 @@ public class JCHttpResponse implements HttpServletResponse, JCResFaca {
     @Override
     public void setStatus(int i) {
         status = i;
+        HttpResponseStatus real_status = HttpResponseStatus.valueOf(this.status);
+        if(real_status!=null)
+        	response.setStatus(real_status);
     }
 
     @Override

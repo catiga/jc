@@ -1,5 +1,7 @@
 package com.jeancoder.core.rendering;
 
+import java.io.File;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,8 +35,9 @@ public class GeneralIORendering<T extends Result> extends DefaultRendering<T> im
 			content_key = name.substring(name.lastIndexOf("."));
 			content_type = ContentTypes.get(content_key);
 		}
-		if(name!=null&&name.lastIndexOf("/")>-1) {
-			name = name.substring(name.lastIndexOf("/") + 1);
+		String path_sep = File.separator;
+		if(name!=null&&name.lastIndexOf(path_sep)>-1) {
+			name = name.substring(name.lastIndexOf(path_sep) + 1);
 		}
 		try {
 			JcServletOutputStream jcos = (JcServletOutputStream)response.getOutputStream();

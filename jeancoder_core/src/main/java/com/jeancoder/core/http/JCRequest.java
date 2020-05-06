@@ -208,4 +208,8 @@ public class JCRequest {
 	public  String getRemoteAddr() {
 		return request.getRemoteAddr();
 	}
+	
+	public String getMethod() {
+		return request.getMethod();
+	}
 }
