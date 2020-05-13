@@ -673,7 +673,7 @@ public class JCHttpRequest implements HttpServletRequest, JCReqFaca {
 		 *            the data, as a string, can be <code>null</code>.
 		 */
 		private InputStream(String data) {
-			String encoding = "ISO-8859-1";
+			String encoding = "UTF-8";
 			try {
 				byte[] dataAsByte = data.getBytes(encoding);
 				_stream = new ByteArrayInputStream(dataAsByte);
