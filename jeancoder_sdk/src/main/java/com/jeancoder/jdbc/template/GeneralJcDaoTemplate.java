@@ -68,6 +68,7 @@ public abstract class GeneralJcDaoTemplate<T> {
 			}
 		}catch(Exception e) {
 			LOGGER.error("", e);
+			throw new RuntimeException(e.getCause());
 		}finally{
 			if(jrs!=null)
 				jrs.closeConnection();
@@ -88,6 +89,7 @@ public abstract class GeneralJcDaoTemplate<T> {
 			}
 		}catch(Exception e) {
 			LOGGER.error("", e);
+			throw new RuntimeException(e.getCause());
 		}finally{
 			if(jrs!=null)
 				jrs.closeConnection();

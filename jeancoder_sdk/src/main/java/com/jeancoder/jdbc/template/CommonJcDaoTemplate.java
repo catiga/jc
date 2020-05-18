@@ -28,8 +28,8 @@ public class CommonJcDaoTemplate<T> extends GeneralJcDaoTemplate<T> {
 			return code;
 		} catch (JeancoderException e) {
 			LOGGER.error("", e);
+			throw new RuntimeException(e.getCause());
 		}
-		return -1;
 	}
 	
 	public <X> X save(T entity) {
@@ -43,7 +43,7 @@ public class CommonJcDaoTemplate<T> extends GeneralJcDaoTemplate<T> {
 			return code;
 		} catch (JeancoderException e) {
 			LOGGER.error("class:" + entity.getClass().getName(), e);
-			return null;
+			throw new RuntimeException(e.getCause());
 		}
 	}
 	
@@ -52,13 +52,12 @@ public class CommonJcDaoTemplate<T> extends GeneralJcDaoTemplate<T> {
 		DatabasePower dp = DatabaseSource.getDatabasePower();
 		String insert = par.getFormatSql();
 		try {
-//			println(insert);
 			int code = dp.doUpdate(insert);
 			LOGGER.debug(code + "");
 			return code;
 		} catch (JeancoderException e) {
 			LOGGER.error("class:" + entity.getClass().getName(), e);
-			return -1;
+			throw new RuntimeException(e.getCause());
 		}
 	}
 	
@@ -81,6 +80,7 @@ public class CommonJcDaoTemplate<T> extends GeneralJcDaoTemplate<T> {
 			
 		} catch (Exception e) {
 			LOGGER.error("jc_jdbc_template_error", e);
+			throw new RuntimeException(e.getCause());
 		}finally{
 			if(jrs!=null)
 				jrs.closeConnection();
@@ -120,6 +120,7 @@ public class CommonJcDaoTemplate<T> extends GeneralJcDaoTemplate<T> {
 			
 		} catch (Exception e) {
 			LOGGER.error("jc_jdbc_template_error", e);
+			throw new RuntimeException(e.getCause());
 		}finally{
 			if(jrs!=null)
 				jrs.closeConnection();
@@ -152,6 +153,7 @@ public class CommonJcDaoTemplate<T> extends GeneralJcDaoTemplate<T> {
 			}
 		} catch (Exception e) {
 			LOGGER.error("jc_jdbc_template_error", e);
+			throw new RuntimeException(e.getCause());
 		}finally{
 			if(jrs!=null)
 				jrs.closeConnection();
@@ -182,6 +184,7 @@ public class CommonJcDaoTemplate<T> extends GeneralJcDaoTemplate<T> {
 			}
 		} catch (Exception e) {
 			LOGGER.error("jc_jdbc_template_error", e);
+			throw new RuntimeException(e.getCause());
 		}finally{
 			if(jrs!=null)
 				jrs.closeConnection();
@@ -220,6 +223,7 @@ public class CommonJcDaoTemplate<T> extends GeneralJcDaoTemplate<T> {
 			
 		} catch (Exception e) {
 			LOGGER.error("jc_jdbc_template_error", e);
+			throw new RuntimeException(e.getCause());
 		}finally{
 			if(jrs!=null)
 				jrs.closeConnection();
