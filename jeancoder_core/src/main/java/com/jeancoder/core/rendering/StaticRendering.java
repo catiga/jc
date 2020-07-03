@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,7 +20,6 @@ import com.jeancoder.root.env.JCAPP;
 import com.jeancoder.root.io.http.ContentTypes;
 
 import io.netty.channel.ChannelHandlerContext;
-import sun.net.www.URLConnection;
 
 public class StaticRendering<T extends Result> extends DefaultRendering<T> implements Rendering {
 
