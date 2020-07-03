@@ -38,6 +38,24 @@ public class LocalStarter extends ExternalStarter {
 		// 中央服务打包启动方法
 		//centralServerStart();
 	}
+	
+	public static String loadLocal() {
+		try {
+			// 本地读取配置文件
+			InputStream ins = Starter.class.getClassLoader().getResourceAsStream(appConfLocal);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
+
+			String lineContent = null;
+			StringBuffer buff = new StringBuffer();
+			while ((lineContent = reader.readLine()) != null) {
+				buff.append(lineContent);
+			}
+			return buff.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	public static void start() {
 		String json = loadLocal();
@@ -104,7 +122,7 @@ public class LocalStarter extends ExternalStarter {
 	}
 
 	/**
-	 * 中央服务器启动测试环境å
+	 * 中央服务器启动测试环境
 	 */
 	public static void centralServerStart() {
 		String json = null;

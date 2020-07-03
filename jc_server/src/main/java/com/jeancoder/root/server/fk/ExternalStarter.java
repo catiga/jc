@@ -15,6 +15,8 @@ public abstract class ExternalStarter {
 	
 	final static String appConf = "ins.server.json";
 	
+	final static String appConfLocal = "ins.server.localtest.json";
+	
 	final static String logConf = "logback.xml";
 
 	static {
