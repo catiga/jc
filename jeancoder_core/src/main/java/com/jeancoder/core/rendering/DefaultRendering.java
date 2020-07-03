@@ -160,7 +160,14 @@ public class DefaultRendering<T extends Result> implements Rendering {
 		new_response.headers().set(CONTENT_LENGTH, bytes.length);
 		//new_response.headers().set("Content-Disposition", "attachment; filename=" + filename);
 		
-		new_response.headers().set("Content-Disposition", default_content_dispo + "; filename=" + filename);
+		if(response.getHeader("Content-Disposition")!=null) {
+			if(!filename.equals("hiJC")) {
+				//需要重置
+				new_response.headers().set("Content-Disposition", default_content_dispo + "; filename=" + filename);
+			}
+		} else {
+			new_response.headers().set("Content-Disposition", default_content_dispo + "; filename=" + filename);
+		}
 		
 		//需要把这段代码注释掉，response code状态交给应用业务代码开发指定
 		//new_response.setStatus(HttpResponseStatus.OK);
