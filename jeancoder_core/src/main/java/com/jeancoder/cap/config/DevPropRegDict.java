@@ -29,7 +29,12 @@ public class DevPropRegDict {
 		parsers.add(new DevDatabasePropParser("database.([^.]*).jdbc.url") {
 			@Override
 			public void setValue(Object instance, Properties p, String pkey) throws Exception {
-				DevDatabaseProp.class.getMethod("setUrl",String.class).invoke(instance, p.getProperty(pkey));
+				//对jdbc url做特殊处理，需要处理掉历史存在的转译字符串
+				String v = p.getProperty(pkey);
+				if(v.indexOf("&amp;")>-1) {
+					v = v.replaceAll("&amp;", "&");
+				}
+				DevDatabaseProp.class.getMethod("setUrl",String.class).invoke(instance, v);
 			}
 		});
 		parsers.add(new DevDatabasePropParser("database.([^.]*).jdbc.username") {
