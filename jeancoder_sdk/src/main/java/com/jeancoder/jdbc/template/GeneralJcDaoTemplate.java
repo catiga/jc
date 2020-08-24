@@ -125,6 +125,10 @@ public abstract class GeneralJcDaoTemplate<T> {
 			} else {
 				value = long_value;
 			}
+		} else if(type_name.equals("DATETIME")) {
+			value = rs.getTimestamp(field.getName());
+		} else if(type_name.equals("TIMESTAMP")) {
+			value = rs.getTimestamp(field.getName());
 		}
 //		if(value==null) {
 //			value = rs.getObject(field.getName());
@@ -246,6 +250,7 @@ public abstract class GeneralJcDaoTemplate<T> {
 					Object value = this.readTypeValue(column_type, column_type_name, f, rsindex);
 					try {
 						set_method.invoke(instance, value);
+						break;
 					} catch(RuntimeException rex) {
 						LOGGER.error(f.getName() + "=" + value + ", type miss match:" + f.getGenericType().getTypeName(), rex);
 					}
