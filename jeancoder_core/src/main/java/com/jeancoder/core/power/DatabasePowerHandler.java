@@ -28,7 +28,10 @@ import com.jeancoder.core.power.exception.DbPowerDoUpdateFailedException;
 import com.jeancoder.core.power.exception.PowerConnectFailedException;
 import com.jeancoder.core.power.exception.PowerDriveClassLoadFailedException;
 import com.jeancoder.core.power.exception.TransactionCloseFailed;
+import com.jeancoder.core.power.exception.TransactionCommitFailed;
 import com.jeancoder.core.power.exception.TransactionConnectFailed;
+import com.jeancoder.core.power.exception.TransactionHasBeginException;
+import com.jeancoder.core.power.exception.TransactionNotBeginException;
 import com.jeancoder.core.power.result.JeancoderResultSet;
 import com.jeancoder.core.power.result.JeancoderResultSetImpl;
 import com.jeancoder.core.power.support.DBBrandNameParser;
@@ -92,58 +95,58 @@ public class DatabasePowerHandler extends PowerHandler implements DatabasePower{
 	 * 否则可能导致大量连接hold造成系统开销
 	 */
 	public void beginTransaction(){
-//		if(DatabasePowerHandler.transactionDataSource.get() != null) {
-//			throw new TransactionHasBeginException();
-//		}
-//		try {
-//			Connection conn = dataSource.getConnection();
-//			conn.setAutoCommit(false);
-//			DatabasePowerHandler.transactionDataSource.set(conn);
-//		}catch(Exception e) {
-//			throw new TransactionConnectFailed(e);
-//		}
+		if(DatabasePowerHandler.transactionDataSource.get() != null) {
+			throw new TransactionHasBeginException();
+		}
+		try {
+			Connection conn = dataSource.getConnection();
+			conn.setAutoCommit(false);
+			DatabasePowerHandler.transactionDataSource.set(conn);
+		}catch(Exception e) {
+			throw new TransactionConnectFailed(e);
+		}
 	}
 	
 	/**
 	 * 提交之前打开的事务
 	 */
 	public void commitTransaction(){
-//		if(DatabasePowerHandler.transactionDataSource.get() == null) {
-//			throw new TransactionNotBeginException();
-//		}
-//		try {
-//			DatabasePowerHandler.transactionDataSource.get().commit();
-//		}catch(Exception e) {
-//			throw new TransactionCommitFailed(e);
-//		}
-//		
-//		try {
-//			DatabasePowerHandler.transactionDataSource.get().close();
-//			DatabasePowerHandler.transactionDataSource.set(null);
-//		}catch(Exception e) {
-//			throw new TransactionCommitFailed(e);
-//		}
+		if(DatabasePowerHandler.transactionDataSource.get() == null) {
+			throw new TransactionNotBeginException();
+		}
+		try {
+			DatabasePowerHandler.transactionDataSource.get().commit();
+		}catch(Exception e) {
+			throw new TransactionCommitFailed(e);
+		}
+		
+		try {
+			DatabasePowerHandler.transactionDataSource.get().close();
+			DatabasePowerHandler.transactionDataSource.set(null);
+		}catch(Exception e) {
+			throw new TransactionCommitFailed(e);
+		}
 	}
 	
 	/**
 	 * 回滚之前打开的事务
 	 */
 	public void rollbackTransaction(){
-//		if(DatabasePowerHandler.transactionDataSource.get() == null) {
-//			throw new TransactionNotBeginException();
-//		}
-//		try {
-//			DatabasePowerHandler.transactionDataSource.get().rollback();
-//		}catch(Exception e) {
-//			throw new TransactionCommitFailed(e);
-//		}
-//		
-//		try {
-//			DatabasePowerHandler.transactionDataSource.get().close();
-//			DatabasePowerHandler.transactionDataSource.set(null);
-//		}catch(Exception e) {
-//			throw new TransactionCommitFailed(e);
-//		}
+		if(DatabasePowerHandler.transactionDataSource.get() == null) {
+			throw new TransactionNotBeginException();
+		}
+		try {
+			DatabasePowerHandler.transactionDataSource.get().rollback();
+		}catch(Exception e) {
+			throw new TransactionCommitFailed(e);
+		}
+		
+		try {
+			DatabasePowerHandler.transactionDataSource.get().close();
+			DatabasePowerHandler.transactionDataSource.set(null);
+		}catch(Exception e) {
+			throw new TransactionCommitFailed(e);
+		}
 	}
 	
 	private Connection getConn(){
