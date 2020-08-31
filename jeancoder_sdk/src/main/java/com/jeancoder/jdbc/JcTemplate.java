@@ -2,6 +2,8 @@ package com.jeancoder.jdbc;
 
 import java.util.List;
 
+import com.jeancoder.app.sdk.source.DatabaseSource;
+import com.jeancoder.core.power.DatabasePower;
 import com.jeancoder.jdbc.template.CommonJcDaoTemplate;
 
 public class JcTemplate {
@@ -12,6 +14,21 @@ public class JcTemplate {
 	
 	public static JcTemplate INSTANCE() {
 		return INSTANCE;
+	}
+	
+	public void startTrans() {
+		DatabasePower dp = DatabaseSource.getDatabasePower();
+		dp.beginTransaction();
+	}
+	
+	public void commitTrans() {
+		DatabasePower dp = DatabaseSource.getDatabasePower();
+		dp.commitTransaction();
+	}
+	
+	public void rbTrans() {
+		DatabasePower dp = DatabaseSource.getDatabasePower();
+		dp.rollbackTransaction();
 	}
 	
 	public <T> List<?> findRawData(Class<T> mapclass, String sql, Object...params) {
