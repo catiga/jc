@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.jeancoder.app.sdk.source.DatabaseSource;
@@ -241,18 +242,23 @@ public abstract class GeneralJcDaoTemplate<T> {
 			
 			LOGGER.debug(column_name + "--" + column_class_name + "--" + column_type + "--" + column_type_name);
 			
-			Field[] fields = instance.getClass().getDeclaredFields();
-			for(Field f : fields) {
-				if(f.getName().equals(column_name)) {
-					PropertyDescriptor pd = new PropertyDescriptor(f.getName(), instance.getClass());
-					String set_method_name = pd.getWriteMethod().getName();
-					Method set_method = instance.getClass().getDeclaredMethod(set_method_name, f.getType());
-					Object value = this.readTypeValue(column_type, column_type_name, f, rsindex);
-					try {
-						set_method.invoke(instance, value);
-						break;
-					} catch(RuntimeException rex) {
-						LOGGER.error(f.getName() + "=" + value + ", type miss match:" + f.getGenericType().getTypeName(), rex);
+			if(instance instanceof Collection) {
+				Method set_method = instance.getClass().getDeclaredMethod("add", Object.class);
+				set_method.invoke(instance, rsindex.getObject(i));
+			} else {
+				Field[] fields = instance.getClass().getDeclaredFields();
+				for(Field f : fields) {
+					if(f.getName().equals(column_name)) {
+						PropertyDescriptor pd = new PropertyDescriptor(f.getName(), instance.getClass());
+						String set_method_name = pd.getWriteMethod().getName();
+						Method set_method = instance.getClass().getDeclaredMethod(set_method_name, f.getType());
+						Object value = this.readTypeValue(column_type, column_type_name, f, rsindex);
+						try {
+							set_method.invoke(instance, value);
+							break;
+						} catch(RuntimeException rex) {
+							LOGGER.error(f.getName() + "=" + value + ", type miss match:" + f.getGenericType().getTypeName(), rex);
+						}
 					}
 				}
 			}
