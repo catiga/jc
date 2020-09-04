@@ -16,6 +16,8 @@ public class SqlFragmentFactory {
 			aim = new JoinSqlFragment(action, target);
 		} else if(action.indexOf(Token.DELETE.name)>-1 && action.indexOf(Token.FROM.name)>0) {
 			aim = new DeleteFromSqlFragment(action, target);
+		} else if(action.indexOf(Token.GROUP.name)>-1) {
+			aim = new GroupSqlFragment(action, target);
 		}
 		if(aim==null) {
 			aim = new SqlFragment(action, target);

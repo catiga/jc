@@ -192,6 +192,9 @@ public class SqlParser {
 		if(!isSelectSql()) {
 			return null;
 		}
+		if(isGroupBySql()) {
+			return toCountGroupSql();
+		}
 		SqlFragment select = frags.get(0);
 		select.target = "count(*)";
 		StringBuffer buf = new StringBuffer();
@@ -211,8 +214,29 @@ public class SqlParser {
 		return buf.toString().trim();
 	}
 	
+	public boolean isGroupBySql() {
+		boolean ret = false;
+		for(SqlFragment x : this.frags) {
+			if(x instanceof GroupSqlFragment) {
+				ret = true;
+				break;
+			}
+		}
+		return ret;
+	}
 	
-	
+	public String toCountGroupSql() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("SELECT count(*) FROM (");
+		for(int i=0; i<frags.size(); i++) {
+			if(frags.get(i).action.equals("limit")) {
+				continue;
+			}
+			buf.append(frags.get(i).action + " " + frags.get(i).target + " ");
+		}
+		buf.append(") __A__");
+		return buf.toString().trim();
+	}
 	
 	
 	
