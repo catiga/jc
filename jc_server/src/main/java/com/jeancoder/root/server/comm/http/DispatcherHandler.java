@@ -459,6 +459,7 @@ public class DispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
         		stand_response = future.get();		//sync get back response
         	}
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        	logger.error("IET:", e);
             future.cancel(true);
 			requestModel.setStatusCode(HttpResponseStatus.REQUEST_TIMEOUT.code());
             String msg = "request_interrupted_for_timeout";
