@@ -126,6 +126,13 @@ public abstract class GeneralJcDaoTemplate<T> {
 			} else {
 				value = long_value;
 			}
+		} else if(type_name.equals("BIGINT UNSIGNED")) {
+			Long long_value = rs.getLong(field.getName());
+			if(fld_clz.equals(BigInteger.class.getName())) {
+				value = BigInteger.valueOf(long_value);
+			} else {
+				value = long_value;
+			}
 		} else if(type_name.equals("DATETIME")) {
 			value = rs.getTimestamp(field.getName());
 		} else if(type_name.equals("TIMESTAMP")) {
