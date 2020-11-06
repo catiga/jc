@@ -13,6 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.security.Principal;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -181,12 +182,22 @@ public class JCHttpRequest implements HttpServletRequest, JCReqFaca {
 
 	@Override
 	public Enumeration<String> getHeaders(String s) {
-		throw new UnsupportedOperationException("getHeaders(String s)");
+		//throw new UnsupportedOperationException("getHeaders(String s)");
+		List<String> values = request.headers().getAll(s);
+		if(values==null) {
+			return null;
+		}
+		return Collections.enumeration(values);
 	}
 
 	@Override
 	public Enumeration<String> getHeaderNames() {
-		throw new UnsupportedOperationException("getHeaderNames");
+		//throw new UnsupportedOperationException("getHeaderNames");
+		Set<String> names = request.headers().names();
+		if(names==null) {
+			return null;
+		}
+		return Collections.enumeration(names);
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.jeancoder.core.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -152,6 +153,14 @@ public class JCRequest {
 	
 	public String getHeader(String name) {
 		return request.getHeader(name);
+	}
+	
+	public Enumeration<String> getHeaderNames() {
+		return request.getHeaderNames();
+	}
+	
+	public Enumeration<String> getHeaders(String name) {
+		return request.getHeaders(name);
 	}
 	
 	public String getQueryString() {
