@@ -327,7 +327,7 @@ public class HttpRequest {
 				if(ua.isHttps()) {
 					remote_ret = ((HttpsURLConnection)conn).getErrorStream();
 				} else {
-					remote_ret = ((HttpsURLConnection)conn).getErrorStream();
+					remote_ret = ((HttpURLConnection)conn).getErrorStream();
 				}
 			}
 			//String content_type = HttpURLConnection.guessContentTypeFromStream(remote_ret);
