@@ -186,6 +186,21 @@
                     }
                 },
                 {
+                    "app_id": "912676543432143244",
+                    "app_code": "general_api",
+                    "app_name": "接口系统",
+                    "dev_name": "lengjiabao",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jackielee/git/92yp_general_api",
+                    "config": {
+                        "description": "接口系统",
+                        "index":"index"
+                    }
+                },
+                {
                     "app_id": "99838992817",
                     "app_code": "ujia",
                     "app_name": "优家设计",
@@ -197,6 +212,81 @@
                     "app_base":"/Users/jackielee/Downloads/ujia",
                     "config": {
                         "description": "装修管理平台",
+                        "index":"index"
+                    }
+                },
+                {
+                    "app_id": "99838664813",
+                    "app_code": "upluscine",
+                    "app_name": "友家检票影院管理",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jackielee/git/upluscine",
+                    "config": {
+                        "description": "影院管理",
+                        "index":"index"
+                    }
+                },
+                {
+                    "app_id": "99838664814",
+                    "app_code": "uplusapi",
+                    "app_name": "友家检票接口系统",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jackielee/git/uplusapi",
+                    "config": {
+                        "description": "接口系统",
+                        "index":"index"
+                    }
+                },
+                {
+                    "app_id": "99838664844414",
+                    "app_code": "uplusmerch",
+                    "app_name": "友家检票商户系统",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jackielee/git/uplusmerch",
+                    "config": {
+                        "description": "接口系统",
+                        "index":"index"
+                    }
+                },
+                {
+                    "app_id": "8859013875792",
+                    "app_code": "uplusmgr",
+                    "app_name": "友家检票管理系统",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jackielee/git/uplusmgr",
+                    "config": {
+                        "description": "接口系统",
+                        "index":"index"
+                    }
+                },
+                {
+                    "app_id": "8859013875756492",
+                    "app_code": "qiyinai",
+                    "app_name": "奇音ai",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jackielee/git/qiyin",
+                    "config": {
+                        "description": "奇音",
                         "index":"index"
                     }
                 }
