@@ -16,6 +16,19 @@
 		<jc.jdk.lsver>1.8</jc.jdk.lsver>
 		<jc.netty>4.1.31.Final</jc.netty>
 	</properties>
+	
+	<distributionManagement>
+        <repository>
+            <id>deployment</id>
+            <name>Internal Releases</name>
+            <url>http://nexus.piaodaren.com/nexus/content/repositories/thirdparty</url>
+        </repository>
+        <snapshotRepository>
+            <id>deployment</id>
+            <name>Internal Snapshot</name>
+            <url>http://nexus.piaodaren.com/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 	<build>
 		<plugins>
