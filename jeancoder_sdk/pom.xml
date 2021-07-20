@@ -6,11 +6,9 @@
 	<parent>
 		<groupId>com.jeancoder.root</groupId>
 		<artifactId>jc_parent</artifactId>
-		<version>${jc.root.version}</version>
+		<version>0.0.1</version>
 	</parent>
-	<groupId>com.jeancoder.root</groupId>
 	<artifactId>jeancoder_sdk</artifactId>
-	<version>${jc.root.version}</version>
 	<name>jeancoder_sdk</name>
 	<url>http://maven.apache.org</url>
 	<properties>
