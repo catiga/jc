@@ -11,6 +11,7 @@ public class Common {
 	public final static String INTERNAL =  "internal";
 	public final static String INTERCEPTOR =  "interceptor";
 	public final static String INITIAL =  "InitialConfiguration";
+	public final static String DUMP = "DumpConfiguration";
 	public final static String MAVEN_STANDARD_SOURCE_CODE_PATH = "src" + File.separator + "main" + File.separator + "java";
 	public final static String  COM = "com";
 	// 解析资源 路径需要用到的

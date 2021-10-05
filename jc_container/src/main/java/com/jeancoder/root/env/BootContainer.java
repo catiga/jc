@@ -175,6 +175,27 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 		}
 	}
 	
+	protected void dumpByRes() {
+		ContainerContextEnv.setCurrentContainer(this);
+		String init_script = appins.getOrg() + "." + appins.getDever() + "." + appins.getCode() + "." + Common.DUMP;
+		try {
+			Class<?> executor = this.getSignedClassLoader().getManaged().findClass(init_script);
+			Binding context = new Binding();
+			Script script = (Script) executor.newInstance();
+			script.setBinding(context);
+			Object result = script.run();
+			logger.info("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") INIT SUCCESS. Result=" + result);
+		} catch (ClassNotFoundException e) {
+			//e.printStackTrace();
+			logger.info("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") DOES NOT NEED TO INIT. FOR NOT SET INIT PROGRAM: " + init_script);
+		} catch (Exception e) {
+			logger.error("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") INIT ERROR.", e);
+		} finally {
+			//JCAPPHolder.clearContainer();
+			ContainerContextEnv.clearCurrentContainer();
+		}
+	}
+	
 	@Override
 	public void onInit() {
 		synchronized (_LOCK_) {
@@ -210,6 +231,7 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 		//close thread task
 		this.state = LifecycleZa.STATE_STOPING;
 		this.offTask();
+		this.dumpByRes();
 		this.state = LifecycleZa.STATE_STOPED;
 	}
 
