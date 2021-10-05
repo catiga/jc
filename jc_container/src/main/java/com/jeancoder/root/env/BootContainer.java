@@ -184,12 +184,12 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 			Script script = (Script) executor.newInstance();
 			script.setBinding(context);
 			Object result = script.run();
-			logger.info("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") INIT SUCCESS. Result=" + result);
+			logger.info("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") DUMP SUCCESS. Result=" + result);
 		} catch (ClassNotFoundException e) {
 			//e.printStackTrace();
-			logger.info("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") DOES NOT NEED TO INIT. FOR NOT SET INIT PROGRAM: " + init_script);
+			logger.info("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") DOES NOT NEED TO DUMP. FOR NOT SET DUMP PROGRAM: " + init_script);
 		} catch (Exception e) {
-			logger.error("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") INIT ERROR.", e);
+			logger.error("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") DUMP ERROR.", e);
 		} finally {
 			//JCAPPHolder.clearContainer();
 			ContainerContextEnv.clearCurrentContainer();
