@@ -21,6 +21,7 @@ public class Common {
 	public final static String INTERNAL_PATH = File.separator + INTERNAL + File.separator;
 	public final static String INTERCEPTOR_PATH = File.separator + INTERCEPTOR + File.separator;
 	public final static String INITIAL_PATH = File.separator + INITIAL + "." + GROOVY;
+	public final static String DUMP_PATH = File.separator + DUMP + "." + GROOVY;
 	
 	// 视图资源资源路径 img
 	public final static String VIEW_PATH =  File.separator + VIEW + File.separator;

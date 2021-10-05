@@ -178,6 +178,7 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 	protected void dumpByRes() {
 		ContainerContextEnv.setCurrentContainer(this);
 		String init_script = appins.getOrg() + "." + appins.getDever() + "." + appins.getCode() + "." + Common.DUMP;
+		logger.info("ing script path:::" + init_script);
 		try {
 			Class<?> executor = this.getSignedClassLoader().getManaged().findClass(init_script);
 			Binding context = new Binding();

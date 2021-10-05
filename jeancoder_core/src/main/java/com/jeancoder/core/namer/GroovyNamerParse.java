@@ -123,6 +123,11 @@ public class GroovyNamerParse extends NamerParse {
 				resource = getGroovyDynamicResource(file, File.separator + organization + File.separator);
 				((GroovyDynamicResource)resource).setShell(shell);
 				type = Common.INITIAL;
+			} else if (file.getPath().equals(appPath + File.separator + Common.MAVEN_STANDARD_SOURCE_CODE_PATH + File.separator + organization + Common.DUMP_PATH) && InstallWay.DISK.equals(installWay)) {
+				// init 脚本 System.out.println(organization + Common.INIT_PATH);
+				resource = getGroovyDynamicResource(file, File.separator + organization + File.separator);
+				((GroovyDynamicResource)resource).setShell(shell);
+				type = Common.DUMP;
 			} else if (file.getPath().indexOf(appPath + Common.STATIC_PATH) >= 0) {
 				// 静态文件资源 js css
 				resource = getStaticResource(file, appPath);
@@ -188,6 +193,11 @@ public class GroovyNamerParse extends NamerParse {
 				resource = getGroovyMemoryDynamicResource(application.getAppCode(), filePath, File.separator + organization + File.separator);
 				((GroovyDynamicResource)resource).setShell(shell);
 				type = Common.INITIAL;
+			} else if (filePath.equals(appPath + File.separator + Common.MAVEN_STANDARD_SOURCE_CODE_PATH + File.separator + organization + Common.DUMP_PATH)) {
+				// init 脚本 System.out.println(organization + Common.INIT_PATH);
+				resource = getGroovyMemoryDynamicResource(application.getAppCode(), filePath, File.separator + organization + File.separator);
+				((GroovyDynamicResource)resource).setShell(shell);
+				type = Common.DUMP;
 			} 
 			ResourceBundle rb = application.getBundlesByType(type);
 			if (rb == null) {
