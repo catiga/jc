@@ -190,4 +190,29 @@ public class WebSocketHandler extends ChannelInboundHandlerAdapter {
         }      
         return bytes;    
     }
+	
+	
+	
+	
+	
+	
+	
+	@Override
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+        //logger.info("一个客户端连接......" + ctx.channel().remoteAddress() + "......" + Thread.currentThread().getName());
+		
+    }
+
+    /**
+     * 客户端掉线时的操作
+     *
+     * @param ctx
+     * @throws Exception
+     */
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        //String key = ctx.channel().id().asLongText();
+        //logger.info("一个客户端关闭......" + key + "......" + Thread.currentThread().getName());
+        ctx.close(); //关闭连接
+    }
 }
