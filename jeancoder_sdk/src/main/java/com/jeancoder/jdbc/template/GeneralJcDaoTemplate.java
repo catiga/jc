@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import com.jeancoder.app.sdk.source.DatabaseSource;
 import com.jeancoder.app.sdk.source.LoggerSource;
@@ -252,6 +253,9 @@ public abstract class GeneralJcDaoTemplate<T> {
 			if(instance instanceof Collection) {
 				Method set_method = instance.getClass().getDeclaredMethod("add", Object.class);
 				set_method.invoke(instance, rsindex.getObject(i));
+			} else if(instance instanceof Map) {
+				Method set_method = instance.getClass().getDeclaredMethod("put", Object.class, Object.class);
+				set_method.invoke(instance, column_name, rsindex.getObject(i));
 			} else {
 				Field[] fields = instance.getClass().getDeclaredFields();
 				for(Field f : fields) {
