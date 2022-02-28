@@ -9,6 +9,8 @@ os_apm_uking="lib/jc_server"
 JC_OS_FP="$JC_HOME/$os_apm_uking"
 os_apm_uver="1.13.0.1_dep"
 sys_log="$JC_HOME/jclogs"
+// for docker env
+// source /etc/profile
 
 RUNNING_USER=root
 
