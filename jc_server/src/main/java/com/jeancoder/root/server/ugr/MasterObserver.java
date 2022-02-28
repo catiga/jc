@@ -61,16 +61,16 @@ public abstract class MasterObserver extends ChannelInboundHandlerAdapter implem
 	 */
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		logger.info("master channel actived, and reset the reconn counters t0");
+		logger.debug("master channel actived, and reset the reconn counters t0");
 		attempts = 0;
 		ctx.fireChannelActive();
 	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-		logger.info("connection closed");
+		logger.debug("connection closed");
 		if (reconnect) {
-			logger.info("connection will be reset");
+			logger.debug("connection will be reset");
 			if (attempts<=30) {
 				attempts++;
 			} // 重连的间隔时间会越来越长
@@ -100,7 +100,7 @@ public abstract class MasterObserver extends ChannelInboundHandlerAdapter implem
 				boolean succeed = f.isSuccess();
 				// 如果重连失败，则调用ChannelInactive方法，再次出发重连事件，一直尝试12次，如果失败则不再重连
 				if (!succeed) {
-					logger.info("reconnect failure......");
+					logger.debug("reconnect failure......");
 					f.channel().pipeline().fireChannelInactive();
 				} else {
 					masterChannel = (SocketChannel)future.channel();
@@ -109,7 +109,7 @@ public abstract class MasterObserver extends ChannelInboundHandlerAdapter implem
 					String client_id = keeper.info().getId();
 					loginMsg.setClientId(client_id);
 					masterChannel.writeAndFlush(loginMsg);
-					logger.info("reconnect success");
+					logger.debug("reconnect success");
 				}
 			}
 		});

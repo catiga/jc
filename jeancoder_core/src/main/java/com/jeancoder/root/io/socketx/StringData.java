@@ -11,7 +11,11 @@ public class StringData<T extends TextWebSocketFrame> extends DataBufHolder<Text
 
 	@Override
 	public String content() {
-		return this.frame.text();
+		String textValue = this.frame.text();
+		if(textValue.equals("null")) {
+			textValue = null;
+		}
+		return textValue;
 	}
 
 }
