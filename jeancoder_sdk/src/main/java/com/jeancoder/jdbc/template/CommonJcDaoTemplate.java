@@ -123,7 +123,7 @@ public class CommonJcDaoTemplate<T> extends GeneralJcDaoTemplate<T> {
 			page.setResult(ret);
 			
 		} catch (Exception e) {
-			LOGGER.error("jc_jdbc_template_error, {}", e, outputsql);
+			LOGGER.error("jc_jdbc_template_error, {}, {}", e, outputsql);
 			throw new RuntimeException(e.getCause());
 		}finally{
 			if(jrs!=null)
@@ -159,7 +159,7 @@ public class CommonJcDaoTemplate<T> extends GeneralJcDaoTemplate<T> {
 				ret.add(instance);
 			}
 		} catch (Exception e) {
-			LOGGER.info("jc_jdbc_template_error", e);
+			LOGGER.info("jc_jdbc_template_error, {}, {}", e, outputsql);
 			throw new RuntimeException(e.getCause());
 		}finally{
 			if(jrs!=null)
