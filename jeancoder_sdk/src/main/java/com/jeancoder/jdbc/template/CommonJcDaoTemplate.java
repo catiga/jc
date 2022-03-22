@@ -66,10 +66,12 @@ public class CommonJcDaoTemplate<T> extends GeneralJcDaoTemplate<T> {
 		T instance = null;
 		DatabasePower dp = DatabaseSource.getDatabasePower();
 		JeancoderResultSet jrs = null;
+		String outputsql = null;
 		try {
 			SqlParser par = this.buildSql(mapclass, sql);
 			sql = par.clearSql();
 			sql = sql + " limit " + 0 + ", " + 1;
+			outputsql = sql;
 			jrs = dp.doQuery(sql, params);
 			ResultSet rs = jrs.getResultSet();
 			assert rs!=null;
@@ -79,7 +81,7 @@ public class CommonJcDaoTemplate<T> extends GeneralJcDaoTemplate<T> {
 			}
 			
 		} catch (Exception e) {
-			LOGGER.error("jc_jdbc_template_error", e);
+			LOGGER.error("jc_jdbc_template_error", e, outputsql);
 			throw new RuntimeException(e.getCause());
 		}finally{
 			if(jrs!=null)
@@ -92,12 +94,14 @@ public class CommonJcDaoTemplate<T> extends GeneralJcDaoTemplate<T> {
 	public JcPage<T> find(Class<T> mapclass, JcPage<T> page, String sql, final Object... params) {
 		DatabasePower dp = DatabaseSource.getDatabasePower();
 		JeancoderResultSet jrs = null;
+		String outputsql = null;
 		try {
 			Integer start = page.computeFirst();
 			Integer end = page.getPs();
 			SqlParser par = this.buildSql(mapclass, sql);
 			sql = par.clearSql();
 			sql = sql + " limit " + start + ", " + end;
+			outputsql = sql;
 			jrs = dp.doQuery(sql, params);
 			ResultSet rs = jrs.getResultSet();
 			assert rs!=null;
@@ -119,7 +123,7 @@ public class CommonJcDaoTemplate<T> extends GeneralJcDaoTemplate<T> {
 			page.setResult(ret);
 			
 		} catch (Exception e) {
-			LOGGER.error("jc_jdbc_template_error", e);
+			LOGGER.error("jc_jdbc_template_error", e, outputsql);
 			throw new RuntimeException(e.getCause());
 		}finally{
 			if(jrs!=null)
@@ -133,9 +137,12 @@ public class CommonJcDaoTemplate<T> extends GeneralJcDaoTemplate<T> {
 		DatabasePower dp = DatabaseSource.getDatabasePower();
 		List<T> ret = null;
 		JeancoderResultSet jrs = null;
+		String outputsql = null;
 		try {
 			SqlParser par = this.buildSql(mapclass, sql);
 			sql = par.clearSql();
+			
+			outputsql = sql;
 			jrs = dp.doQuery(sql, params);
 			ResultSet rs = jrs.getResultSet();
 			assert rs!=null;
@@ -152,7 +159,7 @@ public class CommonJcDaoTemplate<T> extends GeneralJcDaoTemplate<T> {
 				ret.add(instance);
 			}
 		} catch (Exception e) {
-			LOGGER.error("jc_jdbc_template_error", e);
+			LOGGER.error("jc_jdbc_template_error", e, outputsql);
 			throw new RuntimeException(e.getCause());
 		}finally{
 			if(jrs!=null)
