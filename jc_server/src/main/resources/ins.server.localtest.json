@@ -27,7 +27,7 @@
             "name": "",
             "scheme": "http",
             "host": "",
-            "port": 8080,
+            "port": 8081,
             "proxy_entry": "entry",
             "proxy_path": "/",
             "logs": "/Users/jackielee/Desktop/logs",
@@ -36,249 +36,9 @@
             "master": "jcs://jcloudapp.pdr365.com:8091/",
             "apps": [
                 {
-                    "app_id": "990199212",
-                    "app_code": "wlygis",
-                    "app_name": "威立雅gis",
-                    "dev_name": "jeancoder",
-                    "org_name": "com",
-                    "app_ver": "1.0",
-                    "source_type": "binary",
-                    "lans": "groovy",
-                    "app_base":"/Users/jackielee/Documents/server_workspace/wly_gis_app",
-                    "config": {
-                        "description": "威立雅GIS服务",
-                        "index":"index"
-                    }
-                },
-                {
-                    "app_id": "9909213",
-                    "app_code": "arcgis",
-                    "app_name": "arcgis接口",
-                    "dev_name": "jeancoder",
-                    "org_name": "com",
-                    "app_ver": "1.0",
-                    "source_type": "binary",
-                    "lans": "groovy",
-                    "app_base":"/Users/jackielee/Downloads/arcgis",
-                    "config": {
-                        "description": "arcgis接口",
-                        "index":"index"
-                    }
-                },
-                {
-                    "app_id": "990199244",
-                    "app_code": "server",
-                    "app_name": "管理服务",
-                    "dev_name": "jeancoder",
-                    "org_name": "com",
-                    "app_ver": "1.0",
-                    "source_type": "binary",
-                    "lans": "groovy",
-                    "app_base":"/Users/jackielee/Documents/server_workspace/jeancoder_server",
-                    "config": {
-                        "description": "中央平台服务",
-                        "index":"index"
-                    }
-                },
-                {
-                    "app_id": "990199343244",
-                    "app_code": "wxapph5",
-                    "app_name": "公众号电商",
-                    "dev_name": "jeancoder",
-                    "org_name": "com",
-                    "app_ver": "1.0",
-                    "source_type": "binary",
-                    "lans": "groovy",
-                    "app_base":"/Users/jackielee/Downloads/wxapph5",
-                    "config": {
-                        "description": "公众号电商",
-                        "index":"index"
-                    }
-                },
-                {
-                    "app_id": "9901993332143244",
-                    "app_code": "project",
-                    "app_name": "系统管理",
-                    "dev_name": "jeancoder",
-                    "org_name": "com",
-                    "app_ver": "1.0",
-                    "source_type": "binary",
-                    "lans": "groovy",
-                    "app_base":"/Users/jackielee/Documents/server_workspace/app_project",
-                    "config": {
-                        "description": "系统管理",
-                        "index":"index"
-                    }
-                },
-                {
-                    "app_id": "912901993332143244",
-                    "app_code": "market",
-                    "app_name": "运营支持",
-                    "dev_name": "jeancoder",
-                    "org_name": "com",
-                    "app_ver": "1.0",
-                    "source_type": "binary",
-                    "lans": "groovy",
-                    "app_base":"/Users/jackielee/Documents/server_workspace/app_market",
-                    "config": {
-                        "description": "系统管理",
-                        "index":"index"
-                    }
-                },
-                {
-                    "app_id": "9126752143244",
-                    "app_code": "scm",
-                    "app_name": "商品管理",
-                    "dev_name": "jeancoder",
-                    "org_name": "com",
-                    "app_ver": "1.0",
-                    "source_type": "binary",
-                    "lans": "groovy",
-                    "app_base":"/Users/jackielee/Documents/server_workspace/app_scm",
-                    "config": {
-                        "description": "进销存管理",
-                        "index":"index"
-                    }
-                },
-                {
-                    "app_id": "9126755432143244",
-                    "app_code": "crm",
-                    "app_name": "会员管理",
-                    "dev_name": "jeancoder",
-                    "org_name": "com",
-                    "app_ver": "1.0",
-                    "source_type": "binary",
-                    "lans": "groovy",
-                    "app_base":"/Users/jackielee/Documents/server_workspace/app_crm",
-                    "config": {
-                        "description": "会员管理",
-                        "index":"index"
-                    }
-                },
-                {
-                    "app_id": "912663755432143244",
-                    "app_code": "trade",
-                    "app_name": "交易中心",
-                    "dev_name": "jeancoder",
-                    "org_name": "com",
-                    "app_ver": "1.0",
-                    "source_type": "binary",
-                    "lans": "groovy",
-                    "app_base":"/Users/jackielee/Documents/server_workspace/app_trade",
-                    "config": {
-                        "description": "交易管理服务",
-                        "index":"index"
-                    }
-                },
-                {
-                    "app_id": "912666i85432143244",
-                    "app_code": "ticketingsys",
-                    "app_name": "票务系统",
-                    "dev_name": "jeancoder",
-                    "org_name": "com",
-                    "app_ver": "1.0",
-                    "source_type": "binary",
-                    "lans": "groovy",
-                    "app_base":"/Users/jackielee/Documents/server_workspace/app_ticketingsys",
-                    "config": {
-                        "description": "票务系统",
-                        "index":"index"
-                    }
-                },
-                {
-                    "app_id": "912676543432143244",
-                    "app_code": "general_api",
-                    "app_name": "接口系统",
-                    "dev_name": "lengjiabao",
-                    "org_name": "com",
-                    "app_ver": "1.0",
-                    "source_type": "binary",
-                    "lans": "groovy",
-                    "app_base":"/Users/jackielee/git/92yp_general_api",
-                    "config": {
-                        "description": "接口系统",
-                        "index":"index"
-                    }
-                },
-                {
-                    "app_id": "99838992817",
-                    "app_code": "ujia",
-                    "app_name": "优家设计",
-                    "dev_name": "jeancoder",
-                    "org_name": "com",
-                    "app_ver": "1.0",
-                    "source_type": "binary",
-                    "lans": "groovy",
-                    "app_base":"/Users/jackielee/Downloads/ujia",
-                    "config": {
-                        "description": "装修管理平台",
-                        "index":"index"
-                    }
-                },
-                {
-                    "app_id": "99838664813",
-                    "app_code": "upluscine",
-                    "app_name": "友家检票影院管理",
-                    "dev_name": "jeancoder",
-                    "org_name": "com",
-                    "app_ver": "1.0",
-                    "source_type": "binary",
-                    "lans": "groovy",
-                    "app_base":"/Users/jackielee/git/upluscine",
-                    "config": {
-                        "description": "影院管理",
-                        "index":"index"
-                    }
-                },
-                {
-                    "app_id": "99838664814",
-                    "app_code": "uplusapi",
-                    "app_name": "友家检票接口系统",
-                    "dev_name": "jeancoder",
-                    "org_name": "com",
-                    "app_ver": "1.0",
-                    "source_type": "binary",
-                    "lans": "groovy",
-                    "app_base":"/Users/jackielee/git/uplusapi",
-                    "config": {
-                        "description": "接口系统",
-                        "index":"index"
-                    }
-                },
-                {
-                    "app_id": "99838664844414",
-                    "app_code": "uplusmerch",
-                    "app_name": "友家检票商户系统",
-                    "dev_name": "jeancoder",
-                    "org_name": "com",
-                    "app_ver": "1.0",
-                    "source_type": "binary",
-                    "lans": "groovy",
-                    "app_base":"/Users/jackielee/git/uplusmerch",
-                    "config": {
-                        "description": "接口系统",
-                        "index":"index"
-                    }
-                },
-                {
-                    "app_id": "8859013875792",
-                    "app_code": "uplusmgr",
-                    "app_name": "友家检票管理系统",
-                    "dev_name": "jeancoder",
-                    "org_name": "com",
-                    "app_ver": "1.0",
-                    "source_type": "binary",
-                    "lans": "groovy",
-                    "app_base":"/Users/jackielee/git/uplusmgr",
-                    "config": {
-                        "description": "接口系统",
-                        "index":"index"
-                    }
-                },
-                {
-                    "app_id": "8859013875756492",
+                    "app_id": "54",
                     "app_code": "qiyinai",
-                    "app_name": "奇音ai",
+                    "app_name": "奇音",
                     "dev_name": "jeancoder",
                     "org_name": "com",
                     "app_ver": "1.0",
@@ -286,7 +46,22 @@
                     "lans": "groovy",
                     "app_base":"/Users/jackielee/git/qiyin",
                     "config": {
-                        "description": "奇音",
+                        "description": "中央平台服务",
+                        "index":"index"
+                    }
+                },
+                {
+                    "app_id": "543",
+                    "app_code": "changyuai",
+                    "app_name": "奇音1",
+                    "dev_name": "changyu",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jackielee/Downloads/changyuai",
+                    "config": {
+                        "description": "台服务",
                         "index":"index"
                     }
                 }
