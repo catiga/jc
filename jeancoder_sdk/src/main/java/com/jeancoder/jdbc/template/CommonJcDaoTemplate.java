@@ -53,7 +53,6 @@ public class CommonJcDaoTemplate<T> extends GeneralJcDaoTemplate<T> {
 		String insert = par.getFormatSql();
 		try {
 			int code = dp.doUpdate(insert);
-			LOGGER.debug(code + "");
 			return code;
 		} catch (JeancoderException e) {
 			LOGGER.error("class:" + entity.getClass().getName(), e);
