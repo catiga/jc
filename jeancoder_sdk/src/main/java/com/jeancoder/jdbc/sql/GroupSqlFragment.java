@@ -1,6 +1,6 @@
 package com.jeancoder.jdbc.sql;
 
-public class GroupSqlFragment extends FromSqlFragment {
+public class GroupSqlFragment extends SqlFragment {
 
 	String alias;
 	

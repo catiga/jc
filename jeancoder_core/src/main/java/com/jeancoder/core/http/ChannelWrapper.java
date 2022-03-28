@@ -1,6 +1,7 @@
 package com.jeancoder.core.http;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
 public class ChannelWrapper {
@@ -28,8 +29,13 @@ public class ChannelWrapper {
 		if(!channel.isWritable()) {
 			return false;
 		}
-		channel.writeAndFlush(new TextWebSocketFrame(message));
-		return true;
+		try {
+			ChannelFuture future = channel.writeAndFlush(new TextWebSocketFrame(message)).sync();
+			return future.isSuccess();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	public boolean close() {

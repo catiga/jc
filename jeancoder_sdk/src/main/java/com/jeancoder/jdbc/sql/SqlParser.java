@@ -72,7 +72,7 @@ public class SqlParser {
 	}
 	
 	public static void main(String[] argc) {
-		String sql = "select s.*, g.id as A from GoodsSku s , GoodsInfo g where id in (select mod_id from GoodsSku where flag!=? and proj_id=?)";
+		String sql = "select c.city,sum(c.cnt) cnt from (select concat(e.province,'-',e.city) city,count(1) cnt from cx_enterprise e where e.state in (1) group by concat(e.province,'-',e.city))";
 		SqlParser par = new SqlParser(sql);
 		System.out.println(par.clearSql());
 		
