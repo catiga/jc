@@ -1,5 +1,7 @@
 package com.jeancoder.core.http;
 
+import java.util.concurrent.TimeUnit;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
@@ -29,10 +31,16 @@ public class ChannelWrapper {
 		if(!channel.isWritable()) {
 			return false;
 		}
+		if(!channel.isActive() || !channel.isOpen()) {
+			return false;
+		}
 		try {
-			ChannelFuture future = channel.writeAndFlush(new TextWebSocketFrame(message)).sync();
+			//这里实际是异步，需要增加发送结果判断
+			ChannelFuture future = channel.writeAndFlush(new TextWebSocketFrame(message));
+			future.await(5l, TimeUnit.SECONDS);
+			
 			return future.isSuccess();
-		} catch(Exception e) {
+		} catch(InterruptedException e) {
 			e.printStackTrace();
 		}
 		return false;
