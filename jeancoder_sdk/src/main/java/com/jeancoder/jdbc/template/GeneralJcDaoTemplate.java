@@ -145,6 +145,7 @@ public abstract class GeneralJcDaoTemplate<T> {
 		return value;
 	}
 	
+	@SuppressWarnings("deprecation")
 	protected T generateInstance(Class<T> mapclass) {
 		T instance = null;
 		Object ret_value = null;

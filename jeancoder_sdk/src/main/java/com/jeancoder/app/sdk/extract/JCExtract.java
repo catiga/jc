@@ -17,6 +17,7 @@ public class JCExtract {
 
 	private static final JCLogger LOGGER = LoggerSource.getLogger(JCExtract.class.getName());
 	
+	@SuppressWarnings("deprecation")
 	public static <T> T fromRequest(Class<T> mapclass) {
 		JCRequest req = RequestSource.getRequest();
 		T instance = null;

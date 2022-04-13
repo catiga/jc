@@ -6,8 +6,6 @@ import java.util.regex.Pattern;
 import com.jeancoder.core.configure.PropItem;
 import com.jeancoder.core.configure.PropType;
 
-import com.jeancoder.app.sdk.configure.DevDatabaseProp;
-
 
 public abstract class DevDatabasePropParser extends DevPropParser{
 

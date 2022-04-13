@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import com.jeancoder.app.sdk.configure.DevDatabaseProp;
-
 /**
  * 正则表达式字典
  * @author wow zhang_gh@cpis.cn
