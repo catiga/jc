@@ -107,7 +107,7 @@ public class LocalStarter extends ExternalStarter {
 						try {
 							if (mod.getFetch_address() != null) {
 								logger.info("syncing apps config." + mod.getApp_code());
-								InputStream ins = RemoteUtil.installation(mod.getFetch_address(), new Long(mod.getApp_id()));
+								InputStream ins = RemoteUtil.installation(mod.getFetch_address(), Long.valueOf(mod.getApp_id()));
 								logger.info("synced apps config." + mod.getApp_code());
 								ZipUtil.init_install(mod, new ZipInputStream(ins));
 							}
@@ -193,8 +193,7 @@ public class LocalStarter extends ExternalStarter {
 							}
 							for (AppMod mod : sm.getApps()) {
 								try {
-									InputStream ins = RemoteUtil.installation(mod.getFetch_address(),
-											new Long(mod.getApp_id()));
+									InputStream ins = RemoteUtil.installation(mod.getFetch_address(), Long.valueOf(mod.getApp_id()));
 									ZipUtil.init_install(mod, new ZipInputStream(ins));
 									JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
 									jcvm.installApp(mod.to());

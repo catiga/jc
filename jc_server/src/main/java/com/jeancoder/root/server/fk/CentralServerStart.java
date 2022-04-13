@@ -133,7 +133,7 @@ public class CentralServerStart extends ExternalStarter {
 								logger.info(mod.getApp_id() + ":::" + mod.getApp_code() + ":::" + mod.getApp_base() + ":::" + mod.getFetch_address());
 								JCAPP app = mod.to();
 								try {
-									InputStream ins = RemoteUtil.installation(mod.getFetch_address(), new Long(mod.getApp_id()));
+									InputStream ins = RemoteUtil.installation(mod.getFetch_address(), Long.valueOf(mod.getApp_id()));
 									jcvm.uninstallApp(app);
 									String new_path = ZipUtil.init_install(mod, new ZipInputStream(ins));
 									app.setApp_base(new_path);

@@ -79,7 +79,7 @@ public class Starter extends ExternalStarter {
 					for (AppMod mod : sm.getApps()) {
 						try {
 							if (mod.getFetch_address() != null) {
-								InputStream ins = RemoteUtil.installation(mod.getFetch_address(), new Long(mod.getApp_id()));
+								InputStream ins = RemoteUtil.installation(mod.getFetch_address(), Long.valueOf(mod.getApp_id()));
 								logger.info("synced apps config." + mod.getApp_code());
 								String new_path = ZipUtil.init_install(mod, new ZipInputStream(ins));
 								mod.setApp_base(new_path);

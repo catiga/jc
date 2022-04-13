@@ -107,9 +107,9 @@ public class LocalStart extends ExternalStarter {
 						for (AppMod mod : sm.getApps()) {
 							try {
 								if (mod.getFetch_address() != null) {
-									System.out.println("开始下载");
-									InputStream ins = RemoteUtil.installation(mod.getFetch_address(),new Long(mod.getApp_id()));
-									System.out.println("下载");
+									logger.error("start download jcapp:" + mod.getApp_code());
+									InputStream ins = RemoteUtil.installation(mod.getFetch_address(), Long.valueOf(mod.getApp_id()));
+									logger.error("finish download jcapp:" + mod.getApp_code());
 									ZipUtil.init_install(mod, new ZipInputStream(ins));
 								}
 							} catch (Exception e) {
