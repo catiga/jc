@@ -11,6 +11,7 @@ public enum InstallWay {
 		this.clazz = clazz;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public NamerLoad getInstance() throws InstantiationException, IllegalAccessException {
 		return clazz.newInstance();
 	}

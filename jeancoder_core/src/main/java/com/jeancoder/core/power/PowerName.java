@@ -29,6 +29,7 @@ public enum PowerName {
 		this.clazz = clazz;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public PowerHandler getInstance() throws InstantiationException, IllegalAccessException {
 		return clazz.newInstance();
 	}

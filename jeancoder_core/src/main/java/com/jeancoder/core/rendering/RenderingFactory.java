@@ -1,6 +1,5 @@
 package com.jeancoder.core.rendering;
 
-import com.jeancoder.core.rendering.Rendering;
 import com.jeancoder.core.result.Result;
 import com.jeancoder.core.result.ResultType;
 import com.jeancoder.root.env.RunnerResult;

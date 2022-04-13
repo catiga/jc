@@ -17,6 +17,7 @@ public enum DevLang {
 		this.clazz = clazz;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public NamerParse getInstance() throws InstantiationException, IllegalAccessException {
 		return clazz.newInstance();
 	}

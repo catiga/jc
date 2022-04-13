@@ -22,6 +22,7 @@ public enum FetchWay {
 		this.clazz = clazz;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public NamerFetch getInstance() throws InstantiationException, IllegalAccessException {
 		return clazz.newInstance();
 	}
