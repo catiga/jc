@@ -2,4 +2,9 @@
 /.DS_Store
 /.classpath
 /.project
+/.gitignore
+/README.md
+/jc_container/
 /jc_server/
+/jeancoder_core/
+/jeancoder_sdk/
