@@ -86,6 +86,7 @@ public abstract class DefaultContainer extends QContainer implements JCAppContai
 		if(pre_clz!=null) {
 			try {
 				Class<?> pre_clz_obj = this.getSignedClassLoader().getManaged().findClass(pre_clz);
+				@SuppressWarnings("deprecation")
 				Object handler = pre_clz_obj.newInstance();
 				if(logger.isDebugEnabled()) {
 					logger.debug("pre interceptor test success:" + pre_clz_obj);
@@ -184,6 +185,7 @@ public abstract class DefaultContainer extends QContainer implements JCAppContai
 		try {
 			executor = this.transferPathToIns(path);
 			Binding context = new Binding();
+			@SuppressWarnings("deprecation")
 			Script script = (Script) executor.newInstance();
 			script.setBinding(context);
 			Object result = script.run();

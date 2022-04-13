@@ -115,7 +115,8 @@ public class TypeDefClassLoader extends JClassLoader implements DefLoader, JCLoa
 		    } catch (NoSuchMethodException | SecurityException e1) {
 		        e1.printStackTrace();
 		    }
-		    boolean accessible = method.isAccessible();
+		    @SuppressWarnings("deprecation")
+			boolean accessible = method.isAccessible();
 		    try {
 		        method.setAccessible(true);
 		        for(URL jarFile : waiting) {

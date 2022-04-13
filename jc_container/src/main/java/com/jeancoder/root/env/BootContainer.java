@@ -89,6 +89,7 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 			// Constructor<?> constructor =
 			// executor.getConstructor(Binding.class);
 			// entry for run must be Script type;
+			@SuppressWarnings("deprecation")
 			Script script = (Script) executor.newInstance();
 			script.setBinding(context);
 			Object result = script.run();
@@ -160,6 +161,7 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 		try {
 			Class<?> executor = this.getSignedClassLoader().getManaged().findClass(init_script);
 			Binding context = new Binding();
+			@SuppressWarnings("deprecation")
 			Script script = (Script) executor.newInstance();
 			script.setBinding(context);
 			Object result = script.run();
@@ -182,6 +184,7 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 		try {
 			Class<?> executor = this.getSignedClassLoader().getManaged().findClass(init_script);
 			Binding context = new Binding();
+			@SuppressWarnings("deprecation")
 			Script script = (Script) executor.newInstance();
 			script.setBinding(context);
 			Object result = script.run();

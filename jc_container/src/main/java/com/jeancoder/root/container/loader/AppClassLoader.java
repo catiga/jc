@@ -67,7 +67,8 @@ public class AppClassLoader extends GroovyClassLoader implements JCLoader, AppLo
 		    } catch (NoSuchMethodException | SecurityException e1) {
 		        e1.printStackTrace();
 		    }
-		    boolean accessible = method.isAccessible();
+		    @SuppressWarnings("deprecation")
+			boolean accessible = method.isAccessible();
 		    try {
 		        method.setAccessible(true);
 		        for(URL jarFile : localRepositories) {
@@ -189,21 +190,28 @@ public class AppClassLoader extends GroovyClassLoader implements JCLoader, AppLo
 
 	@SuppressWarnings("rawtypes")
 	protected void ioClass(File fio) throws IOException {
-		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(fio));
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		for (;;) {
-			int i = bis.read();
-			if (i == -1) {
-				break;
-			}
-			bos.write(i);
-		}
-		bis.close();
-		bos.close();
+		BufferedInputStream bis = null; ByteArrayOutputStream bos = null;
 		try {
-			Class dfcz = this.defineClass(null, bos.toByteArray());
-			this.setClassCacheEntry(dfcz);
-		} catch (java.lang.ClassFormatError er) {
+			bis = new BufferedInputStream(new FileInputStream(fio));
+			bos = new ByteArrayOutputStream();
+			for (;;) {
+				int i = bis.read();
+				if (i == -1) {
+					break;
+				}
+				bos.write(i);
+			}
+			
+			try {
+				Class dfcz = this.defineClass(null, bos.toByteArray());
+				this.setClassCacheEntry(dfcz);
+			} catch (java.lang.ClassFormatError er) {
+			}
+		} finally {
+			if(bis!=null)
+				bis.close();
+			if(bos!=null)
+				bos.close();
 		}
 	}
 
