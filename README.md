@@ -1,5 +1,7 @@
 ### JC - Netty Completelly Micro App Container & Server
 
+This is a version with static central uri, that means only could manage jc by visiting http://jcloudapp.pdr365.com.
+
 #### Use JC as Application Server
 
 #### JC support groovy and java to develop your micro apps named JCAPP
