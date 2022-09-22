@@ -15,11 +15,11 @@
             "name": "",
             "scheme": "socket",
             "host": "",
-            "port": 8091,
+            "port": 9091,
             "proxy_entry": "entry",
             "proxy_path": "/",
-            "logs": "/home/jeancoder-server/jclogs",
-            "libs": "/home/jeancoder-server/jclibs",
+            "logs": "/data/jeancoder/central/jeancoder-server/jclogs",
+            "libs": "/data/jeancoder/central/jeancoder-server/jclibs",
             "apps": []
         },
         {
@@ -27,13 +27,13 @@
             "name": "",
             "scheme": "http",
             "host": "",
-            "port": 8080,
+            "port": 9090,
             "proxy_entry": "entry",
             "proxy_path": "/",
-            "logs": "/home/jeancoder-server/jclogs",
+            "logs": "/data/jeancoder/central/jeancoder-server/jclogs",
             "domain_visit":"/server/index",
-            "libs": "/home/jeancoder-server/jclibs",
-            "master": "jcs://jcloudapp.pdr365.com:8091/",
+            "libs": "/data/jeancoder/central/jeancoder-server/jclibs",
+            "master": "jcs://jcloudapp.fancynote.vip:9091/",
             "apps": [
                 {
                     "app_id": "99019928",
@@ -44,7 +44,7 @@
                     "app_ver": "1.0",
                     "source_type": "binary",
                     "lans": "groovy",
-                    "app_base":"/home/jeancoder-server/server_trunk",
+                    "app_base":"/data/jeancoder/central/jeancoder-server/server_trunk",
                     "config": {
                         "description": "管理系统基础配置",
                         "index":"index"

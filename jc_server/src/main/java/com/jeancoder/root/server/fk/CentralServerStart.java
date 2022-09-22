@@ -122,30 +122,35 @@ public class CentralServerStart extends ExternalStarter {
 						logger.error("****** 网络配置文件加载失败:", e);
 					}
 					try {
-						Gson gson = new Gson();
-						FkConf fk_con = gson.fromJson(json, FkConf.class);
-						JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
-						for (ServerMod sm : fk_con.getServers()) {
-							if (!sm.getScheme().equalsIgnoreCase(ServerCode.HTTP.toString())) {
-								continue;
-							}
-							for (AppMod mod : sm.getApps()) {
-								logger.info(mod.getApp_id() + ":::" + mod.getApp_code() + ":::" + mod.getApp_base() + ":::" + mod.getFetch_address());
-								JCAPP app = mod.to();
-								try {
-									InputStream ins = RemoteUtil.installation(mod.getFetch_address(), Long.valueOf(mod.getApp_id()));
-									jcvm.uninstallApp(app);
-									String new_path = ZipUtil.init_install(mod, new ZipInputStream(ins));
-									app.setApp_base(new_path);
-									jcvm.installApp(app);
-								} catch (Exception e) {
-									logger.error("install app error:" + mod.getApp_code() + ", directory:" + app.getApp_base(), e);
+						if(!json.equals("")) {
+							Gson gson = new Gson();
+							FkConf fk_con = gson.fromJson(json, FkConf.class);
+							JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
+							for (ServerMod sm : fk_con.getServers()) {
+								if (!sm.getScheme().equalsIgnoreCase(ServerCode.HTTP.toString())) {
+									continue;
+								}
+								for (AppMod mod : sm.getApps()) {
+									logger.info(mod.getApp_id() + ":::" + mod.getApp_code() + ":::" + mod.getApp_base() + ":::" + mod.getFetch_address());
+									JCAPP app = mod.to();
+									try {
+										InputStream ins = RemoteUtil.installation(mod.getFetch_address(), Long.valueOf(mod.getApp_id()));
+										jcvm.uninstallApp(app);
+										String new_path = ZipUtil.init_install(mod, new ZipInputStream(ins));
+										app.setApp_base(new_path);
+										jcvm.installApp(app);
+									} catch (Exception e) {
+										logger.error("install app error:" + mod.getApp_code() + ", directory:" + app.getApp_base(), e);
+									}
 								}
 							}
+						} else {
+							logger.info("****** 仅加载本地管理应用框架.");
 						}
 					} catch (Exception e) {
-						logger.error("start error:", e);
-						System.exit(-1);
+//						logger.error("start error:", e);
+//						System.exit(-1);
+						logger.error("****** 仅加载本地管理应用框架.", e);
 					}
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block

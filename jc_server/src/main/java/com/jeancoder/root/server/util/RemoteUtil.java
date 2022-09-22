@@ -20,7 +20,7 @@ public class RemoteUtil {
 	
 	private static String singkey = null; 
 	
-	private static final String domain = "http://jcloudapp.pdr365.com";
+	private static final String domain = "http://jcloudapp.fancynote.vip";
 //	private static final String domain = "http://e.local:8080";
 		
 	/**
