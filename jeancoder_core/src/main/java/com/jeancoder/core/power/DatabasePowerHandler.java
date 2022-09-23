@@ -20,9 +20,13 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.jeancoder.core.exception.JeancoderException;
+import com.jeancoder.core.log.JCLogger;
+import com.jeancoder.core.log.JCLoggerFactory;
 import com.jeancoder.core.power.exception.DbPowerDoQueryFailedException;
 import com.jeancoder.core.power.exception.DbPowerDoUpdateFailedException;
 import com.jeancoder.core.power.exception.PowerConnectFailedException;
@@ -43,6 +47,10 @@ import com.jeancoder.core.power.support.DBOperateSqlBody;
  * @date 2018年6月8日
  */
 public class DatabasePowerHandler extends PowerHandler implements DatabasePower{
+	
+	private static Logger logger = LoggerFactory.getLogger(DatabasePowerHandler.class);
+	
+	JCLogger  Logger  = JCLoggerFactory.getLogger(DatabasePowerHandler.class);
 	/**
 	 * 当开发者手动开启事务后 会在此线程连接中放入一个dataSource变量 用于管理事务
 	 */
@@ -461,6 +469,8 @@ public class DatabasePowerHandler extends PowerHandler implements DatabasePower{
 			resultSet.setResultSet(res);
 			return resultSet;
 		} catch (SQLException e) {
+			logger.error("wrong configuration:" + ((DruidDataSource)dataSource).getUrl());
+			Logger.error("wrong configuration:" + ((DruidDataSource)dataSource).getUrl());
 			if(statement!=null) {
 				try {
 					statement.close();

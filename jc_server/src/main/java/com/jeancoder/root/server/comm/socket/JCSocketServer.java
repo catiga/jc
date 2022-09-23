@@ -56,6 +56,7 @@ public class JCSocketServer extends ServerImpl implements JCServer {
 	}
 
 	public void start() {
+		logger.info("socket server starting...");
 		EventLoopGroup accGroup = new NioEventLoopGroup();
 		EventLoopGroup workerGroup = new NioEventLoopGroup();
 
@@ -106,6 +107,7 @@ public class JCSocketServer extends ServerImpl implements JCServer {
 				SocketAddress net_address = channelFuture.channel().localAddress();
 				logger.info(defServerCode() + " SERVER STARTED: " + net_address);
 			}
+			logger.info("socket server started...");
 			// channelFuture.channel().closeFuture().sync();
 		} catch (Exception e) {
 			logger.error("service start error:", e);

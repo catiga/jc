@@ -57,6 +57,7 @@ public class JCHttpServer extends ServerImpl implements JCServer {
 	}
 
 	public void start() {
+		logger.info("http server starting...");
 		EventLoopGroup accGroup = new NioEventLoopGroup();
 		EventLoopGroup workerGroup = new NioEventLoopGroup();
 		try {
@@ -101,6 +102,7 @@ public class JCHttpServer extends ServerImpl implements JCServer {
 				logger.info("jc server start success:" + net_address);
 			}
 			channelFuture.channel().closeFuture().sync();
+			logger.info("http server started");
 		} catch (Exception e) {
 			logger.error("http server start error:", e);
 		} finally {
