@@ -105,6 +105,8 @@ public class MasterLiveBuilder {
 					for(;;) {
 						TimeUnit.MILLISECONDS.sleep(5000L);
 						try {
+							logger.info("connect host:" + host());
+							logger.info("connect port:" + port());
 							future = boot.connect(host(), port()).sync();
 							logger.info("connec againing");
 							if(future.isSuccess()) {
