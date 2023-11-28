@@ -45,6 +45,7 @@ public class StandardVM extends DefaultVm implements JCVM {
 		state = STATE_STARTING;
 		if(this.sysLibs!=null)
 			rootLoader.registerSysJars(this.sysLibs);
+		logger.info("JC VM Binding customed library::" + (this.appList==null? 0: this.appList.size()));
 		Thread.currentThread().setContextClassLoader(rootLoader);	//reset context
 		if(this.appList!=null) {
 			for(JCAPP jca : this.appList) {

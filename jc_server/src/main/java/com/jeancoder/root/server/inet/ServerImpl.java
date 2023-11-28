@@ -81,10 +81,13 @@ public abstract class ServerImpl extends AbstractServer implements JCServer {
 			}
 			logger.info("准备启动基础容器3::");
 			getVM().bindLibrary(modconf.getLibs());
-			getVM().setInitApps(convert_proto);
-			getVM().initVMPS(modconf);
-			getVM().onStart();
 			logger.info("准备启动基础容器4::");
+			getVM().setInitApps(convert_proto);
+			logger.info("准备启动基础容器5::");
+			getVM().initVMPS(modconf);
+			logger.info("准备启动基础容器6::");
+			getVM().onStart();
+			logger.info("准备启动基础容器7::");
 		}
 	}
 	
