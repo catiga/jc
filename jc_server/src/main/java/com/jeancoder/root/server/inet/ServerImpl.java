@@ -49,6 +49,7 @@ public abstract class ServerImpl extends AbstractServer implements JCServer {
 	public void start() {
 		synchronized (this) {
 			// start delegate service, and just man HTTP
+			logger.info("准备启动基础容器1");
 			if(this.defServerCode().equals(ServerCode.HTTP)&&this.modconf.getMaster()!=null&&!this.modconf.getId().startsWith("master")) {
 				try {
 					masterHandler = new MasterLiveBuilder(this.modconf);
@@ -60,6 +61,7 @@ public abstract class ServerImpl extends AbstractServer implements JCServer {
 			}
 			List<AppMod> apps = this.modconf.getApps();
 			List<JCAPP> convert_proto = new ArrayList<>();
+			logger.info("准备启动基础容器2::" + apps.size());
 			if(apps!=null) {
 				for(AppMod am : apps) {
 					//String amid = am.getApp_id();
@@ -77,10 +79,12 @@ public abstract class ServerImpl extends AbstractServer implements JCServer {
 					}
 				}
 			}
+			logger.info("准备启动基础容器3::");
 			getVM().bindLibrary(modconf.getLibs());
 			getVM().setInitApps(convert_proto);
 			getVM().initVMPS(modconf);
 			getVM().onStart();
+			logger.info("准备启动基础容器4::");
 		}
 	}
 	
