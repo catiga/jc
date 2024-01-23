@@ -86,7 +86,11 @@ public class UrlAddress {
 
 	@Override
 	public String toString() {
-		return protocol + "://" + host + (port==80?"":":" + port) + uri + "?" + param;
+		if(param!=null && !param.equals("")) {
+			return protocol + "://" + host + (port==80?"":":" + port) + uri + "?" + param;
+		} else {
+			return protocol + "://" + host + (port==80?"":":" + port) + uri;
+		}
 	}
 	
 	public void changeProto(String new_proto) {
@@ -102,7 +106,11 @@ public class UrlAddress {
 	 */
 	public String toString(Integer deploy) {
 		String new_host = deploy.equals(1)?"127.0.0.1":host;
-		return protocol + "://" + new_host + (port==80?"":":" + port) + uri + "?" + param;
+		if(param!=null && !param.equals("")) {
+			return protocol + "://" + new_host + (port==80?"":":" + port) + uri + "?" + param;
+		} else {
+			return protocol + "://" + new_host + (port==80?"":":" + port) + uri;
+		}
 	}
 
 	public boolean isHttps() {
