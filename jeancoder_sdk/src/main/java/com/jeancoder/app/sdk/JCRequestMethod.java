@@ -1,10 +1,16 @@
 package com.jeancoder.app.sdk;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.jc.channel.SlaveCli;
 import com.jeancoder.app.sdk.source.RequestSource;
 import com.jeancoder.core.http.ChannelWrapper;
 import com.jeancoder.core.http.JCRequest;
 
 public class JCRequestMethod implements JCMethod {
+	
+	private static Logger logger = LoggerFactory.getLogger(JCRequestMethod.class.getName());
 
 	public static JCRequest get() {
 		return RequestSource.getRequest();
@@ -34,6 +40,8 @@ public class JCRequestMethod implements JCMethod {
 		try {
 			return get().wschannel();
 		} catch(Exception e) {
+			e.printStackTrace();
+			logger.error("", e);
 			return null;
 		}
 	}
