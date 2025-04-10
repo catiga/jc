@@ -3,3 +3,17 @@
 /.classpath
 /.project
 /bin/
+
+# IntelliJ IDEA config
+.idea/
+*.iml
+
+# Specific module IML files
+jc_container/jc_container.iml
+jc_parent.iml
+jc_server/jc_server.iml
+jeancoder_core/jeancoder_core.iml
+jeancoder_sdk/jeancoder_sdk.iml
+
+# Logs path (if {jclogs_path} is a real folder)
+{jclogs_path}/
