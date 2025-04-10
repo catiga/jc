@@ -3,3 +3,13 @@
 /.classpath
 /.project
 /bin/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# 日志目录（假设是自定义变量路径）
+{jclogs_path}/
+
+# 编译输出
+target/
