@@ -23,9 +23,6 @@ public class BootClassLoader extends JClassLoader implements JCLoader {
 	
 	protected static Logger logger = LoggerFactory.getLogger(BootClassLoader.class);
 	
-	//final public static String SYS_LIBS = "/home/idreamsky-ent/JCServer/libs";
-	//final public static String SYS_LIBS = "/Users/jackielee/Desktop/logs";
-	
 	static {
 		ClassLoader.registerAsParallelCapable();
 	}
@@ -46,8 +43,8 @@ public class BootClassLoader extends JClassLoader implements JCLoader {
 	
 	public void countPathUrls(String path, List<URL> waiting) {
 		File basePath = new File(path);
-	    if(basePath.exists()) {
-	    	if(basePath.isDirectory()) {
+	    if (basePath.exists()) {
+	    	if (basePath.isDirectory()) {
 		    	File[] files = basePath.listFiles();
 		    	for(File f : files) {
 		    		countPathUrls(f.getPath(), waiting);
@@ -66,25 +63,30 @@ public class BootClassLoader extends JClassLoader implements JCLoader {
 	final public List<URL> registerSysJars(String jarPath) {
 		List<URL> waiting = new ArrayList<>();
 		countPathUrls(jarPath, waiting);
-	    
-	    Method method = null;
-	    try {
-	        method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-	    } catch (NoSuchMethodException | SecurityException e1) {
-	        e1.printStackTrace();
-	    }
-	    @SuppressWarnings("deprecation")
-		boolean accessible = method.isAccessible();
-	    try {
-	        method.setAccessible(true);
-	        for(URL jarFile : waiting) {
-		        method.invoke(this, jarFile);
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        method.setAccessible(accessible);
-	    }
+
+		// replace with compatible for jdk1.8 and jdk9+
+		for(URL jarFile : waiting) {
+			this.addURL(jarFile);
+		}
+	    // for jdk1.8
+//	    Method method = null;
+//	    try {
+//	        method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+//	    } catch (NoSuchMethodException | SecurityException e1) {
+//	        e1.printStackTrace();
+//	    }
+//	    @SuppressWarnings("deprecation")
+//		boolean accessible = method.isAccessible();
+//	    try {
+//	        method.setAccessible(true);
+//	        for(URL jarFile : waiting) {
+//		        method.invoke(this, jarFile);
+//	        }
+//	    } catch (Exception e) {
+//	        e.printStackTrace();
+//	    } finally {
+//	        method.setAccessible(accessible);
+//	    }
 	    
 	    return waiting;
 	}

@@ -7,6 +7,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -50,6 +54,36 @@ public class AppClassLoader extends GroovyClassLoader implements JCLoader, AppLo
 	protected AppClassLoader(TypeDefClassLoader parent) {
 		this(EMPTY_URL_ARRAY, parent);
 	}
+
+	private void addURLCompatible(ClassLoader classLoader, URL url) throws Exception {
+		try {
+			// 尝试访问 "ucp" 字段（URLClassPath），适用于 JDK 9+
+			Field ucpField = null;
+			Class<?> clazz = classLoader.getClass();
+			while (clazz != null) {
+				try {
+					ucpField = clazz.getDeclaredField("ucp");
+					break;
+				} catch (NoSuchFieldException e) {
+					clazz = clazz.getSuperclass(); // 向上找
+				}
+			}
+
+			if (ucpField == null) {
+				throw new IllegalStateException("Cannot find 'ucp' field in classloader hierarchy.");
+			}
+
+			ucpField.setAccessible(true);
+			Object ucp = ucpField.get(classLoader);
+
+			Method addURL = ucp.getClass().getDeclaredMethod("addURL", URL.class);
+			addURL.setAccessible(true);
+			addURL.invoke(ucp, url);
+		} catch (Exception e) {
+			logger.error("Failed to inject URL into classloader. You may need to add VM option: --add-opens java.base/java.net=ALL-UNNAMED", e);
+			throw e;
+		}
+	}
 	
 	public void init() throws Exception {
 		String bin_target = parent.getAppins().getBin_base();
@@ -61,25 +95,34 @@ public class AppClassLoader extends GroovyClassLoader implements JCLoader, AppLo
 			this.localRepositories.add(loading_path.toURI().toURL());
 		}
 		if(!this.localRepositories.isEmpty()) {
-			Method method = null;
-		    try {
-		        method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-		    } catch (NoSuchMethodException | SecurityException e1) {
-		        e1.printStackTrace();
-		    }
-		    @SuppressWarnings("deprecation")
-			boolean accessible = method.isAccessible();
-		    try {
-		        method.setAccessible(true);
-		        for(URL jarFile : localRepositories) {
-			        method.invoke(this, jarFile);
-		        }
-		    } catch (Exception e) {
-		        e.printStackTrace();
-		    } finally {
-		        method.setAccessible(accessible);
-		    }
+			for (URL jar : localRepositories) {
+				try {
+					this.addURL(jar);
+					logger.info("add url for classloader success.");
+				} catch (Exception e) {
+					logger.error("Current ClassLoader is not URLClassLoader. Skipping dynamic addURL.", e);
+				}
+			}
+//			Method method = null;
+//		    try {
+//		        method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+//		    } catch (NoSuchMethodException | SecurityException e1) {
+//		        e1.printStackTrace();
+//		    }
+//		    @SuppressWarnings("deprecation")
+//			boolean accessible = method.isAccessible();
+//		    try {
+//		        method.setAccessible(true);
+//		        for(URL jarFile : localRepositories) {
+//			        method.invoke(this, jarFile);
+//		        }
+//		    } catch (Exception e) {
+//		        e.printStackTrace();
+//		    } finally {
+//		        method.setAccessible(accessible);
+//		    }
 		}
+
 		this.registerAppClasses();
 		//this.addClasspath(parent.getAppins().getApp_base() + "/" + BIN_TARGET);
 		//this.registerAppClasses(parent.getAppins().getApp_base() + "/" + BIN_TARGET);
@@ -95,7 +138,7 @@ public class AppClassLoader extends GroovyClassLoader implements JCLoader, AppLo
 	
 	public AppClassLoader(URL[] urls, TypeDefClassLoader parent) {
 		super(parent);
-		if(parent==null||!(parent instanceof TypeDefClassLoader)) {
+		if(parent==null || !(parent instanceof TypeDefClassLoader)) {
 			throw new RuntimeException("invalid parent classloader, please restart.");
 		}
 		this.parent = parent;
@@ -109,11 +152,15 @@ public class AppClassLoader extends GroovyClassLoader implements JCLoader, AppLo
 	@Override 
 	public Class<?> findClass(String name) throws ClassNotFoundException {
 		Class<?> claz = findLoadedClass(name);
+		if (name.contains("JC.")) {
+			logger.info("here");
+		}
 		if (claz == null) {
 			try {
 				claz = parent.findClass(name);
-			}catch(ClassNotFoundException clz_not) {
-				//不做处理，需要到父级的classloader去查找
+			} catch (ClassNotFoundException clz_not) {
+				//pass this exception to parent level
+				logger.warn("ignore error, pass to parent. {}", name);
 			}
 		}
 		if (claz == null) {

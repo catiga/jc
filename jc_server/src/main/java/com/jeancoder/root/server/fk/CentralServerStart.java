@@ -41,7 +41,7 @@ public class CentralServerStart extends ExternalStarter {
 		String json = null;
 		try {
 			// 本地读取配置文件
-			InputStream ins = Starter.class.getClassLoader().getResourceAsStream(appConf);
+			InputStream ins = Starter.class.getClassLoader().getResourceAsStream(appConfLocal);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
 
 			String lineContent = null;
@@ -83,7 +83,7 @@ public class CentralServerStart extends ExternalStarter {
 					if(server_app.getApp_code().equals("server")) {
 						String base_path = server_app.getApp_base();
 						File f = new File(base_path);
-						if(f.isDirectory()) {
+						if(f.isDirectory() && f.listFiles().length == 1) {
 							for(File file_item : f.listFiles()) {
 								String real_path = file_item.getPath();
 								logger.info("APP:::SERVER base path will be relocated to===" + real_path);
