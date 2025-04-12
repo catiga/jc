@@ -8,10 +8,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
-
 import com.jeancoder.core.util.MD5Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HttpsRequesUtil {
+
+	private static Logger logger = LoggerFactory.getLogger(HttpsRequesUtil.class);
 	
 	public static String key = "";
 	
@@ -27,16 +30,12 @@ public class HttpsRequesUtil {
 			httpsConn.setRequestMethod("POST");
 			httpsConn.setRequestProperty("Connection", "Keep-Alive");
 			httpsConn.setRequestProperty("Charset", "UTF-8");
-			// 读入参数
 			httpsConn.setDoInput( true);
 			httpsConn.setDoOutput(true);
-			 // 获取URLConnection对象对应的输出流
             OutputStream os = httpsConn.getOutputStream();
             os.write(parameter.getBytes());//post的参数 xx=xx&yy=yy
-            // flush输出流的缓冲
             os.flush();
 			int responseCode = httpsConn.getResponseCode();
-			//print responseCode
 			BufferedReader br = new BufferedReader(new InputStreamReader(httpsConn.getInputStream()));
 			String inputLine;
 			StringBuffer response = new StringBuffer();
@@ -45,7 +44,7 @@ public class HttpsRequesUtil {
 		    }
 			return response.toString();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("connect server {} with param {}, but got error.", urlStr, parameter, e);
 		}
 		return "";
 	}
@@ -53,27 +52,22 @@ public class HttpsRequesUtil {
 	@SuppressWarnings("unused")
 	public static InputStream connectionStream(String urlStr, String parameter){
 		try{
-			URL reqURL = new URL(urlStr); //创建URL对象
+			URL reqURL = new URL(urlStr);
 			HttpURLConnection httpsConn = (HttpURLConnection)reqURL.openConnection();
-			//建立连接的超时时间
 			httpsConn.setConnectTimeout(2000000);
-			//传递连接的超时时间 
 			httpsConn.setReadTimeout(3000000);
 			httpsConn.setRequestMethod("POST");
 			httpsConn.setRequestProperty("Connection", "Keep-Alive");
 			httpsConn.setRequestProperty("Charset", "UTF-8");
-			// 读入参数
 			httpsConn.setDoInput( true);
 			httpsConn.setDoOutput(true);
-			// 获取URLConnection对象对应的输出流
             OutputStream os = httpsConn.getOutputStream();
             os.write(parameter.getBytes()); 
             os.flush();
 			int responseCode = httpsConn.getResponseCode();
-            InputStream is = httpsConn.getInputStream();
-            return is;
+            return httpsConn.getInputStream();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("connect server {} with param {}, but got error.", urlStr, parameter, e);
 		}
 		return null;
 	}
