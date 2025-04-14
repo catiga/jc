@@ -41,7 +41,7 @@ public class CentralServerStart extends ExternalStarter {
 		String json = null;
 		try {
 			// 本地读取配置文件
-			InputStream ins = Starter.class.getClassLoader().getResourceAsStream(appConfLocal);
+			InputStream ins = Starter.class.getClassLoader().getResourceAsStream(appConf);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
 
 			String lineContent = null;

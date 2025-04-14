@@ -52,7 +52,7 @@ public class LocalStarter extends ExternalStarter {
 			}
 			return buff.toString();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("unable to manage to load local configuration file {}. will terminate", appConfLocal, e);
 			return null;
 		}
 	}
@@ -112,7 +112,7 @@ public class LocalStarter extends ExternalStarter {
 								ZipUtil.init_install(mod, new ZipInputStream(ins));
 							}
 						} catch (Exception e) {
-							e.printStackTrace();
+							logger.error("can not fetch from remote platform, due to specify fetch address for app: {}", mod.getApp_name(), e);
 						}
 					}
 					server.start();
