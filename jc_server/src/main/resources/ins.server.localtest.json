@@ -44,9 +44,99 @@
                     "app_ver": "1.0",
                     "source_type": "binary",
                     "lans": "groovy",
-                    "app_base":"/Users/jclee/Documents/devworkspace/jcworkspace/app_project",
+                    "app_base":"/Users/jclee/Documents/devworkspace/jcworkspace/jcapps/app_project",
                     "config": {
                         "description": "项目管理服务",
+                        "index":"index"
+                    }
+                },
+                {
+                    "app_id": "88888888",
+                    "app_code": "crm",
+                    "app_name": "会员管理服务",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jclee/Documents/devworkspace/jcworkspace/jcapps/app_crm",
+                    "config": {
+                        "description": "会员管理服务",
+                        "index":"index"
+                    }
+                },
+                {
+                    "app_id": "88888888",
+                    "app_code": "ticketingsys",
+                    "app_name": "影院管理服务",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jclee/Documents/devworkspace/jcworkspace/jcapps/app_ticketingsys",
+                    "config": {
+                        "description": "影院管理服务",
+                        "index":"index"
+                    }
+                },
+                {
+                    "app_id": "88888888",
+                    "app_code": "scm",
+                    "app_name": "进销存管理服务",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jclee/Documents/devworkspace/jcworkspace/jcapps/app_scm",
+                    "config": {
+                        "description": "进销存管理服务",
+                        "index":"index"
+                    }
+                },
+                {
+                    "app_id": "88888888",
+                    "app_code": "trade",
+                    "app_name": "交易管理服务",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jclee/Documents/devworkspace/jcworkspace/jcapps/app_trade",
+                    "config": {
+                        "description": "交易管理服务",
+                        "index":"index"
+                    }
+                },
+                {
+                    "app_id": "88888888",
+                    "app_code": "market",
+                    "app_name": "运营支持服务",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jclee/Documents/devworkspace/jcworkspace/jcapps/app_market",
+                    "config": {
+                        "description": "运营支持服务",
+                        "index":"index"
+                    }
+                },
+                {
+                    "app_id": "88888888",
+                    "app_code": "general_api",
+                    "app_name": "接口服务",
+                    "dev_name": "lengjiabao",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jclee/Documents/devworkspace/jcworkspace/jcapps/92yp_general_api",
+                    "config": {
+                        "description": "接口服务",
                         "index":"index"
                     }
                 }
