@@ -287,7 +287,7 @@ public abstract class DefaultContainer extends QContainer implements JCAppContai
 //						throw new Code404Exception(id().id(), id().code(), resname, this.transferPathToClz(req), "CLASS_NOT_FOUND", nfex);
 //					} 
 					catch (Exception ex) {
-						ex.printStackTrace();
+						logger.error("call interceptor exception {}.", ex.getMessage());
 						throw new Code500Exception(id().id(), id().code(), resname, this.transferPathToClz(req), "RUNNING_ERROR:" + ex.getCause(), ex);
 					}
 				}   

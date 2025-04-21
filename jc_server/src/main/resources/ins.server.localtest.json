@@ -6,8 +6,8 @@
         "ins_ver": "ver number"
     },
     "ins_perf": {
-    	"req_handle_timeout":0,
-    	"vs_switch":0
+        "req_handle_timeout":0,
+        "vs_switch":0
     },
     "servers": [
         {
@@ -18,8 +18,8 @@
             "port": 8091,
             "proxy_entry": "entry",
             "proxy_path": "/",
-            "logs": "/Users/jackielee/Desktop/logs",
-            "libs": "/Users/jackielee/Desktop/logs",
+            "logs": "/Users/jclee/Desktop/logs",
+            "libs": "/Users/jclee/Desktop/jclibs",
             "apps": []
         },
         {
@@ -30,38 +30,113 @@
             "port": 8081,
             "proxy_entry": "entry",
             "proxy_path": "/",
-            "logs": "/Users/jackielee/Desktop/logs",
+            "logs": "/Users/jclee/Desktop/logs",
             "domain_visit":"/server/index",
-            "libs": "/Users/jackielee/Desktop/logs",
-            "master": "jcs://jcloudapp.pdr365.com:8091/",
+            "libs": "/Users/jclee/Desktop/jclibs",
+            "master": "jcs://e.local:8091/",
             "apps": [
                 {
-                    "app_id": "54",
-                    "app_code": "qiyinai",
-                    "app_name": "奇音",
+                    "app_id": "88888888",
+                    "app_code": "project",
+                    "app_name": "项目管理服务",
                     "dev_name": "jeancoder",
                     "org_name": "com",
                     "app_ver": "1.0",
                     "source_type": "binary",
                     "lans": "groovy",
-                    "app_base":"/Users/jackielee/git/qiyin",
+                    "app_base":"/Users/jclee/Documents/devworkspace/jcworkspace/jcapps/app_project",
                     "config": {
-                        "description": "中央平台服务",
+                        "description": "项目管理服务",
                         "index":"index"
                     }
                 },
                 {
-                    "app_id": "543",
-                    "app_code": "changyuai",
-                    "app_name": "奇音1",
-                    "dev_name": "changyu",
+                    "app_id": "88888888",
+                    "app_code": "crm",
+                    "app_name": "会员管理服务",
+                    "dev_name": "jeancoder",
                     "org_name": "com",
                     "app_ver": "1.0",
                     "source_type": "binary",
                     "lans": "groovy",
-                    "app_base":"/Users/jackielee/Downloads/changyuai",
+                    "app_base":"/Users/jclee/Documents/devworkspace/jcworkspace/jcapps/app_crm",
                     "config": {
-                        "description": "台服务",
+                        "description": "会员管理服务",
+                        "index":"index"
+                    }
+                },
+                {
+                    "app_id": "88888888",
+                    "app_code": "ticketingsys",
+                    "app_name": "影院管理服务",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jclee/Documents/devworkspace/jcworkspace/jcapps/app_ticketingsys",
+                    "config": {
+                        "description": "影院管理服务",
+                        "index":"index"
+                    }
+                },
+                {
+                    "app_id": "88888888",
+                    "app_code": "scm",
+                    "app_name": "进销存管理服务",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jclee/Documents/devworkspace/jcworkspace/jcapps/app_scm",
+                    "config": {
+                        "description": "进销存管理服务",
+                        "index":"index"
+                    }
+                },
+                {
+                    "app_id": "88888888",
+                    "app_code": "trade",
+                    "app_name": "交易管理服务",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jclee/Documents/devworkspace/jcworkspace/jcapps/app_trade",
+                    "config": {
+                        "description": "交易管理服务",
+                        "index":"index"
+                    }
+                },
+                {
+                    "app_id": "88888888",
+                    "app_code": "market",
+                    "app_name": "运营支持服务",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jclee/Documents/devworkspace/jcworkspace/jcapps/app_market",
+                    "config": {
+                        "description": "运营支持服务",
+                        "index":"index"
+                    }
+                },
+                {
+                    "app_id": "88888888",
+                    "app_code": "general_api",
+                    "app_name": "接口服务",
+                    "dev_name": "lengjiabao",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jclee/Documents/devworkspace/jcworkspace/jcapps/92yp_general_api",
+                    "config": {
+                        "description": "接口服务",
                         "index":"index"
                     }
                 }

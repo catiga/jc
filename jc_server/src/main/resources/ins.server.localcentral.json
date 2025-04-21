@@ -1,0 +1,56 @@
+{
+    "ins": {
+        "ins_id": "",
+        "ins_auth_cert": "cert file path",
+        "ins_auth_key": "cert key",
+        "ins_ver": "ver number"
+    },
+    "ins_perf": {
+        "req_handle_timeout":0,
+        "vs_switch":0
+    },
+    "servers": [
+        {
+            "id": "master002",
+            "name": "",
+            "scheme": "socket",
+            "host": "",
+            "port": 8091,
+            "proxy_entry": "entry",
+            "proxy_path": "/",
+            "logs": "/Users/jclee/Desktop/logs",
+            "libs": "/Users/jclee/Desktop/jclibs",
+            "apps": []
+        },
+        {
+            "id": "16",
+            "name": "",
+            "scheme": "http",
+            "host": "",
+            "port": 8081,
+            "proxy_entry": "entry",
+            "proxy_path": "/",
+            "logs": "/Users/jclee/Desktop/logs",
+            "domain_visit":"/server/index",
+            "libs": "/Users/jclee/Desktop/jclibs",
+            "master": "jcs://e.local:8091/",
+            "apps": [
+                {
+                    "app_id": "1",
+                    "app_code": "server",
+                    "app_name": "中央管理服务",
+                    "dev_name": "jeancoder",
+                    "org_name": "com",
+                    "app_ver": "1.0",
+                    "source_type": "binary",
+                    "lans": "groovy",
+                    "app_base":"/Users/jclee/Documents/devworkspace/jcworkspace/app_jeancoder_server",
+                    "config": {
+                        "description": "中央平台服务",
+                        "index":"index"
+                    }
+                }
+            ]
+        }
+    ]
+}

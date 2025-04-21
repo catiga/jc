@@ -20,8 +20,33 @@ public class RemoteUtil {
 	
 	private static String singkey = null; 
 	
-	private static final String domain = "http://jcloudapp.fancynote.vip";
-//	private static final String domain = "http://e.local:8080";
+//	private static final String domain = "http://jcloudapp.fancynote.vip";
+	private static final String domain = "http://e.local:8081";
+
+	private static String convertJCSDomain(String jcsDomain) {
+		if (jcsDomain == null) {
+			return "";
+		}
+		if (jcsDomain.startsWith("jcs://")) {
+			jcsDomain = jcsDomain.replace("jcs://", "http://");
+		}
+		if (jcsDomain.endsWith("/")) {
+			jcsDomain = jcsDomain.substring(0, jcsDomain.length() - 1);
+		}
+		return jcsDomain;
+	}
+
+	public static String getConfigList(String confDomain) throws Exception {
+		confDomain = convertJCSDomain(confDomain);
+		Map<String,String> paramsMap = new TreeMap<String,String>();
+		paramsMap.put("m_code", JCLHealper.INSTENSE.getMerchantsCode());
+		paramsMap.put("m_instance", JCLHealper.INSTENSE.getInstanceNum());
+		logger.info(confDomain + "/server/api/personal/common/getConfigList");
+		logger.info("m_code:::{}", JCLHealper.INSTENSE.getMerchantsCode());
+		logger.info("m_instance:::{}", JCLHealper.INSTENSE.getInstanceNum());
+		String  rsaResultsJson = HttpsRequesUtil.connection(confDomain + "/server/api/personal/common/getConfigList", HttpsRequesUtil.getParams(paramsMap, getSignKey()));
+		return rsaResultsJson;
+	}
 		
 	/**
 	 * 获取配置信息

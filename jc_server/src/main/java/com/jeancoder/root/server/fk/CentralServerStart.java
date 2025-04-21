@@ -76,17 +76,20 @@ public class CentralServerStart extends ExternalStarter {
 			logger.error("start error:", e);
 			System.exit(-1);
 		}
+
+		String masterDomain = null;
 		for (ServerMod sm : fk_con.getServers()) {
 			if(sm.getScheme().equalsIgnoreCase("http")) {
-				//这里需要在初始化启动的时候修改一下基础路径
+				masterDomain = sm.getMaster();
+				// need modify base directory while initial starting, and if there are more than one hot loaded directories, means error and might need remove one of them manually
 				for(AppMod server_app : sm.getApps()) {
 					if(server_app.getApp_code().equals("server")) {
 						String base_path = server_app.getApp_base();
 						File f = new File(base_path);
-						if(f.isDirectory()) {
+						if(f.isDirectory() && f.listFiles() != null && f.listFiles().length == 1) {  //indicate that hot reloaded
 							for(File file_item : f.listFiles()) {
 								String real_path = file_item.getPath();
-								logger.info("APP:::SERVER base path will be relocated to===" + real_path);
+								logger.info("APP:::SERVER base path will be relocated to==={}", real_path);
 								server_app.setApp_base(real_path);
 							}
 						}
@@ -95,14 +98,9 @@ public class CentralServerStart extends ExternalStarter {
 			}
 			JCServer server = ServerFactory.generate(sm);
 			ServerHolder.getHolder().add(server);
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					server.start();
-				}
-			}).start();
+			new Thread(server::start).start();
 		}
+		String finalMasterDomain = masterDomain;
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -111,10 +109,10 @@ public class CentralServerStart extends ExternalStarter {
 					Thread.sleep(15000);
 					String json = "";
 					try {
-						String rules = RemoteUtil.getConfigList();
+						String rules = RemoteUtil.getConfigList(finalMasterDomain);
 						ByteResults byteResults = JackSonBeanMapper.fromJson(rules, ByteResults.class);
 						if (!"0000".equals(byteResults.getStatus())) {
-							logger.error("****** 配置文件解析错误:" + byteResults.getStatus() + " msg:" + byteResults.getMsg());
+                            logger.error("****** 配置文件解析错误:{} msg:{}", byteResults.getStatus(), byteResults.getMsg());
 							return;
 						}
 						json = new String(byteResults.getResults());
@@ -122,7 +120,7 @@ public class CentralServerStart extends ExternalStarter {
 						logger.error("****** 网络配置文件加载失败:", e);
 					}
 					try {
-						if(!json.equals("")) {
+						if(!json.isEmpty()) {
 							Gson gson = new Gson();
 							FkConf fk_con = gson.fromJson(json, FkConf.class);
 							JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
@@ -131,7 +129,7 @@ public class CentralServerStart extends ExternalStarter {
 									continue;
 								}
 								for (AppMod mod : sm.getApps()) {
-									logger.info(mod.getApp_id() + ":::" + mod.getApp_code() + ":::" + mod.getApp_base() + ":::" + mod.getFetch_address());
+                                    logger.info("{}:::{}:::{}:::{}", mod.getApp_id(), mod.getApp_code(), mod.getApp_base(), mod.getFetch_address());
 									JCAPP app = mod.to();
 									try {
 										InputStream ins = RemoteUtil.installation(mod.getFetch_address(), Long.valueOf(mod.getApp_id()));
@@ -140,7 +138,7 @@ public class CentralServerStart extends ExternalStarter {
 										app.setApp_base(new_path);
 										jcvm.installApp(app);
 									} catch (Exception e) {
-										logger.error("install app error:" + mod.getApp_code() + ", directory:" + app.getApp_base(), e);
+                                        logger.error("install app error:{}, directory:{}", mod.getApp_code(), app.getApp_base(), e);
 									}
 								}
 							}
@@ -148,13 +146,10 @@ public class CentralServerStart extends ExternalStarter {
 							logger.info("****** 仅加载本地管理应用框架.");
 						}
 					} catch (Exception e) {
-//						logger.error("start error:", e);
-//						System.exit(-1);
 						logger.error("****** 仅加载本地管理应用框架.", e);
 					}
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error("Thread sleep interrupted.", e);
 				}
 			}
 		}).start();

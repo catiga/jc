@@ -29,6 +29,7 @@ public class Starter extends ExternalStarter {
 	 * @param argc
 	 */
 	public static void main(String[] argc) {
+		logger.info("contain server starting...");
 		start();
 	}
 

@@ -155,7 +155,7 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 		}
 	}
 
-	protected void initByRes() {
+	protected void initByRes(){
 		ContainerContextEnv.setCurrentContainer(this);
 		String init_script = appins.getOrg() + "." + appins.getDever() + "." + appins.getCode() + "." + Common.INITIAL;
 		try {
@@ -167,9 +167,8 @@ public class BootContainer extends DefaultContainer implements JCAppContainer {
 			Object result = script.run();
 			logger.info("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") INIT SUCCESS. Result=" + result);
 		} catch (ClassNotFoundException e) {
-			//e.printStackTrace();
 			logger.info("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") DOES NOT NEED TO INIT. FOR NOT SET INIT PROGRAM: " + init_script);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			logger.error("ID:"+ appins.getId() + "(CODE:" + appins.getCode() + ") INIT ERROR.", e);
 		} finally {
 			//JCAPPHolder.clearContainer();

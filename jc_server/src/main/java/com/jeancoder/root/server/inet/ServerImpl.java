@@ -49,7 +49,9 @@ public abstract class ServerImpl extends AbstractServer implements JCServer {
 	public void start() {
 		synchronized (this) {
 			// start delegate service, and just man HTTP
-			if(this.defServerCode().equals(ServerCode.HTTP)&&this.modconf.getMaster()!=null&&!this.modconf.getId().startsWith("master")) {
+			if(this.defServerCode().equals(ServerCode.HTTP)
+					&& this.modconf.getMaster() != null
+					&& !this.modconf.getId().startsWith("master")) {
 				try {
 					masterHandler = new MasterLiveBuilder(this.modconf);
 					masterHandler.connect();
@@ -81,6 +83,7 @@ public abstract class ServerImpl extends AbstractServer implements JCServer {
 			getVM().setInitApps(convert_proto);
 			getVM().initVMPS(modconf);
 			getVM().onStart();
+			logger.info("server {} has been started.", this.modconf.getName());
 		}
 	}
 	

@@ -4,12 +4,18 @@
 /.project
 /bin/
 
-# IntelliJ IDEA
+# IntelliJ IDEA config
 .idea/
 *.iml
 
-# 日志目录（假设是自定义变量路径）
+# Specific module IML files
+jc_container/jc_container.iml
+jc_parent.iml
+jc_server/jc_server.iml
+jeancoder_core/jeancoder_core.iml
+jeancoder_sdk/jeancoder_sdk.iml
+
+# Logs path (if {jclogs_path} is a real folder)
 {jclogs_path}/
 
-# 编译输出
 target/
