@@ -20,8 +20,8 @@ public class RemoteUtil {
 	
 	private static String singkey = null; 
 	
-//	private static final String domain = "http://jcloudapp.fancynote.vip";
-	private static final String domain = "http://e.local:8081";
+	private static final String domain = "http://jcloudapp.fancynote.vip";
+//	private static final String domain = "http://e.local:8081";
 
 	private static String convertJCSDomain(String jcsDomain) {
 		if (jcsDomain == null) {
