@@ -160,7 +160,7 @@ public class AppClassLoader extends GroovyClassLoader implements JCLoader, AppLo
 				claz = parent.findClass(name);
 			} catch (ClassNotFoundException clz_not) {
 				//pass this exception to parent level
-				logger.warn("ignore error, pass to parent. {}", name);
+				logger.debug("ignore error, pass to parent. {}", name);
 			}
 		}
 		if (claz == null) {
