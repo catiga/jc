@@ -107,26 +107,34 @@ public class TypeDefClassLoader extends JClassLoader implements DefLoader, JCLoa
 	
 	final public List<URL> registerSysJars(String jarPath) {
 		List<URL> waiting = new ArrayList<>();
+		logger.info("prepare for loading system library. {}", jarPath);
 		countPathUrls(jarPath, waiting);
 	    if(!waiting.isEmpty()) {
-	    	Method method = null;
-		    try {
-		        method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-		    } catch (NoSuchMethodException | SecurityException e1) {
-		        e1.printStackTrace();
-		    }
-		    @SuppressWarnings("deprecation")
-			boolean accessible = method.isAccessible();
-		    try {
-		        method.setAccessible(true);
-		        for(URL jarFile : waiting) {
-			        method.invoke(this, jarFile);
-		        }
-		    } catch (Exception e) {
-		        e.printStackTrace();
-		    } finally {
-		        method.setAccessible(accessible);
-		    }
+			for (URL jarFile: waiting) {
+				try {
+					this.addURL(jarFile);
+				} catch (Exception e) {
+					logger.error("Current TypeDefClassloader is not URLClassLoader. Skipping dynamic addURL.", e);
+				}
+			}
+//	    	Method method = null;
+//		    try {
+//		        method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+//		    } catch (NoSuchMethodException | SecurityException e1) {
+//		        e1.printStackTrace();
+//		    }
+//		    @SuppressWarnings("deprecation")
+//			boolean accessible = method.isAccessible();
+//		    try {
+//		        method.setAccessible(true);
+//		        for(URL jarFile : waiting) {
+//			        method.invoke(this, jarFile);
+//		        }
+//		    } catch (Exception e) {
+//		        e.printStackTrace();
+//		    } finally {
+//		        method.setAccessible(accessible);
+//		    }
 	    }
 	    return waiting;
 	}
