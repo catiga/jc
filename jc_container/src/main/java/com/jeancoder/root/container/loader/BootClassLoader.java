@@ -65,28 +65,28 @@ public class BootClassLoader extends JClassLoader implements JCLoader {
 		countPathUrls(jarPath, waiting);
 
 		// replace with compatible for jdk1.8 and jdk9+
-		for(URL jarFile : waiting) {
-			this.addURL(jarFile);
-		}
+//		for(URL jarFile : waiting) {
+//			this.addURL(jarFile);
+//		}
 	    // for jdk1.8
-//	    Method method = null;
-//	    try {
-//	        method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-//	    } catch (NoSuchMethodException | SecurityException e1) {
-//	        e1.printStackTrace();
-//	    }
-//	    @SuppressWarnings("deprecation")
-//		boolean accessible = method.isAccessible();
-//	    try {
-//	        method.setAccessible(true);
-//	        for(URL jarFile : waiting) {
-//		        method.invoke(this, jarFile);
-//	        }
-//	    } catch (Exception e) {
-//	        e.printStackTrace();
-//	    } finally {
-//	        method.setAccessible(accessible);
-//	    }
+	    Method method = null;
+	    try {
+	        method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+	    } catch (NoSuchMethodException | SecurityException e1) {
+	        logger.error("unable reflect addURL method while registerSysJars. {}", jarPath);
+	    }
+	    @SuppressWarnings("deprecation")
+		boolean accessible = method.isAccessible();
+	    try {
+	        method.setAccessible(true);
+	        for(URL jarFile : waiting) {
+		        method.invoke(this, jarFile);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        method.setAccessible(accessible);
+	    }
 	    
 	    return waiting;
 	}
