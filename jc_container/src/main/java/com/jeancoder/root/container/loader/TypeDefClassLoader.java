@@ -107,9 +107,9 @@ public class TypeDefClassLoader extends JClassLoader implements DefLoader, JCLoa
 	
 	final public List<URL> registerSysJars(String jarPath) {
 		List<URL> waiting = new ArrayList<>();
-		logger.info("prepare for loading system library. {}", jarPath);
 		countPathUrls(jarPath, waiting);
 	    if(!waiting.isEmpty()) {
+			logger.info("prepare for loading system library. {}", jarPath);
 			for (URL jarFile: waiting) {
 				try {
 					this.addURL(jarFile);

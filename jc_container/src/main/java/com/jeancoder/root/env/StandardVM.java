@@ -59,7 +59,7 @@ public class StandardVM extends DefaultVm implements JCVM {
 				}
 			}
 		}
-		logger.info("JC VM STARTED");
+		logger.info("JC VM STARTED. sys libs: {}", this.sysLibs);
 		state = STATE_RUNNING;
 	}
 
