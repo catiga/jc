@@ -88,7 +88,6 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 	@Override
 	protected void channelRead0(ChannelHandlerContext channelHandlerContext, GeneralMsg baseMsg) throws Exception {
 		MsgType msgType = baseMsg.getType();
-		logger.info("[Notify] received central msg {}-{}", msgType.name(), msgType.ordinal());
 		switch (msgType) {
 		case LOGIN: {
 			// 向服务器发起登录
@@ -146,7 +145,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 			InstallMsg unmsg = (InstallMsg)baseMsg;
 			AppMod appinfo = unmsg.getAppins();
 			JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
-			logger.info("[Notify] start to retrieve {} from {}", appinfo.getApp_code(), appinfo.getFetch_address());
+			logger.info("[Notify] msg:{} start to retrieve {} from {}", baseMsg.getType().name(), appinfo.getApp_code(), appinfo.getFetch_address());
 			InputStream ins = RemoteUtil.installation(appinfo.getFetch_address(),new Long(appinfo.getApp_id()));
 			String new_path = ZipUtil.re_install(appinfo, new ZipInputStream(ins));
 			JCAPP jcapp = appinfo.to();
@@ -175,6 +174,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<GeneralMsg> 
 		case APPUNINSTALL: {
 			UninstallMsg unmsg = (UninstallMsg)baseMsg;
 			AppMod appinfo = unmsg.getAppins();
+			logger.info("[Notify] msg:{} start to retrieve {} from {}", baseMsg.getType().name(), appinfo.getApp_code(), appinfo.getFetch_address());
 			JCVM jcvm = JCVMDelegatorGroup.instance().getDelegator().getVM();
 			jcvm.uninstallApp(appinfo.to());
 		}
