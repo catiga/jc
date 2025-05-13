@@ -81,11 +81,12 @@ public class Starter extends ExternalStarter {
 					for (AppMod mod : sm.getApps()) {
 						try {
 							if (mod.getFetch_address() != null) {
-								logger.info("syncing apps config." + mod.getApp_code());
+								logger.info("syncing apps config.{}", mod.getApp_code());
 								InputStream ins = RemoteUtil.installation(mod.getFetch_address(), Long.valueOf(mod.getApp_id()));
-								logger.info("synced apps config." + mod.getApp_code());
+								logger.info("synced apps config.{} start to init install", mod.getApp_code());
 								String new_path = ZipUtil.init_install(mod, new ZipInputStream(ins));
 								mod.setApp_base(new_path);
+								logger.info("synced apps config.{} end to init install", mod.getApp_code());
 							}
 						} catch (Exception e) {
 							logger.error(mod.getApp_code() + " config error, will be continued.", e);
