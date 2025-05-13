@@ -48,18 +48,22 @@ public abstract class ServerImpl extends AbstractServer implements JCServer {
 	@Override
 	public void start() {
 		synchronized (this) {
+			logger.info("Server Starting {}:{}, {}", this.modconf.getScheme(), this.modconf.getPort(), this.modconf.getMaster());
+			logger.info("Server Config log path: {}, lib path: {}", this.modconf.getLogs(), this.modconf.getLibs());
 			// start delegate service, and just man HTTP
 			if(this.defServerCode().equals(ServerCode.HTTP)
 					&& this.modconf.getMaster() != null
 					&& !this.modconf.getId().startsWith("master")) {
 				try {
 					masterHandler = new MasterLiveBuilder(this.modconf);
+					logger.info("Server start connecting master: {}", this.modconf.getMaster());
 					masterHandler.connect();
 				} catch (Exception e) {
 					logger.error("", e);
 					throw new RuntimeException(e);
 				}
 			}
+			logger.info("Server initializing backend Apps...");
 			List<AppMod> apps = this.modconf.getApps();
 			List<JCAPP> convert_proto = new ArrayList<>();
 			if(apps!=null) {
