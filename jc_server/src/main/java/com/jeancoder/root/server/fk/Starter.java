@@ -66,6 +66,7 @@ public class Starter extends ExternalStarter {
 					GlobalStateHolder.INSTANCE.setInternalExecuteTimeout(fk_con.getIns_perf().getReq_handle_timeout());
 				}
 			}
+			initCustom(fk_con);
 		} catch (Exception e) {
 			logger.error("start error:", e);
 			System.exit(-1);
@@ -80,6 +81,7 @@ public class Starter extends ExternalStarter {
 					for (AppMod mod : sm.getApps()) {
 						try {
 							if (mod.getFetch_address() != null) {
+								logger.info("syncing apps config." + mod.getApp_code());
 								InputStream ins = RemoteUtil.installation(mod.getFetch_address(), Long.valueOf(mod.getApp_id()));
 								logger.info("synced apps config." + mod.getApp_code());
 								String new_path = ZipUtil.init_install(mod, new ZipInputStream(ins));

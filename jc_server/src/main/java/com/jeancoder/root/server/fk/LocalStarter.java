@@ -92,10 +92,12 @@ public class LocalStarter extends ExternalStarter {
 					GlobalStateHolder.INSTANCE.setInternalExecuteTimeout(fk_con.getIns_perf().getReq_handle_timeout());
 				}
 			}
+			initCustom(fk_con);
 		} catch (Exception e) {
 			logger.error("start error:", e);
 			System.exit(-1);
 		}
+
 		for (ServerMod sm : fk_con.getServers()) {
 			JCServer server = ServerFactory.generate(sm);
 			ServerHolder.getHolder().add(server);

@@ -71,7 +71,7 @@ public class GlobalStateHolder {
 		if(vsSwitch!=null && (vsSwitch.equals(0) || vsSwitch.equals(1))) {
 			this.vsSwitch = vsSwitch;
 		} else {
-			logger.error("VSSWITCHER PARAM NOT OK.");
+			logger.error("VSSWITCHER: {} PARAM NOT OK.", vsSwitch);
 		}
 	}
 }

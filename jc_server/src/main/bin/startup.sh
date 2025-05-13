@@ -20,8 +20,12 @@ for i in "$JC_HOME"/lib/*.jar; do
 done
 
 APP_MAINCLASS=com.jeancoder.root.server.fk.Starter
-
+#CUSTOM_CMD="-Dcustom.config=/Users/jclee/Desktop/custom.config.properties"
 JAVA_OPTS="-ms1024m -mx1024m -Xmn256m -Dfile.encoding=UTF-8 -Djava.awt.headless=true -XX:MaxPermSize=128m"
+
+if [ -n "$CUSTOM_CMD" ]; then
+  JAVA_OPTS="$JAVA_OPTS $CUSTOM_CMD"
+fi
 
 psid=0
 checkpid() {
