@@ -25,6 +25,7 @@ public class ZipUtil {
 	 */
 	public static String init_install(AppMod mod, ZipInputStream inputStream) throws Exception {
 		String path = mod.getApp_base();
+		logger.info("App: {}, path:{}", mod.getApp_code(), path);
 		ZipEntry entry = inputStream.getNextEntry();
 		String name = entry.getName();
 		File appFile = new File(path);
