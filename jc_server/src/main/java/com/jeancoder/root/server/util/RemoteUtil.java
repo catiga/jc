@@ -82,7 +82,8 @@ public class RemoteUtil {
 		paramsMap.put("id", id.toString());
 		paramsMap.put("m_code", JCLHealper.INSTENSE.getMerchantsCode());
 		paramsMap.put("m_instance", JCLHealper.INSTENSE.getInstanceNum());
-		InputStream  zis = HttpsRequesUtil.connectionStream(fetch_address, HttpsRequesUtil.getParams(paramsMap,  getSignKey()));
+		// InputStream  zis = HttpsRequesUtil.connectionStream(fetch_address, HttpsRequesUtil.getParams(paramsMap,  getSignKey()));
+		InputStream  zis = HttpsRequesUtil.connectionStreamEnhance(fetch_address, HttpsRequesUtil.getParams(paramsMap,  getSignKey()));
 		return zis;
 	}
 	

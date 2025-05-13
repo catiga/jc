@@ -8,6 +8,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.jeancoder.core.util.MD5Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +73,48 @@ public class HttpsRequesUtil {
 		}
 		return null;
 	}
-	
+
+	public static InputStream connectionStreamEnhance(String urlStr, String parameter){
+		try {
+			URL reqURL = new URL(urlStr);
+			HttpURLConnection conn = (HttpURLConnection) reqURL.openConnection();
+			conn.setConnectTimeout(5000);      // 5~10 Seconds
+			conn.setReadTimeout(15000);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Connection", "Keep-Alive");
+			conn.setRequestProperty("Charset", "UTF-8");
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+
+			try (OutputStream os = conn.getOutputStream()) {
+				os.write(parameter.getBytes("UTF-8"));
+				os.flush();
+			}
+
+			int responseCode = conn.getResponseCode();
+			String contentType = conn.getContentType();
+
+			if (responseCode != 200) {
+				logger.error("Central Server HTTP error: {}, content-type: {}", responseCode, contentType);
+				InputStream errStream = conn.getErrorStream();
+				if (errStream != null) {
+					// 可选：读取内容作为日志
+					String body = new BufferedReader(new InputStreamReader(errStream))
+							.lines().collect(Collectors.joining("\n"));
+					logger.error("Central Server error response: \n{}", body);
+				}
+				return null;
+			}
+
+			logger.info("Central Server  content-type: {}", contentType);
+
+			return conn.getInputStream();
+
+		} catch (Exception e) {
+			logger.error("Connect server {} with param {}, but got error.", urlStr, parameter, e);
+		}
+		return null;
+	}
 	
 	public  static String getParameter(Map<String,String> params) {
 		StringBuffer sb = new StringBuffer();

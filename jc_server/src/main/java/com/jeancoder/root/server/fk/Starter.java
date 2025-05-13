@@ -1,6 +1,7 @@
 package com.jeancoder.root.server.fk;
 
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.zip.ZipInputStream;
 
 import org.slf4j.Logger;
@@ -78,13 +79,22 @@ public class Starter extends ExternalStarter {
 
 				@Override
 				public void run() {
-					for (AppMod mod : sm.getApps()) {
+					Iterator<AppMod> it = sm.getApps().iterator();
+					while (it.hasNext()) {
+						AppMod mod = it.next();
 						try {
 							if (mod.getFetch_address() != null) {
 								logger.info("syncing apps config.{}", mod.getApp_code());
-								InputStream ins = RemoteUtil.installation(mod.getFetch_address(), Long.valueOf(mod.getApp_id()));
-								logger.info("synced apps config.{} start to init install", mod.getApp_code());
-								String new_path = ZipUtil.init_install(mod, new ZipInputStream(ins));
+								InputStream rawStream = RemoteUtil.installation(mod.getFetch_address(), Long.valueOf(mod.getApp_id()));
+								logger.info("synced apps config.{} start to init install. App: {}, path:{}",
+										mod.getApp_code(), mod.getApp_code(), mod.getApp_base());
+
+								if (rawStream == null) {
+									logger.warn("Removed app {} due to zip fetch failure.", mod.getApp_code());
+									it.remove();
+									continue;
+								}
+								String new_path = ZipUtil.init_install(mod, new ZipInputStream(rawStream));
 								mod.setApp_base(new_path);
 								logger.info("synced apps config.{} end to init install", mod.getApp_code());
 							}
@@ -92,6 +102,28 @@ public class Starter extends ExternalStarter {
 							logger.error(mod.getApp_code() + " config error, will be continued.", e);
 						}
 					}
+					/*
+					for (AppMod mod : sm.getApps()) {
+						try {
+							if (mod.getFetch_address() != null) {
+								logger.info("syncing apps config.{}", mod.getApp_code());
+								InputStream rawStream = RemoteUtil.installation(mod.getFetch_address(), Long.valueOf(mod.getApp_id()));
+								logger.info("synced apps config.{} start to init install. App: {}, path:{}",
+										mod.getApp_code(), mod.getApp_code(), mod.getApp_base());
+
+								if (rawStream == null) {
+									logger.error("synced apps config Failed to fetch remote zip");
+
+								}
+								String new_path = ZipUtil.init_install(mod, new ZipInputStream(rawStream));
+								mod.setApp_base(new_path);
+								logger.info("synced apps config.{} end to init install", mod.getApp_code());
+							}
+						} catch (Exception e) {
+							logger.error(mod.getApp_code() + " config error, will be continued.", e);
+						}
+					}
+					 */
 					server.start();
 				}
 			}).start();
