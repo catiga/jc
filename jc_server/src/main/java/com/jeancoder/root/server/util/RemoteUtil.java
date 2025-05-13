@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.jeancoder.root.server.config.CustomCmdConf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +62,11 @@ public class RemoteUtil {
 		logger.info(domain + "/server/api/personal/common/getConfigList");
 		logger.info("m_code:::" + JCLHealper.INSTENSE.getMerchantsCode());
 		logger.info("m_instance:::" + JCLHealper.INSTENSE.getInstanceNum());
-		String  rsaResultsJson = HttpsRequesUtil.connection(domain + "/server/api/personal/common/getConfigList", HttpsRequesUtil.getParams(paramsMap, getSignKey()));
+
+		String customFetchDomain = CustomCmdConf.getInstance().getFetchDomain();
+		customFetchDomain = customFetchDomain == null ? domain : customFetchDomain;
+
+		String  rsaResultsJson = HttpsRequesUtil.connection(customFetchDomain + "/server/api/personal/common/getConfigList", HttpsRequesUtil.getParams(paramsMap, getSignKey()));
 		return rsaResultsJson;
 	}
 	
