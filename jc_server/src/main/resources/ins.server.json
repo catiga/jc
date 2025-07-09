@@ -33,7 +33,7 @@
             "logs": "/data/jeancoder/central/jeancoder-server/jclogs",
             "domain_visit":"/server/index",
             "libs": "/data/jeancoder/central/jeancoder-server/jclibs",
-            "master": "jcs://jcloudapp.fancynote.vip:9091/",
+            "master": "jcs://jcloudapp.chinaren.xyz:9091/",
             "apps": [
                 {
                     "app_id": "99019928",
